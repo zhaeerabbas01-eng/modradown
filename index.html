@@ -6,84 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ModraDown</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="google-site-verification" content="google76d083181c3559f5" />
+    <meta name="google-site-verification" content="kDISmPpK4RkJGLDYc7TY4hKfb2Gqh1BDu3xfzojRYZk" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9250423143987541" crossorigin="anonymous"></script>
-    <script>
-      (function() {
-        var OrigWebSocket = window.WebSocket;
-        window.WebSocket = function(url, protocols) {
-          if (protocols === 'vite-hmr' || (typeof url === 'string' && url.includes('vite-hmr'))) {
-            var listeners = {};
-            var ws = {
-              OPEN: 1,
-              readyState: 0,
-              addEventListener: function(type, listener) {
-                if (!listeners[type]) listeners[type] = [];
-                listeners[type].push(listener);
-              },
-              removeEventListener: function(type, listener) {
-                 if (listeners[type]) {
-                   listeners[type] = listeners[type].filter(l => l !== listener);
-                 }
-              },
-              send: function() {},
-              close: function() {}
-            };
-            setTimeout(function() {
-              ws.readyState = 1;
-              if (listeners['open']) {
-                listeners['open'].forEach(function(l) { l({ type: 'open' }); });
-              }
-            }, 10);
-            return ws;
-          }
-          return new OrigWebSocket(url, protocols);
-        };
-      })();
-      window.onerror = function(msg, url, lineNo, columnNo, error) {
-        if (msg === 'Script error.' || (typeof msg === 'string' && msg.includes('Script error'))) return true;
-        return false;
-      };
-      var origError = console.error;
-      console.error = function() {
-        if (arguments[0] && typeof arguments[0] === 'string') {
-          if (arguments[0].includes('[vite] failed to connect')) return;
-          if (arguments[0].includes('Script error')) return;
-        }
-        origError.apply(console, arguments);
-      };
-      window.addEventListener('error', function(e) {
-        if (e.message === 'Script error.' || (typeof e.message === 'string' && e.message.includes('Script error'))) {
-          e.preventDefault();
-          e.stopPropagation();
-          e.stopImmediatePropagation();
-          return false;
-        }
-        if (e.message && e.message.includes('fetch')) {
-           var xhr = new XMLHttpRequest();
-           xhr.open("POST", "/api/log_error", true);
-           xhr.setRequestHeader("Content-Type", "application/json");
-           xhr.send(JSON.stringify({ 
-             message: e.message, 
-             stack: e.error ? e.error.stack : null,
-             filename: e.filename,
-             lineno: e.lineno,
-             colno: e.colno 
-           }));
-        }
-      }, true);
-      (function() {
-        try {
-          var origFetch = window.fetch;
-          Object.defineProperty(window, 'fetch', {
-            get: function() { return window.__patchedFetch || origFetch; },
-            set: function(val) { window.__patchedFetch = val; },
-            configurable: true,
-            enumerable: true
-          });
-        } catch(e) { console.error(e); }
-      })();
-    </script>
     <!-- Ad Networks -->
     <script src="https://revolthem.com/36/98/b9/3698b99f3718b75208f1d258bb207c1d.js"></script>
     <script src="https://revolthem.com/56/62/e3/5662e351da30194463726a4ece683e54.js"></script>
