@@ -1,0 +1,8 @@
+{
+  "name": "ModraDown",
+  "description": "A high-performance interactive video downloader.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
