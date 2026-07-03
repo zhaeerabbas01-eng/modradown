@@ -15,10 +15,8 @@ export default function ResultCard({ result }: { result: any }) {
 
   const isVideoUrl = (url: string) => {
     if (!url) return false;
-    if (url.includes('.mp4') || url.includes('video') || url.includes('blob:')) return true;
-    const selectedPicker = result.picker?.find((p: any) => p.url === url);
-    if (selectedPicker && selectedPicker.quality?.toLowerCase().includes('video')) return true;
-    return false;
+    // Assume it's a video if it's a known media host or if it's not explicitly an image
+    return true; 
   };
 
   const currentSelectionIsVideo = isVideoUrl(selectedUrl) || isVideoUrl(result.url) || isVideoUrl(result.tunnel);
