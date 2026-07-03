@@ -69,7 +69,7 @@ export default function Home() {
         canonicalUrl="https://modradown.com/"
       />
       
-      <div className="container mx-auto px-4 lg:px-8 max-w-7xl pt-8 lg:pt-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl pt-8 lg:pt-16 w-full flex flex-col items-center">
         
         {/* Banner Ad Area */}
         <div className="mb-12 text-center flex justify-center">
@@ -77,25 +77,25 @@ export default function Home() {
         </div>
 
         {/* HERO SECTION */}
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 w-full">
           {/* Left Column */}
-          <div className="flex-1 text-left">
+          <div className="flex-1 w-full text-center lg:text-left">
             <div className="inline-flex items-center space-x-2 bg-brand-primary/10 border border-brand-primary/20 rounded-full px-4 py-1.5 mb-6 text-brand-primary">
               <Zap className="h-4 w-4" />
               <span className="text-xs font-bold uppercase tracking-wider">All-in-One Video Downloader</span>
             </div>
             
-            <h1 className="text-5xl md:text-6xl lg:text-[4rem] font-black text-gray-900 dark:text-gray-100 leading-[1.1] mb-6 tracking-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-black text-gray-900 dark:text-gray-100 leading-[1.1] mb-6 tracking-tight">
               Download Videos <br/>
               From <span className="text-brand-primary">Any Platform</span>
             </h1>
             
-            <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8 max-w-xl font-medium">
+            <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8 max-w-xl font-medium mx-auto lg:mx-0">
               Fast, free, and secure video downloader. Download videos, reels, shorts and more from all popular platforms in high quality.
             </p>
 
             {/* Input Form */}
-            <form onSubmit={handleDownload} className="relative flex items-center bg-white dark:bg-[#0a0f25] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 dark:border-white/10 p-2 max-w-xl mb-4">
+            <form onSubmit={handleDownload} className="relative flex items-center bg-white dark:bg-[#0a0f25] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 dark:border-white/10 p-2 max-w-xl mx-auto lg:mx-0 mb-4">
               <input 
                 type="url"
                 required
@@ -110,7 +110,7 @@ export default function Home() {
                 className="bg-brand-primary hover:bg-brand-primary/90 text-white font-bold px-6 py-4 rounded-xl flex items-center space-x-2 transition-all disabled:opacity-70 shrink-0"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
-                <span>Download</span>
+                <span className="hidden md:inline">Download</span>
               </button>
             </form>
             
@@ -119,7 +119,7 @@ export default function Home() {
             </p>
 
             {/* Features */}
-            <div className="flex flex-wrap items-center gap-4 md:gap-6 text-sm font-bold text-gray-600 dark:text-gray-300">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6 text-sm font-bold text-gray-600 dark:text-gray-300">
               <span className="flex items-center space-x-2"><CheckCircle2 className="w-4 h-4 text-green-500"/> <span>No Watermark</span></span>
               <span className="flex items-center space-x-2"><Zap className="w-4 h-4 text-yellow-500"/> <span>High Quality</span></span>
               <span className="flex items-center space-x-2"><Download className="w-4 h-4 text-brand-primary"/> <span>Fast Download</span></span>

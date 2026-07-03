@@ -15,8 +15,9 @@ import DMCA from "./pages/DMCA";
 import CookiePolicy from "./pages/CookiePolicy";
 import FAQ from "./pages/FAQ";
 import { motion, AnimatePresence } from "motion/react";
+import { translations } from "./translations";
 
-function Header() {
+function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLanguage: (lang: 'en' | 'es' | 'fr') => void }) {
   const location = useLocation();
   const path = location.pathname;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -24,6 +25,7 @@ function Header() {
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [signInSuccess, setSignInSuccess] = useState(false);
   const [emailInput, setEmailInput] = useState("");
+  const t = translations[language];
 
   useEffect(() => {
     if (glowEnabled) {
@@ -71,18 +73,18 @@ function Header() {
         </Link>
 
         {/* Navigation Items - PC Responsive to match the image */}
-        <nav className="hidden lg:flex items-center space-x-8 text-sm font-medium text-slate-600 dark:text-gray-300">
+        <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 text-sm font-medium text-slate-600 dark:text-gray-300">
           <Link 
             to="/" 
             className={`transition-all duration-200 hover:text-gray-900 dark:text-gray-100 flex items-center gap-1.5 ${path === "/" ? "text-brand-primary font-extrabold border-b-2 border-brand-primary pb-1" : "pb-1"}`}
           >
-            Home
+            {t.home}
           </Link>
           
           {/* Downloader dropdown preview */}
           <div className="relative group hover:py-1">
             <button className="transition-all duration-200 hover:text-gray-900 dark:text-gray-100 flex items-center gap-1 hover:text-brand-primary cursor-pointer font-sans font-bold  text-xs">
-              Downloader <ChevronDown className="h-3 w-3" />
+              {t.downloader} <ChevronDown className="h-3 w-3" />
             </button>
             <div className="absolute top-full left-1/2 -translate-x-1/2 w-48 mt-2 bg-gray-50 dark:bg-[#050816] border border-gray-200 dark:border-white/10 rounded-xl p-3 shadow-2xl space-y-2.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition duration-300 z-50">
               <div className="text-[9px]  tracking-widest text-gray-500 dark:text-gray-400 font-black mb-1 border-b border-gray-200 dark:border-white/10 pb-1">Supported Apps</div>
@@ -101,40 +103,45 @@ function Header() {
             className={`flex items-center gap-1 transition-all duration-200 hover:text-gray-900 dark:text-gray-100 ${path === "/tools" ? "text-brand-primary font-extrabold border-b-2 border-brand-primary pb-1" : "pb-1"}`}
           >
             <Sparkles className="h-3.5 w-3.5 text-brand-accent animate-pulse" />
-            Tools
+            {t.tools}
           </Link>
           
           <Link 
             to="/blog" 
             className={`transition-all duration-200 hover:text-gray-900 dark:text-gray-100 ${path.startsWith("/blog") ? "text-brand-primary font-extrabold border-b-2 border-brand-primary pb-1" : "pb-1"}`}
           >
-            Articles
+            {t.articles}
           </Link>
           
           <Link 
             to="/faq" 
             className={`transition-all duration-200 hover:text-gray-900 dark:text-gray-100 ${path === "/faq" ? "text-brand-primary font-extrabold border-b-2 border-brand-primary pb-1" : "pb-1"}`}
           >
-            How to Use
+            {t.howToUse}
           </Link>
           
           <Link 
             to="/about" 
             className={`transition-all duration-200 hover:text-gray-900 dark:text-gray-100 ${path === "/about" ? "text-brand-primary font-extrabold border-b-2 border-brand-primary pb-1" : "pb-1"}`}
           >
-            About Us
+            {t.aboutUs}
           </Link>
           
           <Link 
             to="/contact" 
             className={`transition-all duration-200 hover:text-gray-900 dark:text-gray-100 ${path === "/contact" ? "text-brand-primary font-extrabold border-b-2 border-brand-primary pb-1" : "pb-1"}`}
           >
-            Contact
+            {t.contact}
           </Link>
         </nav>
 
         {/* Right side Actions matching screenshot */}
         <div className="hidden lg:flex items-center space-x-4">
+          <select value={language} onChange={(e) => setLanguage(e.target.value as 'en' | 'es' | 'fr')} className="bg-transparent border border-gray-300 dark:border-white/10 rounded-lg p-1 text-xs text-gray-700 dark:text-gray-300">
+            <option value="en">EN</option>
+            <option value="es">ES</option>
+            <option value="fr">FR</option>
+          </select>
           <button 
             onClick={() => setGlowEnabled(!glowEnabled)}
             className="p-2.5 rounded-full hover:bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 transition cursor-pointer"
@@ -150,7 +157,7 @@ function Header() {
             onClick={() => setShowSignInModal(true)}
             className="bg-brand-primary hover:bg-brand-primary/90 text-white transition duration-300 text-sm font-semibold rounded-lg px-6 py-2.5"
           >
-            Sign In
+            {t.signIn}
           </button>
         </div>
 
@@ -430,9 +437,10 @@ function Footer() {
 }
 
 export default function App() {
+  const [language, setLanguage] = useState('en');
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 font-sans selection:bg-brand-primary/30 flex flex-col scroll-smooth">
-      <Header />
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 font-sans selection:bg-brand-primary/30 flex flex-col scroll-smooth text-sm md:text-base">
+      <Header language={language} setLanguage={setLanguage} />
       <div className="flex-1 relative z-10">
         <Routes>
           <Route path="/" element={<Home />} />

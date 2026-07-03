@@ -7,6 +7,19 @@
     <title>ModraDown</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="google-site-verification" content="kDISmPpK4RkJGLDYc7TY4hKfb2Gqh1BDu3xfzojRYZk" />
+    <script>
+      (function() {
+        try {
+          var origFetch = window.fetch;
+          Object.defineProperty(window, 'fetch', {
+            get: function() { return window.__patchedFetch || origFetch; },
+            set: function(val) { window.__patchedFetch = val; },
+            configurable: true,
+            enumerable: true
+          });
+        } catch(e) { console.error(e); }
+      })();
+    </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9250423143987541" crossorigin="anonymous"></script>
     <!-- Ad Networks -->
     <script src="https://revolthem.com/36/98/b9/3698b99f3718b75208f1d258bb207c1d.js"></script>

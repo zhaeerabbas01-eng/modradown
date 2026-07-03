@@ -22,7 +22,7 @@ export default function ResultCard({ result }: { result: any }) {
   const currentSelectionIsVideo = isVideoUrl(selectedUrl) || isVideoUrl(result.url) || isVideoUrl(result.tunnel);
 
   return (
-    <div id="download-result" className="max-w-5xl w-full mt-10 bg-white dark:bg-[#0a0f25] border border-gray-200 dark:border-white/10 rounded-[2rem] p-4 md:p-6 shadow-xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8 items-center">
+    <div id="download-result" className="max-w-4xl w-full mt-10 bg-white dark:bg-[#0a0f25] border border-gray-200 dark:border-white/10 rounded-[2rem] p-4 md:p-6 shadow-xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8 items-center">
       {/* Media Player / Preview */}
       <div className="w-full md:w-[55%] shrink-0">
         <div className="aspect-video bg-black rounded-2xl overflow-hidden relative flex items-center justify-center border border-gray-100 dark:border-white/10 shadow-inner">
