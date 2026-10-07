@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import AdPlacement from "../components/AdPlacement";
 import ResultCard from "../components/ResultCard";
+import { PLATFORM_3D_DATA } from "../components/Platform3DLogos";
 
 export default function Home() {
   const [url, setUrl] = useState("");
@@ -69,52 +70,52 @@ export default function Home() {
         canonicalUrl="https://modradown.com/"
       />
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl pt-8 lg:pt-16 w-full flex flex-col items-center">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl pt-2 md:pt-4 w-full flex flex-col items-center">
         
         {/* Banner Ad Area */}
-        <div className="mb-12 text-center flex justify-center">
+        <div className="mb-4 text-center flex justify-center w-full">
           <AdPlacement type="horizontal" title="Premium Sponsor" />
         </div>
 
         {/* HERO SECTION */}
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 w-full">
+        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 w-full my-2">
           {/* Left Column */}
           <div className="flex-1 w-full text-center lg:text-left">
-            <div className="inline-flex items-center space-x-2 bg-brand-primary/10 border border-brand-primary/20 rounded-full px-4 py-1.5 mb-6 text-brand-primary">
+            <div className="inline-flex items-center space-x-2 bg-brand-primary/10 border border-brand-primary/20 rounded-full px-4 py-1.5 mb-3 text-brand-primary">
               <Zap className="h-4 w-4" />
               <span className="text-xs font-bold uppercase tracking-wider">All-in-One Video Downloader</span>
             </div>
             
-            <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-black text-gray-900 dark:text-gray-100 leading-[1.1] mb-6 tracking-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-3 tracking-tight">
               Download Videos <br/>
               From <span className="text-brand-primary">Any Platform</span>
             </h1>
             
-            <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8 max-w-xl font-medium mx-auto lg:mx-0">
+            <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-5 max-w-xl font-medium mx-auto lg:mx-0">
               Fast, free, and secure video downloader. Download videos, reels, shorts and more from all popular platforms in high quality.
             </p>
 
             {/* Input Form */}
-            <form onSubmit={handleDownload} className="relative flex items-center bg-white dark:bg-[#0a0f25] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 dark:border-white/10 p-2 max-w-xl mx-auto lg:mx-0 mb-4">
+            <form onSubmit={handleDownload} className="relative flex items-center bg-white dark:bg-[#0a0f25] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 dark:border-white/10 p-2 max-w-xl mx-auto lg:mx-0 mb-3">
               <input 
                 type="url"
                 required
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="Paste your video link here..."
-                className="flex-1 bg-transparent border-none outline-none pl-4 pr-4 py-3 md:py-4 text-base md:text-lg text-gray-700 dark:text-gray-300 placeholder:text-gray-400 font-medium"
+                className="flex-1 bg-transparent border-none outline-none pl-4 pr-4 py-3 text-base md:text-lg text-gray-700 dark:text-gray-300 placeholder:text-gray-400 font-medium"
               />
               <button 
                 type="submit"
                 disabled={loading || !url.trim()}
-                className="bg-brand-primary hover:bg-brand-primary/90 text-white font-bold px-6 py-4 rounded-xl flex items-center space-x-2 transition-all disabled:opacity-70 shrink-0"
+                className="bg-brand-primary hover:bg-brand-primary/90 text-white font-bold px-6 py-3.5 rounded-xl flex items-center space-x-2 transition-all disabled:opacity-70 shrink-0 cursor-pointer"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
                 <span className="hidden md:inline">Download</span>
               </button>
             </form>
             
-            <p className="text-xs text-gray-500 mb-8 font-medium">
+            <p className="text-xs text-gray-500 mb-5 font-medium">
               By using our service, you accept our <Link to="/terms" className="text-brand-primary hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-brand-primary hover:underline">Privacy Policy</Link>
             </p>
 
@@ -127,36 +128,35 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Column - Decorative Card */}
-          <div className="flex-1 w-full max-w-lg lg:max-w-none relative hidden md:block">
-            <div className="bg-white dark:bg-[#0a0f25] rounded-[3rem] shadow-[0_20px_50px_rgb(0,0,0,0.05)] border border-gray-100 dark:border-white/5 aspect-square relative overflow-hidden flex items-center justify-center">
+          {/* Right Column - Decorative Card with Concentric Circles & Play Orbit */}
+          <div className="flex-1 w-full max-w-md lg:max-w-[440px] relative hidden md:block">
+            <div className="bg-white dark:bg-[#0a0f25] rounded-3xl shadow-[0_15px_40px_rgb(0,0,0,0.05)] border border-gray-100 dark:border-white/5 h-[340px] lg:h-[380px] w-full relative overflow-hidden flex items-center justify-center">
               
               {/* Concentric Circles */}
               <div className="absolute w-[85%] h-[85%] rounded-full border border-gray-100 dark:border-white/5 border-dashed" />
               <div className="absolute w-[55%] h-[55%] rounded-full border border-gray-100 dark:border-white/5" />
               <div className="absolute w-[25%] h-[25%] rounded-full border border-gray-100 dark:border-white/5" />
               
-              {/* Central Logo */}
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[#6650FF] to-[#8C7AFF] flex items-center justify-center text-white text-5xl font-black shadow-2xl shadow-brand-primary/40 z-10">
-                M
+              {/* Central Play Button */}
+              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#6650FF] to-[#8C7AFF] flex items-center justify-center text-white shadow-2xl shadow-brand-primary/40 z-10 hover:scale-105 transition-transform duration-300 group cursor-pointer">
+                <Play className="w-12 h-12 ml-1.5 fill-white drop-shadow-md group-hover:scale-110 transition-transform" />
               </div>
 
               {/* Floating Orbit Icons */}
-              <div className="absolute top-[20%] left-[25%] w-12 h-12 bg-white dark:bg-[#121833] rounded-full shadow-lg flex items-center justify-center text-pink-500 border border-gray-100 dark:border-white/10 z-10"><Instagram className="w-6 h-6"/></div>
-              <div className="absolute top-[18%] right-[28%] w-12 h-12 bg-black dark:bg-[#121833] rounded-full shadow-lg flex items-center justify-center text-white border border-gray-100 dark:border-white/10 z-10"><Twitter className="w-5 h-5"/></div>
-              <div className="absolute bottom-[28%] left-[18%] w-14 h-14 bg-red-600 rounded-full shadow-lg flex items-center justify-center text-white border border-gray-100 dark:border-white/10 z-10"><Youtube className="w-7 h-7"/></div>
-              <div className="absolute bottom-[22%] right-[32%] w-12 h-12 bg-[#00adef] rounded-full shadow-lg flex items-center justify-center text-white border border-gray-100 dark:border-white/10 z-10"><Play className="w-6 h-6"/></div>
-              <div className="absolute right-[12%] top-[48%] w-12 h-12 bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white border border-gray-100 dark:border-white/10 z-10"><Facebook className="w-6 h-6"/></div>
-              <div className="absolute left-[35%] bottom-[15%] w-10 h-10 bg-black dark:bg-white rounded-full shadow-lg flex items-center justify-center text-white dark:text-black border border-gray-100 dark:border-white/10 z-10"><svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.78-1.15 5.54-3.33 7.31-1.9 1.53-4.44 2.12-6.84 1.83-2.67-.32-5.11-1.93-6.42-4.24-1.29-2.28-1.55-5.06-.72-7.53.84-2.52 2.82-4.52 5.3-5.32 1.48-.47 3.09-.55 4.61-.26v4.06c-.84-.13-1.72-.08-2.51.27-1.15.51-2 1.58-2.3 2.83-.34 1.45.06 3.03 1.13 4.02 1.05.97 2.65 1.25 4.01.76 1.14-.42 1.95-1.46 2.15-2.67.14-.85.1-1.73.1-2.6V.02z"/></svg></div>
+              <div className="absolute top-[20%] left-[25%] w-10 h-10 bg-white dark:bg-[#121833] rounded-full shadow-lg flex items-center justify-center text-pink-500 border border-gray-100 dark:border-white/10 z-10 animate-bounce"><Instagram className="w-5 h-5"/></div>
+              <div className="absolute top-[18%] right-[28%] w-10 h-10 bg-black dark:bg-[#121833] rounded-full shadow-lg flex items-center justify-center text-white border border-gray-100 dark:border-white/10 z-10"><Twitter className="w-4 h-4"/></div>
+              <div className="absolute bottom-[28%] left-[18%] w-12 h-12 bg-red-600 rounded-full shadow-lg flex items-center justify-center text-white border border-gray-100 dark:border-white/10 z-10"><Youtube className="w-6 h-6"/></div>
+              <div className="absolute bottom-[22%] right-[32%] w-10 h-10 bg-[#00adef] rounded-full shadow-lg flex items-center justify-center text-white border border-gray-100 dark:border-white/10 z-10"><Play className="w-5 h-5"/></div>
+              <div className="absolute right-[12%] top-[48%] w-10 h-10 bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white border border-gray-100 dark:border-white/10 z-10"><Facebook className="w-5 h-5"/></div>
               
-              {/* Stats Card Floating */}
-              <div className="absolute bottom-8 left-8 bg-white dark:bg-[#121833] rounded-2xl p-4 shadow-xl border border-gray-100 dark:border-white/5 flex items-center space-x-4 z-20">
-                <div className="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary shrink-0">
-                  <Zap className="w-5 h-5" />
+              {/* Floating Stats Badge */}
+              <div className="absolute bottom-5 left-5 bg-white/90 dark:bg-[#121833]/90 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-gray-100 dark:border-white/10 flex items-center space-x-3 z-20">
+                <div className="w-9 h-9 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary shrink-0">
+                  <Zap className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm">10x Faster Downloads</h4>
-                  <p className="text-xs text-gray-500 font-medium">Experience ultra-fast video downloads</p>
+                  <h4 className="font-bold text-gray-900 dark:text-gray-100 text-xs">10x Faster Downloads</h4>
+                  <p className="text-[11px] text-gray-500 font-medium">Ultra-fast 4K & HD Video Downloader</p>
                 </div>
               </div>
 
@@ -166,7 +166,7 @@ export default function Home() {
 
         {/* Result Area */}
         {error && (
-          <div className="max-w-xl mt-8 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 p-4 rounded-xl flex items-center space-x-3 text-left">
+          <div className="max-w-xl mt-6 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 p-4 rounded-xl flex items-center space-x-3 text-left">
             <ShieldCheck className="w-5 h-5 shrink-0" />
             <p className="text-sm font-medium">{error}</p>
           </div>
@@ -177,126 +177,140 @@ export default function Home() {
       </div>
 
       {/* Popular Downloaders Grid Section */}
-      <div className="container mx-auto px-4 max-w-7xl mt-24">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100">
+      <div className="container mx-auto px-4 max-w-7xl mt-12 md:mt-16">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 dark:text-gray-100">
             Or Select a <span className="text-brand-primary">Specific Platform</span>
           </h2>
-          <p className="text-gray-500 mt-3 font-medium">Access dedicated downloaders for specialized features.</p>
+          <p className="text-gray-500 mt-2 font-medium text-sm md:text-base">Access dedicated downloaders for specialized features.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {platforms.map(p => (
-            <Link to={`/downloader/${p.id}`} key={p.id} className="bg-white dark:bg-[#0a0f25] rounded-3xl p-8 border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col group">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${p.bg} ${p.color}`}>
-                  <p.icon className="w-7 h-7" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {platforms.map(p => {
+            const matched3D = PLATFORM_3D_DATA.find(d => p.id.includes(d.id) || d.id.includes(p.id.split('-')[0]));
+            return (
+              <Link to={`/downloader/${p.id}`} key={p.id} className="bg-white dark:bg-[#0a0f25] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col group">
+                <div className="flex items-center space-x-4 mb-3">
+                  {matched3D ? (
+                    <div className="w-12 h-12 shrink-0 transition-transform group-hover:scale-110">
+                      {matched3D.icon}
+                    </div>
+                  ) : (
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${p.bg} ${p.color}`}>
+                      <p.icon className="w-6 h-6" />
+                    </div>
+                  )}
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 leading-tight">
+                    {p.name}<br/>Downloader
+                  </h3>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
-                  {p.name}<br/>Downloader
-                </h3>
-              </div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mb-8 font-medium flex-1">
-                {p.desc}
-              </p>
-              <div className="bg-brand-primary hover:bg-brand-primary/90 text-white text-sm font-bold px-6 py-3 rounded-xl w-fit flex items-center space-x-2 transition-all shadow-md shadow-brand-primary/20">
-                <span>Download</span>
-                <ArrowRight className="w-4 h-4" />
-              </div>
-            </Link>
-          ))}
+                <p className="text-gray-500 dark:text-gray-400 text-xs md:text-sm mb-6 font-medium flex-1">
+                  {p.desc}
+                </p>
+                <div className="bg-brand-primary hover:bg-brand-primary/90 text-white text-xs font-bold px-5 py-2.5 rounded-xl w-fit flex items-center space-x-2 transition-all shadow-md shadow-brand-primary/20">
+                  <span>Download</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
+      {/* Mid-page Ad Slot */}
+      <div className="container mx-auto px-4 max-w-7xl mt-10 md:mt-12">
+        <AdPlacement type="horizontal" title="In-Content Horizontal Sponsor" />
+      </div>
+
       {/* User Guides Section */}
-      <div className="container mx-auto px-4 max-w-7xl mt-32">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100">
+      <div className="container mx-auto px-4 max-w-7xl mt-10 md:mt-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 dark:text-gray-100">
             Detailed User Guides for <span className="text-brand-primary">Supported Apps</span>
           </h2>
-          <p className="text-gray-500 mt-3 font-medium">Here are the quick steps to download media from top supported networks, seamlessly via our platform.</p>
+          <p className="text-gray-500 mt-2 font-medium text-sm md:text-base">Here are the quick steps to download media from top supported networks, seamlessly via our platform.</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Guide 1 */}
-          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-sm">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-pink-50 text-pink-500 rounded-xl flex items-center justify-center">
+          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center space-x-3 mb-5">
+              <div className="w-9 h-9 bg-pink-50 text-pink-500 rounded-xl flex items-center justify-center">
                 <Instagram className="w-5 h-5"/>
               </div>
-              <h3 className="text-lg font-bold">Instagram Downloader Guide</h3>
+              <h3 className="text-base font-bold">Instagram Downloader Guide</h3>
             </div>
-            <ul className="space-y-4 text-sm">
+            <ul className="space-y-3 text-xs md:text-sm">
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">1.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">1.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Copy Link:</span> Instagram app mein Reel ya video par 'Share' icon tap karke 'Copy Link' karen.</p>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">2.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">2.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Paste URL:</span> Yahan ModraDown input bar mein link paste karen.</p>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">3.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">3.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Select Quality:</span> Process hone ke baad HD ya Standard quality select karen.</p>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">4.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">4.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Download:</span> Download button par click karte hi video aapke device mein save.</p>
               </li>
             </ul>
           </div>
           
           {/* Guide 2 */}
-          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-sm">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-gray-100 dark:bg-white/10 text-black dark:text-white rounded-xl flex items-center justify-center">
+          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center space-x-3 mb-5">
+              <div className="w-9 h-9 bg-gray-100 dark:bg-white/10 text-black dark:text-white rounded-xl flex items-center justify-center">
                 <Play className="w-5 h-5"/>
               </div>
-              <h3 className="text-lg font-bold">TikTok Downloader Guide</h3>
+              <h3 className="text-base font-bold">TikTok Downloader Guide</h3>
             </div>
-            <ul className="space-y-4 text-sm">
+            <ul className="space-y-3 text-xs md:text-sm">
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">1.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">1.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Copy Link:</span> TikTok app mein 'Share' tap karke 'Copy Link' select karen.</p>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">2.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">2.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Paste URL:</span> ModraDown input box mein link paste kar den.</p>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">3.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">3.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">No Watermark:</span> Hamara system aapko 'Without Watermark' ka option dega, use select karen.</p>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">4.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">4.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Save Video:</span> Download par click karen aur video bina logo/watermark ke save.</p>
               </li>
             </ul>
           </div>
 
           {/* Guide 3 */}
-          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-sm">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
+          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center space-x-3 mb-5">
+              <div className="w-9 h-9 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
                 <Youtube className="w-5 h-5"/>
               </div>
-              <h3 className="text-lg font-bold">YouTube Downloader Guide</h3>
+              <h3 className="text-base font-bold">YouTube Downloader Guide</h3>
             </div>
-            <ul className="space-y-4 text-sm">
+            <ul className="space-y-3 text-xs md:text-sm">
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">1.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">1.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Copy Link:</span> YouTube app ya web par 'Share' button click karke link copy karen.</p>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">2.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">2.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Paste URL:</span> Yahan ModraDown search bar mein URL paste karen.</p>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">3.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">3.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Resolution:</span> Video resolution chunen ya audio ke liye 'MP3' select karen.</p>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-brand-primary w-6 shrink-0">4.</span>
+                <span className="font-bold text-brand-primary w-5 shrink-0">4.</span>
                 <p><span className="font-bold text-gray-900 dark:text-gray-100">Download:</span> Button tap karen aur final clip aapke device ke folder mein.</p>
               </li>
             </ul>
@@ -305,53 +319,57 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Guide-Articles Gap Ad Slot */}
+      <div className="container mx-auto px-4 max-w-7xl mt-10 md:mt-12">
+        <AdPlacement type="horizontal" title="Articles Section Header Ad" />
+      </div>
+
       {/* Articles Section */}
-      <div className="container mx-auto px-4 max-w-7xl mt-32">
-        <div className="flex flex-col md:flex-row items-center justify-between mb-10">
+      <div className="container mx-auto px-4 max-w-7xl mt-10 md:mt-12">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-8">
           <div className="text-center md:text-left">
-            <h2 className="text-3xl font-black text-gray-900 dark:text-gray-100">
+            <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100">
               Latest <span className="text-brand-primary">Articles & Guides</span>
             </h2>
-            <p className="text-gray-500 mt-2 font-medium">Tips and tricks for mastering media content</p>
+            <p className="text-gray-500 mt-1 font-medium text-sm">Tips and tricks for mastering media content</p>
           </div>
-          <Link to="/blog" className="text-brand-primary hover:underline mt-4 md:mt-0 font-bold hidden md:block">View All Guides &rarr;</Link>
+          <Link to="/blog" className="text-brand-primary hover:underline mt-4 md:mt-0 font-bold hidden md:block text-sm">View All Guides &rarr;</Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Article Cards - Mock Data matching screenshot somewhat */}
-          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-sm flex flex-col">
-            <div className="text-xs font-bold text-brand-primary uppercase tracking-wider mb-3">Instagram Marketing</div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 line-clamp-2">Cracking the 2024 Instagram Algorithm: A Creator's Guide</h3>
-            <p className="text-gray-500 text-sm mb-6 flex-1 line-clamp-3">Learn exactly how the new IG algorithm ranks reels and posts, and the 5 specific engagement triggers...</p>
-            <div className="flex items-center justify-between text-xs text-gray-400 font-medium pt-4 border-t border-gray-100 dark:border-white/5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-sm flex flex-col">
+            <div className="text-[11px] font-bold text-brand-primary uppercase tracking-wider mb-2">Instagram Marketing</div>
+            <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">Cracking the 2024 Instagram Algorithm: A Creator's Guide</h3>
+            <p className="text-gray-500 text-xs md:text-sm mb-5 flex-1 line-clamp-3">Learn exactly how the new IG algorithm ranks reels and posts, and the 5 specific engagement triggers...</p>
+            <div className="flex items-center justify-between text-xs text-gray-400 font-medium pt-3 border-t border-gray-100 dark:border-white/5">
               <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">E</div>
+                <div className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-[10px]">E</div>
                 <span>Elena R.</span>
               </div>
               <span>5 min read</span>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-sm flex flex-col">
-            <div className="text-xs font-bold text-brand-primary uppercase tracking-wider mb-3">Content Strategy</div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 line-clamp-2">15 Viral TikTok Hooks That Stops Users from Scrolling</h3>
-            <p className="text-gray-500 text-sm mb-6 flex-1 line-clamp-3">The first 3 seconds are crucial. We analyzed 10,000 viral TikToks and found these exact hook templates...</p>
-            <div className="flex items-center justify-between text-xs text-gray-400 font-medium pt-4 border-t border-gray-100 dark:border-white/5">
+          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-sm flex flex-col">
+            <div className="text-[11px] font-bold text-brand-primary uppercase tracking-wider mb-2">Content Strategy</div>
+            <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">15 Viral TikTok Hooks That Stops Users from Scrolling</h3>
+            <p className="text-gray-500 text-xs md:text-sm mb-5 flex-1 line-clamp-3">The first 3 seconds are crucial. We analyzed 10,000 viral TikToks and found these exact hook templates...</p>
+            <div className="flex items-center justify-between text-xs text-gray-400 font-medium pt-3 border-t border-gray-100 dark:border-white/5">
               <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold">M</div>
+                <div className="w-5 h-5 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-[10px]">M</div>
                 <span>Marcus T.</span>
               </div>
               <span>4 min read</span>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-sm flex flex-col">
-            <div className="text-xs font-bold text-brand-primary uppercase tracking-wider mb-3">YouTube Guides</div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 line-clamp-2">The Ultimate YouTube SEO Masterclass for 2024</h3>
-            <p className="text-gray-500 text-sm mb-6 flex-1 line-clamp-3">Stop publishing videos into the void. Learn how to optimize titles, tags, and descriptions to rank #1...</p>
-            <div className="flex items-center justify-between text-xs text-gray-400 font-medium pt-4 border-t border-gray-100 dark:border-white/5">
+          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-sm flex flex-col">
+            <div className="text-[11px] font-bold text-brand-primary uppercase tracking-wider mb-2">YouTube Guides</div>
+            <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">The Ultimate YouTube SEO Masterclass for 2024</h3>
+            <p className="text-gray-500 text-xs md:text-sm mb-5 flex-1 line-clamp-3">Stop publishing videos into the void. Learn how to optimize titles, tags, and descriptions to rank #1...</p>
+            <div className="flex items-center justify-between text-xs text-gray-400 font-medium pt-3 border-t border-gray-100 dark:border-white/5">
               <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold">S</div>
+                <div className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-[10px]">S</div>
                 <span>Sarah W.</span>
               </div>
               <span>7 min read</span>
@@ -361,31 +379,32 @@ export default function Home() {
       </div>
 
       {/* Ad placement before FAQ */}
-      <div className="container mx-auto px-4 mt-20 mb-10 flex justify-center">
-         <div className="flex flex-col items-center">
-           <AdPlacement type="in-content" title="Discover More Tools" />
+      <div className="container mx-auto px-4 mt-12 mb-8 flex justify-center">
+         <div className="flex flex-row flex-wrap justify-center items-center gap-4">
+           <AdPlacement type="banner" title="Discover More Tools Row 1" />
+           <AdPlacement type="banner" title="Discover More Tools Row 2" />
          </div>
       </div>
 
       {/* FAQ Section */}
-      <div className="container mx-auto px-4 max-w-4xl mt-16 mb-24 text-center">
-        <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100 mb-3">
+      <div className="container mx-auto px-4 max-w-4xl mt-12 mb-16 text-center">
+        <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100 mb-2">
           Frequently Asked <span className="text-brand-primary">Questions</span>
         </h2>
-        <p className="text-gray-500 mb-12 font-medium">Empowering Modern Video Creators</p>
+        <p className="text-gray-500 mb-8 font-medium text-sm">Empowering Modern Video Creators</p>
 
-        <div className="space-y-4 text-left">
-          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-sm">
-            <h4 className="font-bold text-gray-900 dark:text-gray-100 text-lg mb-2">Is this service completely free?</h4>
-            <p className="text-gray-500 text-sm font-medium">Yes, ModraDown is completely free to use. There are no hidden fees or subscriptions required.</p>
+        <div className="space-y-3.5 text-left">
+          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-5 shadow-sm">
+            <h4 className="font-bold text-gray-900 dark:text-gray-100 text-base mb-1.5">Is this service completely free?</h4>
+            <p className="text-gray-500 text-xs md:text-sm font-medium">Yes, ModraDown is completely free to use. There are no hidden fees or subscriptions required.</p>
           </div>
-          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-sm">
-            <h4 className="font-bold text-gray-900 dark:text-gray-100 text-lg mb-2">Are downloaded videos watermarked?</h4>
-            <p className="text-gray-500 text-sm font-medium">No, you can download videos completely watermark-free depending on the selected quality and platform.</p>
+          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-5 shadow-sm">
+            <h4 className="font-bold text-gray-900 dark:text-gray-100 text-base mb-1.5">Are downloaded videos watermarked?</h4>
+            <p className="text-gray-500 text-xs md:text-sm font-medium">No, you can download videos completely watermark-free depending on the selected quality and platform.</p>
           </div>
-          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-sm">
-            <h4 className="font-bold text-gray-900 dark:text-gray-100 text-lg mb-2">Can I download audio only?</h4>
-            <p className="text-gray-500 text-sm font-medium">Yes, our engine allows you to extract and download high-quality MP3 audio from any supported video.</p>
+          <div className="bg-white dark:bg-[#0a0f25] border border-gray-100 dark:border-white/5 rounded-2xl p-5 shadow-sm">
+            <h4 className="font-bold text-gray-900 dark:text-gray-100 text-base mb-1.5">Can I download audio only?</h4>
+            <p className="text-gray-500 text-xs md:text-sm font-medium">Yes, our engine allows you to extract and download high-quality MP3 audio from any supported video.</p>
           </div>
         </div>
       </div>

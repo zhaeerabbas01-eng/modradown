@@ -14,8 +14,10 @@ import Disclaimer from "./pages/Disclaimer";
 import DMCA from "./pages/DMCA";
 import CookiePolicy from "./pages/CookiePolicy";
 import FAQ from "./pages/FAQ";
+import NotFound from "./pages/NotFound";
 import { motion, AnimatePresence } from "motion/react";
 import { translations } from "./translations";
+import { Platform3DLogosSection } from "./components/Platform3DLogos";
 
 function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLanguage: (lang: 'en' | 'es' | 'fr') => void }) {
   const location = useLocation();
@@ -51,7 +53,7 @@ function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLa
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-white/10  bg-white dark:bg-[#0a0f25]/95 dark:bg-[#050816]/95  backdrop-blur-md transition-colors duration-500">
-      <div className="container mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+      <div className="container mx-auto max-w-7xl px-4 md:px-8 h-16 md:h-18 flex items-center justify-between">
         
         {/* LOGO: M MODRA */}
         
@@ -356,7 +358,10 @@ function Footer() {
       </div>
 
       <div className="container mx-auto px-4 md:px-8 max-w-7xl relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 lg:gap-12 mb-16">
+        {/* 3D Original Platform Logos Suite */}
+        <Platform3DLogosSection />
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 lg:gap-12 mb-16 pt-8 border-t border-gray-100 dark:border-white/10">
           
           <div className="space-y-6 col-span-2 md:col-span-2 pr-4 lg:pr-12">
             <Link to="/" className="flex items-center space-x-3 group relative w-fit">
@@ -436,10 +441,25 @@ function Footer() {
   );
 }
 
+function AnalyticsTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+      (window as any).gtag('config', 'G-Y41WMV0P3N', {
+        page_path: location.pathname + location.search,
+      });
+    }
+  }, [location]);
+
+  return null;
+}
+
 export default function App() {
   const [language, setLanguage] = useState('en');
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 font-sans selection:bg-brand-primary/30 flex flex-col scroll-smooth text-sm md:text-base">
+      <AnalyticsTracker />
       <Header language={language} setLanguage={setLanguage} />
       <div className="flex-1 relative z-10">
         <Routes>
@@ -456,6 +476,7 @@ export default function App() {
           <Route path="/dmca" element={<DMCA />} />
           <Route path="/cookies" element={<CookiePolicy />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
       <Footer />

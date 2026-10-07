@@ -1,5 +1,6 @@
 import React from 'react';
 import SEO from "../components/SEO";
+import AdPlacement from "../components/AdPlacement";
 
 export default function Articles() {
   return (
@@ -10,6 +11,11 @@ export default function Articles() {
         canonicalUrl="https://modradown.com/articles"
       />
       <h1 className="text-4xl font-bold bg-gradient-to-br from-white to-neutral-500 bg-clip-text text-transparent mb-8">Articles & Guides</h1>
+      
+      <div className="mb-8">
+        <AdPlacement type="article" title="Top Article Banner" />
+      </div>
+
       <div className="space-y-8">
         <article className="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl">
           <h2 className="text-2xl font-semibold text-white mb-3">How to Download Videos from TikTok without Watermark</h2>
@@ -22,6 +28,11 @@ export default function Articles() {
             3. Paste the link into our downloader above and hit Download.
           </p>
         </article>
+
+        <div className="my-6">
+          <AdPlacement type="article" title="In-Between Articles Banner" />
+        </div>
+
         <article className="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl">
           <h2 className="text-2xl font-semibold text-white mb-3">The Ultimate Guide to Saving Twitter / X Videos</h2>
           <p className="text-neutral-400 leading-relaxed mb-4">

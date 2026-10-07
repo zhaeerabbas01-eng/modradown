@@ -39,10 +39,10 @@ export default function BlogList() {
       <div className="absolute top-[15%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-primary/5 blur-[150px] pointer-events-none" />
       <div className="absolute bottom-[15%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-secondary/5 blur-[150px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+      <div className="container mx-auto px-4 max-w-7xl pt-4 md:pt-6 relative z-10">
         
         {/* Header Banner Ad Slot */}
-        <div className="mb-12">
+        <div className="mb-6">
           <AdPlacement type="horizontal" title="Header Ad Area" />
         </div>
 
@@ -63,7 +63,8 @@ export default function BlogList() {
         </div>
 
         {/* Search and Category Filter Toolbar */}
-        <div className="bg-gray-50 dark:bg-[#050816]/60 border border-gray-200 dark:border-white/10 p-6 rounded-2xl md:rounded-3xl backdrop-blur-md mb-12 space-y-4">
+        <div className="bg-gray-50 dark:bg-[#050816]/60 border border-gray-200 dark:border-white/10 p-6 rounded-2xl md:rounded-3xl backdrop-blur-md mb-6 space-y-4">
+          <AdPlacement type="article-smartlink" title="Academy Top Smart Links" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
             {/* Search Bar Input */}

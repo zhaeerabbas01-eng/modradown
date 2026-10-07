@@ -4,15 +4,15 @@ import AdPlacement from "../components/AdPlacement";
 
 export default function Disclaimer() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-16">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-8 md:py-12">
       <SEO 
         title="Disclaimer - ModraDown"
         description="Legal disclaimer regarding the use of ModraDown's video downloading services."
         canonicalUrl="https://modradown.com/disclaimer"
       />
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div className="container mx-auto px-4 max-w-4xl pt-2">
         {/* Banner Ad Area */}
-        <div className="mb-12">
+        <div className="mb-6">
           <AdPlacement type="horizontal" title="Header Ad Area" />
         </div>
 

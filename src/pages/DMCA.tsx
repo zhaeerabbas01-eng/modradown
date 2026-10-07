@@ -10,9 +10,9 @@ export default function DMCA() {
         description="Review our DMCA and Copyright Policy regarding content downloading and compliance."
         canonicalUrl="https://modradown.com/dmca"
       />
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div className="container mx-auto px-4 max-w-4xl pt-4 md:pt-6">
         {/* Banner Ad Area */}
-        <div className="mb-12">
+        <div className="mb-6">
           <AdPlacement type="horizontal" title="Header Ad Area" />
         </div>
 

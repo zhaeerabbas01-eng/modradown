@@ -73,6 +73,44 @@ async function startServer() {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
+  // SEO endpoints for Googlebot and search crawlers
+  app.get("/robots.txt", (req, res) => {
+    const robotsPath = path.join(process.cwd(), 'public', 'robots.txt');
+    const host = req.get('host') || 'social-video-downloader.ai.studio';
+    const protocol = req.protocol || 'https';
+    if (fs.existsSync(robotsPath)) {
+      let content = fs.readFileSync(robotsPath, 'utf-8');
+      content = content.replace(/Sitemap: .*/g, `Sitemap: ${protocol}://${host}/sitemap.xml`);
+      res.type('text/plain').send(content);
+    } else {
+      res.type('text/plain').send(`User-agent: *\nAllow: /\nSitemap: ${protocol}://${host}/sitemap.xml\n`);
+    }
+  });
+
+  app.get("/sitemap.xml", (req, res) => {
+    const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
+    const host = req.get('host') || 'social-video-downloader.ai.studio';
+    const protocol = req.protocol || 'https';
+    if (fs.existsSync(sitemapPath)) {
+      let xml = fs.readFileSync(sitemapPath, 'utf-8');
+      // Replace any old domain dynamically with request host so Google Search Console strictly allows all URLs
+      xml = xml.replace(/https:\/\/[^\/<]+/g, `${protocol}://${host}`);
+      res.type('application/xml').send(xml);
+    } else {
+      res.status(404).send("Sitemap not found");
+    }
+  });
+
+  // Google site verification file handler
+  app.get("/google76d083181c3559f5.html", (req, res) => {
+    const verificationPath = path.join(process.cwd(), 'public', 'google76d083181c3559f5.html');
+    if (fs.existsSync(verificationPath)) {
+      res.type('text/html').sendFile(verificationPath);
+    } else {
+      res.type('text/html').send("google-site-verification: google76d083181c3559f5.html");
+    }
+  });
+
   // File upload endpoint
   app.post("/api/upload", upload.single("file"), (req, res) => {
     if (!req.file) {
@@ -213,7 +251,7 @@ async function startServer() {
       if (!mediaData) {
           try {
               const youtubedl = (await import('youtube-dl-exec')).default;
-              const ytRes = await youtubedl(resolvedUrl, {
+              const ytRes: any = await youtubedl(resolvedUrl, {
                   dumpJson: true,
                   noWarnings: true,
                   noCallHome: true,
@@ -221,7 +259,7 @@ async function startServer() {
                   preferFreeFormats: true,
                   youtubeSkipDashManifest: true,
                   referer: resolvedUrl,
-              });
+              } as any);
               
               if (ytRes && ytRes.url) {
                   let bestUrl = ytRes.url;
@@ -328,7 +366,7 @@ async function startServer() {
           let retries = 2;
           while (retries > 0 && !mediaData) {
               try {
-                  const bd = (await import('btch-downloader')).default || (await import('btch-downloader'));
+                  const bd: any = (await import('btch-downloader')).default || (await import('btch-downloader'));
                   let result: any = null;
                   
                   if (isYoutube && bd.youtube) {
@@ -368,7 +406,7 @@ async function startServer() {
                          }
                      }
                   } else if (isTiktok && bd.ttdl) {
-                     let ttRes = await bd.ttdl(resolvedUrl);
+                     let ttRes: any = await bd.ttdl(resolvedUrl);
                      if (ttRes && ttRes.result && ttRes.result.video && ttRes.result.video.length > 0) {
                          result = ttRes.result;
                      } else if (ttRes && ttRes.video && ttRes.video.length > 0) {
@@ -376,7 +414,7 @@ async function startServer() {
                      } else {
                          const { Downloader } = await import('@tobyg74/tiktok-api-dl');
                          try {
-                             const ttdlRes = await Downloader(resolvedUrl, { version: "v1" });
+                             const ttdlRes: any = await Downloader(resolvedUrl, { version: "v1" });
                              if (ttdlRes && ttdlRes.status === "success" && ttdlRes.result) {
                                  result = {
                                      url: ttdlRes.result.video?.playAddr?.[0] || ttdlRes.result.video?.[0] || "",
@@ -393,9 +431,9 @@ async function startServer() {
                          }
                      }
                   } else if (isPinterest && bd.pinterest) {
-                     let pinRes = await bd.pinterest(resolvedUrl);
+                     let pinRes: any = await bd.pinterest(resolvedUrl);
                      if (pinRes && pinRes.result && pinRes.result.result) {
-                         const data = pinRes.result.result;
+                         const data: any = pinRes.result.result;
                          result = {
                              title: data.title || data.description || "Pinterest Media",
                              url: data.video_url || data.image || data.link,

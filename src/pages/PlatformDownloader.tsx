@@ -67,26 +67,46 @@ export default function PlatformDownloader() {
       <SEO 
         title={`${config.name} Video Downloader - Fast & Free | ModraDown`}
         description={`Download ${config.name} videos fast and free. ${config.description}`}
-        canonicalUrl={`https://modradown.com/${platformSlug}`}
-        schema={{
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          "name": `${config.name} Downloader`,
-          "operatingSystem": "Any",
-          "applicationCategory": "MultimediaApplication",
-          "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
+        canonicalUrl={`https://modradown.com/downloader/${platformSlug}`}
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": `${config.name} Downloader`,
+            "operatingSystem": "All",
+            "applicationCategory": "MultimediaApplication",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://modradown.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": `${config.name} Downloader`,
+                "item": `https://modradown.com/downloader/${platformSlug}`
+              }
+            ]
           }
-        }}
+        ]}
       />
       
-      <div className="container mx-auto px-4 max-w-4xl relative z-10">
+      <div className="container mx-auto px-4 max-w-4xl pt-4 md:pt-6 relative z-10">
         <AdPlacement type="horizontal" title="Header Ad" />
         
         {/* Downloader Tool */}
-        <div className="bg-white dark:bg-[#0a0f25] rounded-3xl p-8 shadow-xl border border-gray-200 dark:border-white/10 mt-8">
+        <div className="bg-white dark:bg-[#0a0f25] rounded-3xl p-8 shadow-xl border border-gray-200 dark:border-white/10 mt-6">
           <div className="text-center mb-8">
              <div className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 text-white shadow-lg ${config.color}`}>
                <Icon className="w-8 h-8" />

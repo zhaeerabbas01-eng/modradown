@@ -4,15 +4,15 @@ import AdPlacement from "../components/AdPlacement";
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-16">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-8 md:py-12">
       <SEO 
         title="Privacy Policy - ModraDown"
         description="Read the Privacy Policy for ModraDown to understand how we collect, use, and protect your data."
         canonicalUrl="https://modradown.com/privacy-policy"
       />
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div className="container mx-auto px-4 max-w-4xl pt-2">
         {/* Banner Ad Area */}
-        <div className="mb-12">
+        <div className="mb-6">
           <AdPlacement type="horizontal" title="Header Ad Area" />
         </div>
 

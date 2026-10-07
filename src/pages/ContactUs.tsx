@@ -19,7 +19,7 @@ export default function ContactUs() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-16 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-8 md:py-12 relative overflow-hidden">
       <SEO 
         title="Contact Us - ModraDown"
         description="Have a question or need support? Contact the ModraDown team for assistance with our video downloading tools and services."
@@ -29,10 +29,10 @@ export default function ContactUs() {
       <div className="absolute top-[10%] right-[-5%] w-[400px] h-[400px] rounded-full bg-brand-primary/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-brand-secondary/5 blur-[120px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 max-w-5xl relative z-10">
+      <div className="container mx-auto px-4 max-w-5xl pt-2 relative z-10">
         
         {/* Header Ad Slot */}
-        <div className="mb-12">
+        <div className="mb-6">
           <AdPlacement type="horizontal" title="Header Ad Area" />
         </div>
 

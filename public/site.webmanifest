@@ -1,0 +1,21 @@
+{
+  "name": "ModraDown - All-in-One Free Video Downloader",
+  "short_name": "ModraDown",
+  "description": "Fast & Free HD Video Downloader for YouTube, TikTok, Instagram, Facebook, Twitter, and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050816",
+  "theme_color": "#0a0f25",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

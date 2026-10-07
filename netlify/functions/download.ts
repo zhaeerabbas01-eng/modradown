@@ -2,7 +2,7 @@ import { Handler } from '@netlify/functions';
 import ytdl from "@distube/ytdl-core";
 import * as bdModule from 'btch-downloader';
 
-const bd = bdModule.default || bdModule;
+const bd: any = (bdModule as any).default || bdModule;
 
 export const handler: Handler = async (event, context) => {
   // Handle preflight requests

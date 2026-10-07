@@ -35,10 +35,10 @@ export default function AboutUs() {
       <div className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full bg-brand-primary/10 blur-[150px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full bg-brand-secondary/10 blur-[120px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 md:px-8 max-w-6xl relative z-10">
+      <div className="container mx-auto px-4 md:px-8 max-w-6xl pt-4 md:pt-6 relative z-10">
         
         {/* Header Ad Slot */}
-        <div className="mb-12 flex justify-center">
+        <div className="mb-6 flex justify-center">
           <AdPlacement type="horizontal" title="Premium Header Ad" />
         </div>
 
@@ -57,16 +57,14 @@ export default function AboutUs() {
                 <div className="shrink-0 flex flex-col items-center">
                   <div className="w-48 h-48 md:w-56 md:h-56 rounded-full p-2 bg-gradient-to-tr from-brand-primary to-brand-secondary shadow-[0_0_40px_rgba(102,80,255,0.3)]">
                     <div className="w-full h-full rounded-full bg-[#050816] flex items-center justify-center overflow-hidden border-4 border-[#0a0f25] relative">
-                      {/* Using the attached image or placeholder */}
-                      {/* You can replace this src with your actual founder image path */}
+                      {/* Founder Profile Image in Circle */}
                       <img 
-                        src="/founder.jpg" 
-                        alt="Muhammad Usman Zhaeer" 
+                        src="https://scontent.flyp14-1.fna.fbcdn.net/v/t39.30808-6/753551126_122139552627128597_9033775503917050569_n.jpg?stp=dst-jpg_tt6&cstp=mx1920x1920&ctp=s1920x1920&_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHM-Pn0xy0FbpGoh4lBnmBpoBWUL9OVF7-gFZQv05UXv8VxtKB8kG2tTOFEv7vvs0pG0ioE6oqiYY_cHsxuVgZV&_nc_ohc=msPQFhmno9wQ7kNvwEr4fSH&_nc_oc=AdomdSBiq3gmeTxmbpr4FOf_ANwNikRFyeQd4ieqtO-IaKYT2cwakRVu2ntU3AG5rrE&_nc_zt=23&_nc_ht=scontent.flyp14-1.fna&_nc_gid=Z6fiOZeicyyolfT2EcgcTQ&_nc_ss=7b2a8&oh=00_AQAdAe_tivzAjFIvcOPRRKaUJnlwwoy7wrJsWaGZxe-y5A&oe=6A690D6B" 
+                        alt="Muhammad Usman Zhaeer - CEO & Founder" 
+                        referrerPolicy="no-referrer"
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          // Fallback if image doesn't exist yet
                           e.currentTarget.style.display = 'none';
-                          e.currentTarget.parentElement?.classList.add('fallback-icon');
                         }}
                       />
                       {/* Fallback Icon */}

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://social-video-downloader.ai.studio/sitemap.xml

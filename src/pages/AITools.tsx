@@ -326,18 +326,18 @@ export default function AITools() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-16 relative overflow-hidden">
       <SEO 
-        title="Free AI Tools for Content Creators - ModraDown"
+        title="Free AI Tools for Content Creators | ModraDown"
         description="Boost your social media presence with our free AI tools. Generate hashtags, write captions, brainstorm video ideas, and optimize your bio easily."
-        canonicalUrl="https://modradown.com/ai-tools"
+        canonicalUrl="https://modradown.com/tools"
       />
       {/* Glow Effects */}
       <div className="absolute top-[20%] left-[-15%] w-[450px] h-[450px] rounded-full bg-brand-primary/10 blur-[130px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[-15%] w-[450px] h-[450px] rounded-full bg-brand-secondary/10 blur-[130px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+      <div className="container mx-auto px-4 max-w-7xl pt-4 md:pt-6 relative z-10">
         
         {/* Banner Ad Area */}
-        <div className="mb-8">
+        <div className="mb-6">
           <AdPlacement type="horizontal" title="Header Ad Area" />
         </div>
 

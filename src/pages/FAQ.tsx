@@ -45,20 +45,34 @@ export default function FAQ() {
     }
   ];
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map((faq) => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-16 relative overflow-hidden">
       <SEO 
         title="FAQ - ModraDown Support"
         description="Find answers to common questions about using ModraDown, legal guidelines, and technical support."
         canonicalUrl="https://modradown.com/faq"
+        schema={faqSchema}
       />
       {/* Glow */}
       <div className="absolute top-[30%] left-[-15%] w-[450px] h-[450px] rounded-full bg-brand-primary/10 blur-[130px] pointer-events-none" />
       <div className="absolute bottom-[30%] right-[-15%] w-[450px] h-[450px] rounded-full bg-brand-secondary/10 blur-[130px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 max-w-4xl relative z-10">
+      <div className="container mx-auto px-4 max-w-4xl pt-4 md:pt-6 relative z-10">
         {/* Banner Ad Area */}
-        <div className="mb-12">
+        <div className="mb-6">
           <AdPlacement type="horizontal" title="Header Ad Area" />
         </div>
 

@@ -33,9 +33,55 @@ export default function BlogPostDetail() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-16 relative overflow-hidden">
       <SEO 
-        title={`${post.title} - ModraDown Academy`}
+        title={`${post.title} | ModraDown`}
         description={post.summary}
         canonicalUrl={`https://modradown.com/blog/${post.slug}`}
+        ogType="article"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": post.title,
+            "description": post.summary,
+            "author": {
+              "@type": "Person",
+              "name": author?.name || "Muhammad Usman Zhaeer"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "ModraDown",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://modradown.com/favicon.png"
+              }
+            },
+            "mainEntityOfPage": `https://modradown.com/blog/${post.slug}`
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://modradown.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Blog",
+                "item": "https://modradown.com/blog"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": post.title,
+                "item": `https://modradown.com/blog/${post.slug}`
+              }
+            ]
+          }
+        ]}
       />
       {/* Dynamic Metadata SEO Tag Simulated Header */}
       <div className="hidden">
@@ -47,10 +93,10 @@ export default function BlogPostDetail() {
       <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-primary/5 blur-[150px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-secondary/5 blur-[150px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+      <div className="container mx-auto px-4 max-w-7xl pt-4 md:pt-6 relative z-10">
         
         {/* Banner Ad Area */}
-        <div className="mb-12">
+        <div className="mb-6">
           <AdPlacement type="horizontal" title="Header Ad Area" />
         </div>
 
@@ -98,6 +144,11 @@ export default function BlogPostDetail() {
                 <ShieldCheck className="h-4 w-4" />
                 Author Verified Content
               </div>
+            </div>
+
+            {/* Smart Link Ads above article text */}
+            <div className="mb-8">
+              <AdPlacement type="article-smartlink" title="Top Article Smart Links" />
             </div>
 
             {/* Simulated Inline Ad Slot */}
@@ -180,10 +231,16 @@ export default function BlogPostDetail() {
 
           </article>
 
-          {/* Sidebar widget columns */}
-          <div className="lg:col-span-4 space-y-8">
+          {/* Sidebar widget columns / Side Blank Space */}
+          <div className="lg:col-span-4 space-y-8 sticky top-24">
             
-            {/* Sidebar ad banner */}
+            {/* Side Script Ad (Script: https://revolthem.com/36/98/b9/3698b99f3718b75208f1d258bb207c1d.js) */}
+            <div className="bg-white/5 border border-brand-primary/20 p-2 rounded-2xl shadow-lg">
+              <span className="text-[10px] font-mono text-gray-400 block text-center mb-1 uppercase tracking-wider">Sponsored Side Banner</span>
+              <AdPlacement type="side-script" title="Side Script Ad" />
+            </div>
+
+            {/* Standard Sidebar ad banner */}
             <AdPlacement type="sidebar" title="Sidebar Ad Area" />
 
             {/* Author Profile block */}
