@@ -1,4 +1,23 @@
+# Robots.txt for videodownloder.online
+# Allow all search engine crawlers and bots to index all pages
+
 User-agent: *
 Allow: /
+Disallow: /api/
 
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+
+# XML Sitemap location
 Sitemap: https://videodownloder.online/sitemap.xml

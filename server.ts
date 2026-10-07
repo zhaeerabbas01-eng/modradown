@@ -74,15 +74,20 @@ async function startServer() {
   });
 
   // SEO endpoints for Googlebot and search crawlers
-  app.get("/robots.txt", (req, res) => {
+  const serveRobots = (req: any, res: any) => {
     const robotsPath = path.join(process.cwd(), 'public', 'robots.txt');
     if (fs.existsSync(robotsPath)) {
       const content = fs.readFileSync(robotsPath, 'utf-8');
-      res.type('text/plain; charset=utf-8').send(content);
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.status(200).send(content);
     } else {
       res.type('text/plain; charset=utf-8').send("User-agent: *\nAllow: /\nSitemap: https://videodownloder.online/sitemap.xml\n");
     }
-  });
+  };
+
+  app.get("/robots.txt", serveRobots);
+  app.get("/Robots.txt", serveRobots);
 
   app.get("/ads.txt", (req, res) => {
     const adsTxtPath = path.join(process.cwd(), 'public', 'ads.txt');
@@ -94,17 +99,23 @@ async function startServer() {
     }
   });
 
-  app.get("/sitemap.xml", (req, res) => {
+  const serveSitemap = (req: any, res: any) => {
     const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
     if (fs.existsSync(sitemapPath)) {
-      let xml = fs.readFileSync(sitemapPath, 'utf-8');
-      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+      const xml = fs.readFileSync(sitemapPath, 'utf-8');
+      res.setHeader('Content-Type', 'text/xml; charset=utf-8');
       res.setHeader('X-Content-Type-Options', 'nosniff');
-      res.send(xml);
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.status(200).send(xml);
     } else {
       res.status(404).send("Sitemap not found");
     }
-  });
+  };
+
+  app.get("/sitemap.xml", serveSitemap);
+  app.get("/Sitemap.xml", serveSitemap);
+  app.get("/sitemap_index.xml", serveSitemap);
+  app.get("/sitemap", serveSitemap);
 
   // Google site verification file handler
   app.get("/google:code.html", (req, res) => {
