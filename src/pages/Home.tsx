@@ -62,12 +62,45 @@ export default function Home() {
     }
   };
 
+  const homeFaqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is ModraDown completely free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, ModraDown is 100% free with no hidden fees, paid tiers, or registration requirements."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are downloaded videos watermarked?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Videos processed through ModraDown are clean and watermark-free in original HD resolution."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I extract MP3 audio from online videos?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, ModraDown allows you to extract and download high-bitrate MP3 audio from any supported streaming link."
+        }
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-[#F8F9FA] dark:bg-[#050816] text-gray-900 dark:text-gray-100 font-sans pb-16">
       <SEO 
-        title="ModraDown - Professional Social Media Downloader Platform"
-        description="Download videos from YouTube, TikTok, Facebook, Instagram, Twitter, and more in High Quality. Simple, fast, and completely free."
+        title="Online Video Downloader - Download Any URL Free in HD MP4"
+        description="Paste any video link to save and convert streaming videos in HD MP4 or MP3 audio. Free, fast, watermark-free alternative to SaveFrom and Flixier."
         canonicalUrl="https://modradown.com/"
+        keywords="online video downloader, download any url free, mp4 video downloader, youtube video downloader, instagram video downloader, tiktok video downloader, savefrom alternative, flixier video downloader"
+        schema={[homeFaqSchema]}
       />
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl pt-2 md:pt-4 w-full flex flex-col items-center">
@@ -87,16 +120,16 @@ export default function Home() {
             </div>
             
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-3 tracking-tight">
-              Download Videos <br/>
-              From <span className="text-brand-primary">Any Platform</span>
+              Online Video Downloader <br/>
+              Download Any URL Free in <span className="text-brand-primary">HD MP4</span>
             </h1>
             
             <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-5 max-w-xl font-medium mx-auto lg:mx-0">
-              Fast, free, and secure video downloader. Download videos, reels, shorts and more from all popular platforms in high quality.
+              Paste a video link, choose how you want to save it, and download the file directly to your device. High-speed MP4 video downloader for rapid content repurposing, offline viewing, and media backup without watermarks.
             </p>
 
             {/* Input Form */}
-            <form onSubmit={handleDownload} className="relative flex items-center bg-white dark:bg-[#0a0f25] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 dark:border-white/10 p-2 max-w-xl mx-auto lg:mx-0 mb-3">
+            <form id="media-downloader" onSubmit={handleDownload} className="relative flex items-center bg-white dark:bg-[#0a0f25] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 dark:border-white/10 p-2 max-w-xl mx-auto lg:mx-0 mb-3">
               <input 
                 type="url"
                 required
@@ -318,6 +351,77 @@ export default function Home() {
 
         </div>
       </div>
+
+      {/* COMPETITOR COMPARISON SECTION (SaveFrom vs Flixier vs ModraDown) */}
+      <section className="container mx-auto px-4 max-w-7xl mt-14">
+        <div className="bg-white dark:bg-[#0a0f25] border border-gray-200 dark:border-white/10 rounded-3xl p-6 md:p-10 shadow-sm">
+          <div className="max-w-3xl mb-8">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-primary bg-brand-primary/10 px-3 py-1 rounded-full">
+              Industry Comparison
+            </span>
+            <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100 mt-3 mb-2">
+              Why Creators Choose ModraDown Over SaveFrom.net and Flixier
+            </h2>
+            <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
+              Compare speed, ad cleanliness, resolution limits, and subscription requirements across the top online video download tools.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs md:text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400">
+                  <th className="py-3 px-4 font-bold">Feature</th>
+                  <th className="py-3 px-4 font-black text-brand-primary">ModraDown (2026)</th>
+                  <th className="py-3 px-4 font-bold">SaveFrom.net</th>
+                  <th className="py-3 px-4 font-bold">Flixier Video Downloader</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                <tr>
+                  <td className="py-3 px-4 font-semibold text-gray-900 dark:text-gray-100">Intrusive Pop-ups &amp; Ad Redirects</td>
+                  <td className="py-3 px-4 text-green-600 dark:text-green-400 font-bold">Zero deceptive redirects</td>
+                  <td className="py-3 px-4 text-red-500">Frequent secondary pop-ups</td>
+                  <td className="py-3 px-4 text-yellow-600 dark:text-yellow-400">Prompts to paid plan</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 font-semibold text-gray-900 dark:text-gray-100">Mandatory Registration</td>
+                  <td className="py-3 px-4 text-green-600 dark:text-green-400 font-bold">None (100% Free)</td>
+                  <td className="py-3 px-4 text-gray-600 dark:text-gray-400">No account required</td>
+                  <td className="py-3 px-4 text-red-500">Mandatory sign-in/account</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 font-semibold text-gray-900 dark:text-gray-100">Export Watermark</td>
+                  <td className="py-3 px-4 text-green-600 dark:text-green-400 font-bold">Never watermarked</td>
+                  <td className="py-3 px-4 text-green-600 dark:text-green-400">No watermark</td>
+                  <td className="py-3 px-4 text-red-500">Watermark on free tier</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 font-semibold text-gray-900 dark:text-gray-100">1080p &amp; 4K HD Video Processing</td>
+                  <td className="py-3 px-4 text-green-600 dark:text-green-400 font-bold">Full 1080p + 60fps MP4</td>
+                  <td className="py-3 px-4 text-yellow-600 dark:text-yellow-400">Often limited to 720p</td>
+                  <td className="py-3 px-4 text-yellow-600 dark:text-yellow-400">Requires Pro subscription</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 font-semibold text-gray-900 dark:text-gray-100">Content Repurposing Speed</td>
+                  <td className="py-3 px-4 text-green-600 dark:text-green-400 font-bold">Instant direct CDN link</td>
+                  <td className="py-3 px-4 text-gray-600 dark:text-gray-400">Variable scraper speeds</td>
+                  <td className="py-3 px-4 text-gray-600 dark:text-gray-400">Queued through cloud timeline</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-gray-100 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-gray-500">
+              Learn more in our detailed research guide: <Link to="/blog/savefrom-net-alternatives-free-online-video-downloaders-2026" className="text-brand-primary underline font-medium">Top SaveFrom Alternatives in 2026</Link>
+            </p>
+            <Link to="/tools" className="text-xs font-bold text-brand-primary hover:underline flex items-center gap-1">
+              Explore AI Repurposing Tools <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Guide-Articles Gap Ad Slot */}
       <div className="container mx-auto px-4 max-w-7xl mt-10 md:mt-12">

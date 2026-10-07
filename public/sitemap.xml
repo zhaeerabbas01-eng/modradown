@@ -1,235 +1,272 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Core Static Pages -->
   <url>
-    <loc>https://social-video-downloader.ai.studio/</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/tools</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/tools</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/about</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/about</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/contact</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/contact</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/privacy</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/privacy</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/terms</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/terms</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/disclaimer</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/disclaimer</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/dmca</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/dmca</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/cookies</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/cookies</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/faq</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/faq</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Dedicated Platform Downloader Pages -->
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/youtube-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/youtube-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/instagram-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/instagram-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/tiktok-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/tiktok-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/facebook-video-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/facebook-video-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/twitter-video-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/twitter-video-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/pinterest-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/pinterest-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/reddit-video-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/reddit-video-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/vimeo-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/vimeo-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/threads-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/threads-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/snapchat-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/snapchat-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/linkedin-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/linkedin-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/downloader/dailymotion-downloader</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/downloader/dailymotion-downloader</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <!-- Blog Articles -->
+  <!-- Authoritative Blog & Guide Articles (21 Comprehensive Indexed Posts) -->
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/savefrom-farm-how-it-works-safety-features-alternatives-2026</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/savefrom-net-alternatives-free-online-video-downloaders-2026</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://modradown.com/blog/flixier-video-downloader-alternative-mp4-repurposing-guide</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://modradown.com/blog/how-to-download-streaming-videos-from-any-website-free-2026</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://modradown.com/blog/free-video-downloader-for-pc-windows-mac-complete-guide</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://modradown.com/blog/youtube-video-downloader-mp4-mp3-safe-guide-2026</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://modradown.com/blog/pinterest-video-downloader-save-aesthetic-pins-reels</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/ultimate-all-video-downloader-online-guide</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/savefrom-farm-how-it-works-safety-features-alternatives-2026</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://modradown.com/blog/ultimate-all-video-downloader-online-guide</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://modradown.com/blog/linkedin-video-downloader-save-professional-2026</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/linkedin-video-downloader-save-professional-2026</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/what-is-modradown-vs-savefrom</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/what-is-modradown-vs-savefrom</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/facebook-video-downloader-free-hd</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/facebook-video-downloader-free-hd</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/tiktok-saver-without-watermark</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/tiktok-saver-without-watermark</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/instagram-reel-downloader-hd</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/instagram-reel-downloader-hd</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/youtube-video-downloader-guide-2026</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/youtube-video-downloader-guide-2026</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/twitter-video-downloader-x-media-saver</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/twitter-video-downloader-x-media-saver</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/pinterest-video-downloader-hd-images</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/pinterest-video-downloader-hd-images</loc>
-    <lastmod>2026-07-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://social-video-downloader.ai.studio/blog/tiktok-algorithm-secrets-2026</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/tiktok-algorithm-secrets-2026</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/instagram-reels-retention-guide</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/instagram-reels-retention-guide</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/youtube-seo-optimization-checklist</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/youtube-seo-optimization-checklist</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/ai-workflows-video-production</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/ai-workflows-video-production</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://social-video-downloader.ai.studio/blog/video-editing-color-grading-primer</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://modradown.com/blog/video-editing-color-grading-primer</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

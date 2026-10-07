@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import { Sparkles, Video, BookOpen, Heart, HelpCircle, Mail, ShieldAlert, ArrowRight, Moon, Sun, ChevronDown, Menu as MenuIcon, X as CloseIcon, User, ShieldCheck, HeartHandshake } from "lucide-react";
+import { Sparkles, Video, BookOpen, Heart, HelpCircle, Mail, ShieldAlert, ArrowRight, Moon, Sun, ChevronDown, Menu as MenuIcon, X as CloseIcon, User, ShieldCheck, HeartHandshake, Download } from "lucide-react";
 import Home from "./pages/Home";
 import PlatformDownloader from "./pages/PlatformDownloader";
 import AITools from "./pages/AITools";
@@ -24,9 +24,6 @@ function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLa
   const path = location.pathname;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [glowEnabled, setGlowEnabled] = useState(false); // Default false = light mode
-  const [showSignInModal, setShowSignInModal] = useState(false);
-  const [signInSuccess, setSignInSuccess] = useState(false);
-  const [emailInput, setEmailInput] = useState("");
   const t = translations[language];
 
   useEffect(() => {
@@ -38,18 +35,6 @@ function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLa
       document.body.style.backgroundColor = '#f8fafc';
     }
   }, [glowEnabled]);
-
-  const handleSignIn = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (emailInput.trim()) {
-      setSignInSuccess(true);
-      setTimeout(() => {
-        setShowSignInModal(false);
-        setSignInSuccess(false);
-        setEmailInput("");
-      }, 1500);
-    }
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-white/10  bg-white dark:bg-[#0a0f25]/95 dark:bg-[#050816]/95  backdrop-blur-md transition-colors duration-500">
@@ -155,12 +140,13 @@ function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLa
             )}
           </button>
 
-          <button
-            onClick={() => setShowSignInModal(true)}
-            className="bg-brand-primary hover:bg-brand-primary/90 text-white transition duration-300 text-sm font-semibold rounded-lg px-6 py-2.5"
+          <a
+            href="/#media-downloader"
+            className="bg-brand-primary hover:bg-brand-primary/90 text-white transition duration-300 text-xs font-bold rounded-xl px-4 py-2.5 shadow-md shadow-brand-primary/20 flex items-center gap-1.5"
           >
-            {t.signIn}
-          </button>
+            <Download className="h-3.5 w-3.5" />
+            <span>Free Downloader</span>
+          </a>
         </div>
 
         {/* MOBILE MENU TRIGGER BUTTON */}
@@ -234,90 +220,15 @@ function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLa
               >
                 Contact Ticket
               </Link>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setShowSignInModal(true);
-                }}
-                className="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-brand-primary to-brand-secondary text-gray-900 dark:text-gray-100 font-extrabold text-xs tracking-wider text-center"
+              <a
+                href="/#media-downloader"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-brand-primary to-brand-secondary text-white font-extrabold text-xs tracking-wider text-center flex items-center justify-center gap-2"
               >
-                SIGN IN TO DASHBOARD
-              </button>
+                <Download className="h-4 w-4" />
+                <span>START FREE DOWNLOAD</span>
+              </a>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* SIGN IN DESK MODAL DIALOG */}
-      <AnimatePresence>
-        {showSignInModal && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50"
-          >
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-gray-50 dark:bg-[#050816] border border-gray-200 dark:border-white/10 rounded-3xl p-6 md:p-8 max-w-md w-full relative overflow-hidden"
-            >
-              {/* Glow effects */}
-              <div className="absolute -top-12 -right-12 w-32 h-32 bg-brand-primary/10 rounded-full blur-2xl" />
-              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-brand-secondary/10 rounded-full blur-2xl" />
-
-              <button 
-                onClick={() => setShowSignInModal(false)}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 transition"
-              >
-                <CloseIcon className="h-5 w-5" />
-              </button>
-
-              <div className="text-center space-y-2 mb-6">
-                <div className="h-12 w-12 rounded-xl bg-gradient-to-tr from-brand-primary to-brand-secondary flex items-center justify-center text-gray-900 dark:text-gray-100 font-black mx-auto shadow-md">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-6 h-6">
-                    <path d="M4 20V8l8 5 8-5v12" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-extrabold text-gray-900 dark:text-gray-100">Welcome to ModraDown</h3>
-                <p className="text-xs text-gray-600 dark:text-gray-300">Maximize your media downloads up to 10x faster!</p>
-              </div>
-
-              {signInSuccess ? (
-                <div className="py-6 text-center space-y-3">
-                  <div className="h-12 w-12 rounded-full bg-brand-accent/25 flex items-center justify-center text-brand-accent mx-auto">
-                    <ShieldCheck className="h-6 w-6" />
-                  </div>
-                  <h4 className="font-bold text-gray-900 dark:text-gray-100  text-xs tracking-widest font-sans">Access Authorized</h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Connecting you to premium downlink processors...</p>
-                </div>
-              ) : (
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div>
-                    <label className="block text-[10px] font-sans  font-semibold text-gray-600 dark:text-gray-300 mb-1.5">Your Email Address</label>
-                    <input 
-                      type="email"
-                      required
-                      value={emailInput}
-                      onChange={(e) => setEmailInput(e.target.value)}
-                      placeholder="e.g. download@modrahub.com"
-                      className="w-full bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-xs text-gray-900 dark:text-gray-100 outline-none focus:border-brand-primary placeholder:text-neutral-600 transition"
-                    />
-                  </div>
-                  <div className="flex items-center space-x-2 text-[10px] text-gray-600 dark:text-gray-300">
-                    <HeartHandshake className="h-3.5 w-3.5 text-brand-primary shrink-0" />
-                    <span>Free account - No credit card required.</span>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-brand-primary to-brand-secondary text-gray-900 dark:text-gray-100 font-extrabold text-xs py-3 rounded-xl hover:brightness-110 active:scale-[0.98] font-medium transition"
-                  >
-                    Get instant free access
-                  </button>
-                </form>
-              )}
-            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -446,8 +357,12 @@ function AnalyticsTracker() {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+      const page_path = location.pathname + location.search;
+      (window as any).gtag('config', 'G-VYFNEJFLT8', {
+        page_path,
+      });
       (window as any).gtag('config', 'G-Y41WMV0P3N', {
-        page_path: location.pathname + location.search,
+        page_path,
       });
     }
   }, [location]);
@@ -461,7 +376,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 font-sans selection:bg-brand-primary/30 flex flex-col scroll-smooth text-sm md:text-base">
       <AnalyticsTracker />
       <Header language={language} setLanguage={setLanguage} />
-      <div className="flex-1 relative z-10">
+      <main id="main-content" className="flex-1 relative z-10">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/downloader/:platformSlug" element={<PlatformDownloader />} />
@@ -478,7 +393,7 @@ export default function App() {
           <Route path="/faq" element={<FAQ />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </div>
+      </main>
       <Footer />
     </div>
   );

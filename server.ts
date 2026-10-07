@@ -76,38 +76,34 @@ async function startServer() {
   // SEO endpoints for Googlebot and search crawlers
   app.get("/robots.txt", (req, res) => {
     const robotsPath = path.join(process.cwd(), 'public', 'robots.txt');
-    const host = req.get('host') || 'social-video-downloader.ai.studio';
-    const protocol = req.protocol || 'https';
     if (fs.existsSync(robotsPath)) {
-      let content = fs.readFileSync(robotsPath, 'utf-8');
-      content = content.replace(/Sitemap: .*/g, `Sitemap: ${protocol}://${host}/sitemap.xml`);
-      res.type('text/plain').send(content);
+      const content = fs.readFileSync(robotsPath, 'utf-8');
+      res.type('text/plain; charset=utf-8').send(content);
     } else {
-      res.type('text/plain').send(`User-agent: *\nAllow: /\nSitemap: ${protocol}://${host}/sitemap.xml\n`);
+      res.type('text/plain; charset=utf-8').send("User-agent: *\nAllow: /\nSitemap: https://modradown.com/sitemap.xml\n");
     }
   });
 
   app.get("/sitemap.xml", (req, res) => {
     const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
-    const host = req.get('host') || 'social-video-downloader.ai.studio';
-    const protocol = req.protocol || 'https';
     if (fs.existsSync(sitemapPath)) {
       let xml = fs.readFileSync(sitemapPath, 'utf-8');
-      // Replace any old domain dynamically with request host so Google Search Console strictly allows all URLs
-      xml = xml.replace(/https:\/\/[^\/<]+/g, `${protocol}://${host}`);
-      res.type('application/xml').send(xml);
+      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.send(xml);
     } else {
       res.status(404).send("Sitemap not found");
     }
   });
 
   // Google site verification file handler
-  app.get("/google76d083181c3559f5.html", (req, res) => {
-    const verificationPath = path.join(process.cwd(), 'public', 'google76d083181c3559f5.html');
+  app.get("/google:code.html", (req, res) => {
+    const fileName = `google${req.params.code}.html`;
+    const verificationPath = path.join(process.cwd(), 'public', fileName);
     if (fs.existsSync(verificationPath)) {
       res.type('text/html').sendFile(verificationPath);
     } else {
-      res.type('text/html').send("google-site-verification: google76d083181c3559f5.html");
+      res.type('text/html').send(`google-site-verification: ${fileName}`);
     }
   });
 
@@ -150,6 +146,76 @@ async function startServer() {
     }
     return apiKey ? aiClient : null;
   }
+
+  // High-speed direct media streaming tunnel & download endpoint
+  app.get("/api/tunnel", async (req, res) => {
+    const rawUrl = req.query.url as string;
+    const rawFilename = (req.query.filename as string) || "video.mp4";
+    if (!rawUrl) {
+      return res.status(400).send("Missing media URL parameter");
+    }
+
+    try {
+      const targetUrl = decodeURIComponent(rawUrl);
+      const cleanFilename = (decodeURIComponent(rawFilename) || "video.mp4")
+        .replace(/[^a-zA-Z0-9._-]/g, "_")
+        .slice(0, 80);
+      const filenameWithExt = cleanFilename.endsWith(".mp4") || cleanFilename.endsWith(".mp3") 
+        ? cleanFilename 
+        : `${cleanFilename}.mp4`;
+
+      let referer = "https://www.google.com/";
+      if (targetUrl.includes("tiktok.com") || targetUrl.includes("tikwm.com")) {
+        referer = "https://www.tikwm.com/";
+      } else if (targetUrl.includes("instagram.com") || targetUrl.includes("cdninstagram.com")) {
+        referer = "https://www.instagram.com/";
+      } else if (targetUrl.includes("fbcdn.net") || targetUrl.includes("facebook.com")) {
+        referer = "https://www.facebook.com/";
+      } else if (targetUrl.includes("twimg.com") || targetUrl.includes("x.com")) {
+        referer = "https://twitter.com/";
+      } else if (targetUrl.includes("pinterest.com") || targetUrl.includes("pinimg.com")) {
+        referer = "https://www.pinterest.com/";
+      }
+
+      const fetchRes = await fetch(targetUrl, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+          "Referer": referer,
+          "Accept": "*/*"
+        }
+      });
+
+      if (!fetchRes.ok || !fetchRes.body) {
+        return res.redirect(targetUrl);
+      }
+
+      res.setHeader("Content-Disposition", `attachment; filename="${filenameWithExt}"`);
+      const contentType = fetchRes.headers.get("content-type") || "video/mp4";
+      res.setHeader("Content-Type", contentType);
+      const contentLength = fetchRes.headers.get("content-length");
+      if (contentLength) {
+        res.setHeader("Content-Length", contentLength);
+      }
+      res.setHeader("Cache-Control", "no-cache");
+
+      // Stream data chunk by chunk
+      const reader = fetchRes.body.getReader();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        res.write(value);
+      }
+      res.end();
+    } catch (e: any) {
+      if (!res.headersSent) {
+        try {
+          res.redirect(rawUrl);
+        } catch (_) {
+          res.status(500).send("Stream error");
+        }
+      }
+    }
+  });
 
   // API route for downloading video info
   app.post("/api/download", async (req, res) => {
@@ -619,27 +685,123 @@ async function startServer() {
 
         responseText = modelRes.text || "{}";
       } else {
-        // Fallback generator for a key-less preview environment
-        const fallbackObj = {
-          sections: [
-            {
-              title: "Preview Mode Hashtags",
-              items: [
-                { content: "#" + prompt.replace(/\s+/g, "") + "Creator" },
-                { content: "#SocialTrend2026" },
-                { content: "#ViralCreator" },
-                { content: "#MediaTools" }
-              ]
-            },
-            {
-              title: "Strategy",
-              items: [
-                { title: "Core Strategy", content: "Optimizing content with high-intent keywords relative to your target query." },
-                { title: "Actionable", content: "Post during high-activity hours (11AM - 2PM, and 6PM - 8PM local time)." }
-              ]
-            }
-          ]
-        };
+        // High-quality smart generator for all creative tools
+        const cleanPrompt = prompt.trim();
+        const baseWord = cleanPrompt.replace(/[^a-zA-Z0-9]/g, "");
+
+        let fallbackObj: any = { sections: [] };
+
+        if (tool === "title") {
+          fallbackObj = {
+            sections: [
+              {
+                title: "High-CTR Viral Hooks",
+                items: [
+                  { title: "Hook 1", content: `I Tested ${cleanPrompt} For 30 Days (Here's What Happened)` },
+                  { title: "Hook 2", content: `Why Everyone Is Wrong About ${cleanPrompt} in 2026` },
+                  { title: "Hook 3", content: `The Ultimate Secret To ${cleanPrompt} Nobody Tells You` },
+                  { title: "Hook 4", content: `Stop Doing ${cleanPrompt} Until You Watch This!` },
+                  { title: "Hook 5", content: `How To Master ${cleanPrompt} in 10 Minutes (Step-by-Step)` }
+                ]
+              },
+              {
+                title: "Curiosity & Storytelling Headlines",
+                items: [
+                  { title: "Story 1", content: `The Shocking Truth Behind ${cleanPrompt}` },
+                  { title: "Story 2", content: `From Beginner to Pro: Complete Guide to ${cleanPrompt}` },
+                  { title: "Story 3", content: `3 Mistakes You're Making With ${cleanPrompt} Right Now` }
+                ]
+              }
+            ]
+          };
+        } else if (tool === "caption") {
+          fallbackObj = {
+            sections: [
+              {
+                title: "Engaging Social Media Caption",
+                items: [
+                  { 
+                    title: "Full Post Caption", 
+                    content: `🔥 Want to take your content to the next level with ${cleanPrompt}?\n\nHere are 3 quick rules you need to know:\n1️⃣ Consistency beats perfection every single time.\n2️⃣ Focus on the hook in the first 3 seconds.\n3️⃣ Always give a clear reason to save and share.\n\n👇 Drop your thoughts in the comments below!\n\n#${baseWord} #ContentCreator #ViralTips2026 #CreativeHacks` 
+                  }
+                ]
+              },
+              {
+                title: "Short & Punchy Variation",
+                items: [
+                  { 
+                    title: "Quick Reel Caption", 
+                    content: `Save this before you plan your next video on ${cleanPrompt} ✨ Tap follow for daily creator breakdowns!` 
+                  }
+                ]
+              }
+            ]
+          };
+        } else if (tool === "bio") {
+          fallbackObj = {
+            sections: [
+              {
+                title: "Professional Bio Concepts",
+                items: [
+                  { title: "Option 1 (Creator/Expert)", content: `🚀 Helping you master ${cleanPrompt}\n💡 Daily tips, frameworks & tools\n👇 Start free below` },
+                  { title: "Option 2 (Sleek & Minimal)", content: `Visuals • Growth • ${cleanPrompt}\nSharing what works in 2026 ⚡\nLink in bio 🔗` },
+                  { title: "Option 3 (High-Impact Brand)", content: `The #1 Resource for ${cleanPrompt}\nOver 100k+ creators inspired weekly 📈\nDownload free assets 👇` }
+                ]
+              }
+            ]
+          };
+        } else if (tool === "idea") {
+          fallbackObj = {
+            sections: [
+              {
+                title: "5 Viral Video Concepts",
+                items: [
+                  { title: "Concept 1: The Myth Buster", content: `Disprove the most common misconception about ${cleanPrompt}. Start with: "Stop believing this myth..."` },
+                  { title: "Concept 2: The Fast Tutorial", content: `Teach one specific trick related to ${cleanPrompt} in under 45 seconds using on-screen text callouts.` },
+                  { title: "Concept 3: Behind The Scenes", content: `Show the raw, unedited process of working on ${cleanPrompt}. Contrast expectations vs reality.` },
+                  { title: "Concept 4: Tool / Resource Review", content: `Compare the best free tools for ${cleanPrompt} and share your top recommendation.` },
+                  { title: "Concept 5: The Challenge", content: `Challenge yourself or your audience to try ${cleanPrompt} for 7 days and record daily progress.` }
+                ]
+              }
+            ]
+          };
+        } else if (tool === "tags") {
+          fallbackObj = {
+            sections: [
+              {
+                title: "Recommended YouTube Search Tags",
+                items: [
+                  { title: "Tags List", content: `${cleanPrompt}, how to ${cleanPrompt}, ${cleanPrompt} 2026, ${cleanPrompt} tutorial, best ${cleanPrompt}, ${cleanPrompt} tips, ${cleanPrompt} guide, ${cleanPrompt} for beginners` }
+                ]
+              }
+            ]
+          };
+        } else {
+          // Default hashtag generator
+          fallbackObj = {
+            sections: [
+              {
+                title: "Top Viral Hashtags",
+                items: [
+                  { content: `#${baseWord} #${baseWord}Tips #${baseWord}Tutorial #Viral${baseWord} #Trending2026 #CreatorTools` }
+                ]
+              },
+              {
+                title: "Niche Community Tags",
+                items: [
+                  { content: `#Learn${baseWord} #${baseWord}Life #${baseWord}Hacks #Daily${baseWord} #ContentStrategy` }
+                ]
+              },
+              {
+                title: "Broad Discovery Tags",
+                items: [
+                  { content: `#ExplorePage #ViralVideo #DigitalCreator #SocialMediaTips #TrendingNow` }
+                ]
+              }
+            ]
+          };
+        }
+
         responseText = JSON.stringify(fallbackObj);
       }
 
