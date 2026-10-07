@@ -12,7 +12,32 @@ export default function BlogPostDetail() {
     return GENERATE_SEO_TEMPLATES();
   }, []);
 
-  const post = posts.find((p) => p.slug === slug);
+  const LEGACY_SLUG_MAP: Record<string, string> = {
+    "youtube-video-downloader-mp4-mp3-safe-guide-2026": "how-online-video-downloaders-work",
+    "savefrom-net-alternatives-free-online-video-downloaders-2026": "safe-online-video-downloading-practices",
+    "savefrom-farm-how-it-works-safety-features-alternatives-2026": "safe-online-video-downloading-practices",
+    "tiktok-saver-without-watermark": "how-to-download-videos-on-android",
+    "instagram-reel-downloader-hd": "how-to-download-videos-on-iphone",
+    "free-video-downloader-for-pc-windows-mac-complete-guide": "how-to-download-videos-on-windows",
+    "how-to-download-streaming-videos-from-any-website-free-2026": "how-to-save-videos-for-offline-personal-use",
+    "ultimate-all-video-downloader-online-guide": "how-online-video-downloaders-work",
+    "facebook-video-downloader-free-hd": "how-to-download-your-own-social-media-videos",
+    "twitter-video-downloader-x-media-saver": "how-to-download-your-own-social-media-videos",
+    "pinterest-video-downloader-save-aesthetic-pins-reels": "how-to-download-your-own-social-media-videos",
+    "pinterest-video-downloader-hd-images": "how-to-download-your-own-social-media-videos",
+    "youtube-video-downloader-guide-2026": "how-online-video-downloaders-work",
+    "tiktok-algorithm-secrets-2026": "how-to-save-videos-for-offline-personal-use",
+    "instagram-reels-retention-guide": "video-compression-explained",
+    "youtube-seo-optimization-checklist": "how-to-choose-the-best-video-format",
+    "ai-workflows-video-production": "video-compression-explained",
+    "video-editing-color-grading-primer": "how-to-convert-video-to-mp4",
+    "what-is-modradown-vs-savefrom": "safe-online-video-downloading-practices",
+    "linkedin-video-downloader-save-professional-2026": "how-to-download-videos-on-windows",
+    "flixier-video-downloader-alternative-mp4-repurposing-guide": "how-to-convert-video-to-mp4"
+  };
+
+  const targetSlug = (slug && LEGACY_SLUG_MAP[slug]) ? LEGACY_SLUG_MAP[slug] : slug;
+  const post = posts.find((p) => p.slug === targetSlug) || posts[0];
 
   if (!post) {
     return (

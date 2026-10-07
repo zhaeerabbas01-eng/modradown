@@ -1,11 +1,15 @@
 import express from "express";
 import path from "path";
+import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
 import multer from "multer";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -75,47 +79,89 @@ async function startServer() {
 
   // SEO endpoints for Googlebot and search crawlers
   const serveRobots = (req: any, res: any) => {
-    const robotsPath = path.join(process.cwd(), 'public', 'robots.txt');
-    if (fs.existsSync(robotsPath)) {
-      const content = fs.readFileSync(robotsPath, 'utf-8');
-      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-      res.setHeader('Cache-Control', 'public, max-age=3600');
-      res.status(200).send(content);
-    } else {
-      res.type('text/plain; charset=utf-8').send("User-agent: *\nAllow: /\nSitemap: https://videodownloder.online/sitemap.xml\n");
+    const candidatePaths = [
+      path.join(process.cwd(), 'public', 'robots.txt'),
+      path.join(process.cwd(), 'dist', 'robots.txt'),
+      path.join(__dirname, 'public', 'robots.txt'),
+      path.join(__dirname, 'dist', 'robots.txt'),
+      path.join(__dirname, 'robots.txt'),
+    ];
+    let content = '';
+    for (const p of candidatePaths) {
+      if (fs.existsSync(p)) {
+        try {
+          content = fs.readFileSync(p, 'utf-8');
+          if (content) break;
+        } catch (_) {}
+      }
     }
+    if (!content) {
+      content = "User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: https://videodownloder.online/sitemap.xml\n";
+    }
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.status(200).send(content);
   };
 
-  app.get("/robots.txt", serveRobots);
-  app.get("/Robots.txt", serveRobots);
+  app.get(["/robots.txt", "/robots.txt/", "/Robots.txt", "/Robots.txt/"], serveRobots);
 
-  app.get("/ads.txt", (req, res) => {
-    const adsTxtPath = path.join(process.cwd(), 'public', 'ads.txt');
-    if (fs.existsSync(adsTxtPath)) {
-      const content = fs.readFileSync(adsTxtPath, 'utf-8');
-      res.type('text/plain; charset=utf-8').send(content);
-    } else {
-      res.type('text/plain; charset=utf-8').send("google.com, pub-7035962451879722, DIRECT, f08c47fec0942fa0\n");
+  const serveAdsTxt = (req: any, res: any) => {
+    const candidatePaths = [
+      path.join(process.cwd(), 'public', 'ads.txt'),
+      path.join(process.cwd(), 'dist', 'ads.txt'),
+      path.join(__dirname, 'public', 'ads.txt'),
+      path.join(__dirname, 'dist', 'ads.txt'),
+      path.join(__dirname, 'ads.txt'),
+    ];
+    let content = '';
+    for (const p of candidatePaths) {
+      if (fs.existsSync(p)) {
+        try {
+          content = fs.readFileSync(p, 'utf-8');
+          if (content) break;
+        } catch (_) {}
+      }
     }
-  });
+    if (!content) {
+      content = "google.com, pub-7035962451879722, DIRECT, f08c47fec0942fa0\n";
+    }
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.status(200).send(content);
+  };
+
+  app.get(["/ads.txt", "/ads.txt/", "/Ads.txt", "/Ads.txt/"], serveAdsTxt);
 
   const serveSitemap = (req: any, res: any) => {
-    const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
-    if (fs.existsSync(sitemapPath)) {
-      const xml = fs.readFileSync(sitemapPath, 'utf-8');
-      res.setHeader('Content-Type', 'text/xml; charset=utf-8');
-      res.setHeader('X-Content-Type-Options', 'nosniff');
-      res.setHeader('Cache-Control', 'public, max-age=3600');
-      res.status(200).send(xml);
-    } else {
-      res.status(404).send("Sitemap not found");
+    const candidatePaths = [
+      path.join(process.cwd(), 'public', 'sitemap.xml'),
+      path.join(process.cwd(), 'dist', 'sitemap.xml'),
+      path.join(__dirname, 'public', 'sitemap.xml'),
+      path.join(__dirname, 'dist', 'sitemap.xml'),
+      path.join(__dirname, 'sitemap.xml'),
+    ];
+    let xml = '';
+    for (const p of candidatePaths) {
+      if (fs.existsSync(p)) {
+        try {
+          xml = fs.readFileSync(p, 'utf-8');
+          if (xml && xml.includes('<urlset')) break;
+        } catch (_) {}
+      }
     }
+    if (!xml) {
+      xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://videodownloder.online/</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>https://videodownloder.online/blog</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n  <url>\n    <loc>https://videodownloder.online/tools</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n</urlset>`;
+    }
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.status(200).send(xml);
   };
 
-  app.get("/sitemap.xml", serveSitemap);
-  app.get("/Sitemap.xml", serveSitemap);
-  app.get("/sitemap_index.xml", serveSitemap);
-  app.get("/sitemap", serveSitemap);
+  app.get(["/sitemap.xml", "/sitemap.xml/", "/Sitemap.xml", "/Sitemap.xml/", "/sitemap_index.xml", "/sitemap"], serveSitemap);
 
   // Google site verification file handler
   app.get("/google:code.html", (req, res) => {

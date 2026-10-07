@@ -1,78 +1,138 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useParams, useLocation, Link } from "react-router-dom";
 import SEO from "../components/SEO";
 import { 
   Download, Loader2, Play, CheckCircle2, ShieldCheck, Zap,
-  Facebook, Twitter, Instagram, Youtube, Linkedin
+  Facebook, Twitter, Instagram, Youtube, Clipboard, AlertCircle,
+  FileVideo, Music, HelpCircle, ArrowRight, ExternalLink, Sparkles
 } from "lucide-react";
 import AdPlacement from "../components/AdPlacement";
 import ResultCard from "../components/ResultCard";
-import { fetchWithValidation } from "../utils/api";
+import { PLATFORM_GUIDES, PlatformGuide } from "../data/platformGuides";
 
 export default function PlatformDownloader() {
   const { platformSlug } = useParams<{ platformSlug: string }>();
+  const location = useLocation();
   const [url, setUrl] = useState("");
+  const [format, setFormat] = useState<"mp4" | "mp3">("mp4");
+  const [quality, setQuality] = useState<string>("auto");
+  const [pasted, setPasted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<any>(null);
+
+  // Normalize slug to handle both /youtube-downloader, /downloader/youtube-downloader, and aliases
+  let rawSlug = platformSlug;
+  if (!rawSlug) {
+    const segments = location.pathname.split('/').filter(Boolean);
+    rawSlug = segments[segments.length - 1] || 'youtube-downloader';
+  }
+  let cleanSlug = rawSlug.toLowerCase();
+  if (cleanSlug === 'facebook-video-downloader') cleanSlug = 'facebook-downloader';
+  if (cleanSlug === 'twitter-video-downloader') cleanSlug = 'twitter-downloader';
+  if (cleanSlug === 'reddit-video-downloader') cleanSlug = 'reddit-downloader';
   
-  // Platform configs
-  const platforms: Record<string, any> = {
-    'youtube-downloader': { name: 'YouTube', icon: Youtube, color: 'bg-red-600', description: 'Download YouTube videos in MP4, MP3.' },
-    'instagram-downloader': { name: 'Instagram', icon: Instagram, color: 'bg-pink-600', description: 'Save IG Reels, Photos & Videos.' },
-    'tiktok-downloader': { name: 'TikTok', icon: Play, color: 'bg-black', description: 'Download TikTok videos without watermark.' },
-    'facebook-video-downloader': { name: 'Facebook', icon: Facebook, color: 'bg-blue-600', description: 'Download FB videos in HD.' },
-    'twitter-video-downloader': { name: 'Twitter (X)', icon: Twitter, color: 'bg-black', description: 'Save videos & GIFs from X.' },
-    'pinterest-downloader': { name: 'Pinterest', icon: Play, color: 'bg-red-500', description: 'Download Pinterest videos & images.' },
-    'reddit-video-downloader': { name: 'Reddit', icon: Play, color: 'bg-orange-500', description: 'Download Reddit videos with audio.' },
-    'vimeo-downloader': { name: 'Vimeo', icon: Play, color: 'bg-blue-400', description: 'Download Vimeo videos.' },
-    'threads-downloader': { name: 'Threads', icon: Play, color: 'bg-black', description: 'Download Threads videos.' },
-    'snapchat-downloader': { name: 'Snapchat', icon: Play, color: 'bg-yellow-400', description: 'Save Snapchat Spotlight.' },
-    'linkedin-downloader': { name: 'LinkedIn', icon: Linkedin, color: 'bg-blue-700', description: 'Download LinkedIn videos.' },
-    'dailymotion-downloader': { name: 'Dailymotion', icon: Play, color: 'bg-blue-500', description: 'Save Dailymotion videos.' }
+  const guide: PlatformGuide = PLATFORM_GUIDES[cleanSlug] || PLATFORM_GUIDES['youtube-downloader'];
+
+  const getPlatformIcon = (slug: string) => {
+    if (slug.includes('youtube')) return Youtube;
+    if (slug.includes('instagram')) return Instagram;
+    if (slug.includes('facebook')) return Facebook;
+    if (slug.includes('twitter')) return Twitter;
+    return Play;
   };
 
+  const Icon = getPlatformIcon(guide.slug);
 
-  const config = platforms[platformSlug || 'youtube-downloader'] || platforms['youtube-downloader'];
-  const Icon = config.icon;
+  const handlePaste = async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          setUrl(text.trim());
+          setPasted(true);
+          setTimeout(() => setPasted(false), 2000);
+        }
+      }
+    } catch {
+      // Browser permissions denied
+    }
+  };
 
   const handleDownload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) return;
-
     setLoading(true);
     setError("");
     setResult(null);
 
     try {
-      const data = await fetchWithValidation('/api/download', {
+      const response = await fetch('/api/download', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: url.trim(), platform: platformSlug }),
+        body: JSON.stringify({ url: url.trim(), platform: guide.slug, requestedFormat: format, requestedQuality: quality }),
       });
-
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || `Failed to process ${guide.name} link. Ensure the video is public.`);
+      }
       setResult(data);
+      setTimeout(() => {
+        document.getElementById('download-result')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
     } catch (err: any) {
       const errorMessage = err.message === 'Failed to fetch' 
-        ? "Network error. Please check your connection or try again." 
-        : err.message || "Could not retrieve media details. Check link compliance.";
+        ? "Network connection issue. Please check your internet connection." 
+        : err.message || `Could not retrieve ${guide.name} media details. Verify the link is publicly accessible.`;
       setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
+  const platformFaqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": guide.faqs.map(f => ({
+      "@type": "Question",
+      "name": f.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": f.answer
+      }
+    }))
+  };
+
+  const breadcrumbsSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://videodownloder.online/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": `${guide.name} Downloader`,
+        "item": `https://videodownloder.online/${guide.slug}`
+      }
+    ]
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-16 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 py-8 md:py-14 relative overflow-hidden">
       <SEO 
-        title={`${config.name} Video Downloader - Fast & Free | ModraDown`}
-        description={`Download ${config.name} videos fast and free. ${config.description}`}
-        canonicalUrl={`https://videodownloder.online/downloader/${platformSlug}`}
+        title={guide.title}
+        description={guide.metaDescription}
+        canonicalUrl={`https://videodownloder.online/${guide.slug}`}
         schema={[
           {
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            "name": `${config.name} Downloader`,
+            "name": `${guide.name} Video Downloader – ModraDown`,
             "operatingSystem": "All",
             "applicationCategory": "MultimediaApplication",
             "offers": {
@@ -81,196 +141,300 @@ export default function PlatformDownloader() {
               "priceCurrency": "USD"
             }
           },
-          {
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://videodownloder.online/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": `${config.name} Downloader`,
-                "item": `https://videodownloder.online/downloader/${platformSlug}`
-              }
-            ]
-          }
+          breadcrumbsSchema,
+          platformFaqSchema
         ]}
       />
       
-      <div className="container mx-auto px-4 max-w-4xl pt-4 md:pt-6 relative z-10">
-        <AdPlacement type="horizontal" title="Header Ad" />
+      <div className="container mx-auto px-4 max-w-4xl relative z-10">
         
-        {/* Downloader Tool */}
-        <div className="bg-white dark:bg-[#0a0f25] rounded-3xl p-8 shadow-xl border border-gray-200 dark:border-white/10 mt-6">
-          <div className="text-center mb-8">
-             <div className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 text-white shadow-lg ${config.color}`}>
-               <Icon className="w-8 h-8" />
-             </div>
-             <h1 className="text-3xl md:text-4xl font-bold mb-4">{config.name} Downloader</h1>
-             <p className="text-gray-500 dark:text-gray-400">{config.description}</p>
+        {/* Banner Ad Area */}
+        <div className="mb-6 flex justify-center">
+          <AdPlacement type="horizontal" title="Header Ad Area" />
+        </div>
+
+        {/* TOOL HERO CARD */}
+        <div className="bg-white dark:bg-[#0a0f25] rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200 dark:border-white/10 text-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold mb-4 tracking-wide">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Dedicated {guide.name} Media Extraction Tool</span>
           </div>
+
+          <div className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 text-white shadow-lg ${guide.brandColor}`}>
+            <Icon className="w-8 h-8" />
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 text-gray-900 dark:text-white tracking-tight">
+            {guide.h1}
+          </h1>
+
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto mb-8 font-medium">
+            {guide.tagline}
+          </p>
           
-          <form onSubmit={handleDownload} className="relative flex flex-col md:flex-row shadow-inner rounded-2xl bg-gray-50 dark:bg-black/50 p-2 border border-gray-200 dark:border-white/5">
-            <input
-              type="url"
-              required
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder={`Paste your ${config.name} link here...`}
-              className="w-full bg-transparent text-sm font-medium pl-6 pr-4 py-4 md:py-2 outline-none placeholder:text-gray-400"
+          {/* Form */}
+          <form 
+            id="media-downloader"
+            onSubmit={handleDownload} 
+            className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white dark:bg-[#0a0f25] rounded-2xl p-2.5 shadow-[0_10px_35px_rgba(102,80,255,0.18)] hover:shadow-[0_15px_45px_rgba(102,80,255,0.28)] transition-all duration-300 isolate group gap-2 max-w-2xl mx-auto"
+          >
+            {/* Outer Radiant Flowing Gradient Border Animation */}
+            <div 
+              aria-hidden="true"
+              className="absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-brand-primary via-purple-500 via-pink-500 to-brand-primary bg-[length:250%_250%] animate-border-flow -z-10 blur-[1px] opacity-80 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" 
             />
-            {url && (
-              <button 
-                type="button" 
-                onClick={() => setUrl("")} 
-                className="absolute right-[140px] top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            {/* Soft Ambient Glow Effect */}
+            <div 
+              aria-hidden="true"
+              className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-primary/40 via-purple-500/30 to-pink-500/40 bg-[length:250%_250%] animate-border-flow -z-20 blur-md opacity-50 group-hover:opacity-80 transition-opacity duration-300 pointer-events-none" 
+            />
+            {/* Inner Solid Card Background Layer */}
+            <div 
+              aria-hidden="true"
+              className="absolute inset-0 rounded-2xl bg-white dark:bg-[#0a0f25] -z-10 pointer-events-none" 
+            />
+            <div className="flex-1 flex items-center min-w-0 bg-transparent px-2 w-full">
+              <input
+                type="url"
+                required
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder={`Paste your public ${guide.name} link here...`}
+                className="w-full bg-transparent text-sm md:text-base font-medium py-3 outline-none placeholder:text-gray-400 text-gray-800 dark:text-gray-200"
+              />
+              {url && (
+                <button
+                  type="button"
+                  onClick={() => setUrl("")}
+                  title="Clear input"
+                  className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition rounded-full hover:bg-gray-100 dark:hover:bg-white/10 shrink-0 cursor-pointer"
+                >
+                  <span className="text-sm font-bold leading-none px-1">✕</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={handlePaste}
+                title="Paste from clipboard"
+                className="px-2.5 py-1.5 ml-1 text-brand-primary dark:text-brand-secondary bg-brand-primary/10 hover:bg-brand-primary/20 dark:bg-white/10 dark:hover:bg-white/20 transition rounded-lg shrink-0 cursor-pointer text-xs font-semibold flex items-center gap-1 active:scale-95"
               >
-                Clear
+                <Clipboard className="w-3.5 h-3.5" />
+                <span>{pasted ? "Pasted!" : "Paste"}</span>
               </button>
-            )}
+            </div>
+
+            {/* Download Button */}
             <button
               type="submit"
               disabled={loading || !url.trim()}
-              className="h-12 bg-brand-primary hover:bg-brand-primary/90 text-white font-semibold text-sm px-8 rounded-xl flex items-center justify-center space-x-2 transition shrink-0 mt-2 md:mt-0"
+              className="w-full sm:w-auto bg-brand-primary hover:bg-brand-primary/90 text-white font-bold text-sm md:text-base px-7 py-3.5 sm:py-3 rounded-xl flex items-center justify-center space-x-2 transition shrink-0 cursor-pointer shadow-md shadow-brand-primary/25 disabled:opacity-70 active:scale-95"
             >
-              {loading ? (
-                <><Loader2 className="h-4 w-4 animate-spin" /><span>Processing</span></>
-              ) : (
-                <><Download className="h-4 w-4" /><span>Download</span></>
-              )}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              <span>{loading ? "Processing..." : "Download"}</span>
             </button>
           </form>
 
-          {/* Features */}
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 pt-8 text-xs font-semibold text-gray-700 dark:text-gray-300">
-            <span className="flex items-center space-x-1.5"><CheckCircle2 className="h-4 w-4 text-green-500" /><span>No Watermark</span></span>
-            <span className="flex items-center space-x-1.5"><Zap className="h-4 w-4 text-yellow-500" /><span>Fast Speed</span></span>
-            <span className="flex items-center space-x-1.5"><ShieldCheck className="h-4 w-4 text-teal-500" /><span>100% Secure</span></span>
-          </div>
-
-          {/* Results Area */}
+          {/* Error Message */}
           {error && (
-            <div className="mt-8 p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 rounded-xl text-center text-sm">
-              {error}
+            <div className="mt-4 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 text-sm flex items-start gap-3 text-left max-w-2xl mx-auto">
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-500" />
+              <div>
+                <p className="font-semibold">{error}</p>
+                <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                  Ensure the account is public and the video is not restricted by login credentials or private permissions.
+                </p>
+              </div>
             </div>
           )}
 
+          {/* Responsible Use Disclaimer */}
+          <div className="mt-5 p-3.5 rounded-xl bg-gray-100/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-600 dark:text-gray-400 text-left max-w-2xl mx-auto flex items-start gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-brand-primary shrink-0 mt-0.5" />
+            <p>
+              <strong>Responsible Use Notice:</strong> ModraDown processes publicly accessible {guide.name} URLs for legitimate personal, educational, and authorized creator archival use. Users are responsible for having necessary permissions or rights.
+            </p>
+          </div>
+
+          {/* Result Card */}
           {result && <ResultCard result={result} />}
         </div>
 
-        
-        {/* SEO Article Area */}
-        <div className="mt-16 bg-white dark:bg-[#0a0f25] rounded-3xl p-8 md:p-12 shadow-sm border border-gray-200 dark:border-white/5 prose dark:prose-invert max-w-none">
-          <h2 className="text-3xl font-bold mb-6">Complete Guide: How to Download Videos from {config.name}</h2>
-          
-          <h3 className="text-2xl font-semibold mt-8 mb-4">Introduction</h3>
-          <p>
-            Welcome to the ultimate {config.name} video downloader. In today's fast-paced digital world, saving media for offline viewing, creative inspiration, or archival purposes has become essential. ModraDown's {config.name} downloader provides a seamless, high-speed, and secure way to extract and save your favorite videos, reels, photos, and media directly to your device. Unlike other services, we prioritize quality and user experience, ensuring that every download retains its original high-definition resolution without any watermarks.
-          </p>
-          <p>
-            Whether you are a content creator looking to back up your own media, a researcher compiling digital resources, or simply an enthusiast wanting to save a memorable clip, our tool is engineered to meet your needs. We utilize advanced server-side processing to fetch media files directly from public content delivery networks (CDNs), which guarantees speed and reliability.
-          </p>
-
-          <h3 className="text-2xl font-semibold mt-8 mb-4">Core Features</h3>
-          <ul className="list-disc pl-5 space-y-2">
-            <li><strong>High-Definition Downloads:</strong> Download media in its highest available quality, including 1080p, 4K, and ultra-HD formats where supported by {config.name}.</li>
-            <li><strong>No Watermarks:</strong> Our extraction algorithm ensures that downloaded videos are completely free from intrusive watermarks, making them perfect for clean viewing.</li>
-            <li><strong>Lightning-Fast Processing:</strong> Built on a globally distributed cloud infrastructure, our downloader processes requests in milliseconds.</li>
-            <li><strong>Cross-Device Compatibility:</strong> Whether you are using an iPhone, Android smartphone, iPad, Windows PC, or Mac, our web-based tool works perfectly without requiring any app installations.</li>
-            <li><strong>100% Secure & Private:</strong> We do not log your download history, and we do not store the downloaded files on our servers. Your privacy is fully respected.</li>
-            <li><strong>No Registration Required:</strong> Start downloading immediately without having to create an account, share personal information, or pay subscription fees.</li>
-          </ul>
-
-          <h3 className="text-2xl font-semibold mt-8 mb-4">Supported Formats</h3>
-          <p>
-            Our {config.name} downloader supports a wide variety of formats to ensure maximum compatibility with your devices and media players:
-          </p>
-          <ul className="list-disc pl-5 space-y-2">
-            <li><strong>MP4 (Video):</strong> The industry standard for high-quality, universally compatible video files.</li>
-            <li><strong>MP3 (Audio):</strong> Extract just the audio track from {config.name} videos when you only need the sound.</li>
-            <li><strong>JPEG / PNG (Images):</strong> Save high-resolution thumbnails, photos, and cover art.</li>
-            <li><strong>WebM:</strong> Optimized format for web viewing, offering great compression without sacrificing quality.</li>
-          </ul>
-
-          <h3 className="text-2xl font-semibold mt-8 mb-4">How to Download (Step-by-Step)</h3>
-          <p>Downloading from {config.name} is easier than ever. Just follow these simple steps:</p>
-          <ol className="list-decimal pl-5 space-y-2">
-            <li><strong>Find the Media:</strong> Open the {config.name} app or website and locate the video or media file you wish to save.</li>
-            <li><strong>Copy the Link:</strong> Look for the "Share" button (often represented by an arrow or paper airplane icon). Tap or click it, then select "Copy Link".</li>
-            <li><strong>Visit ModraDown:</strong> Open your web browser and navigate to this exact {config.name} downloader page on ModraDown.</li>
-            <li><strong>Paste the URL:</strong> Tap on the text input box at the top of this page and paste the copied link.</li>
-            <li><strong>Initiate Download:</strong> Click the prominent "Download" button. Our system will analyze the link and extract the available media streams.</li>
-            <li><strong>Select Quality:</strong> Once processed, you will see options for different resolutions and formats. Choose your preferred quality.</li>
-            <li><strong>Save to Device:</strong> Click the final download button next to your desired format. The file will be saved directly to your device's downloads folder or camera roll.</li>
-          </ol>
-
-          <h3 className="text-2xl font-semibold mt-8 mb-4">Advantages of Using ModraDown</h3>
-          <p>
-            With dozens of tools available online, why choose ModraDown for your {config.name} downloads? The answer lies in our commitment to reliability and user experience. Many competing sites are plagued with intrusive pop-up ads, malware risks, and unreliable servers that fail during peak hours. ModraDown is built by professional engineers using a modern React and Node.js architecture. We prioritize clean UI, rapid loading times, and transparent operations. Our platform is continuously updated to adapt to changes in {config.name}'s platform, ensuring consistent functionality year-round.
-          </p>
-
-          <h3 className="text-2xl font-semibold mt-8 mb-4">Safety & Privacy Information</h3>
-          <p>
-            Your safety is our top priority. Our service is served over a secure SSL encrypted connection (HTTPS), meaning your connection to our servers is entirely safe from interception. Furthermore, as an online utility, we do not require any permissions to access your device's file system, contacts, or personal data. All processing is done strictly on the server side. 
-          </p>
-          <p>
-            Please note that we act purely as a conduit between your browser and the public content delivery networks. We do not host, cache, or distribute copyrighted materials. We urge all users to respect intellectual property rights and only download content for which they have permission or which falls under fair use guidelines.
-          </p>
-
-          <h3 className="text-2xl font-semibold mt-8 mb-4">Frequently Asked Questions (FAQ)</h3>
-          <div className="space-y-4">
-            <div>
-              <strong>Is this tool really free?</strong>
-              <p className="text-sm mt-1">Yes, our {config.name} downloader is 100% free to use. We support the platform through minimal, non-intrusive advertisements.</p>
-            </div>
-            <div>
-              <strong>Can I download videos on my iPhone?</strong>
-              <p className="text-sm mt-1">Absolutely. If you are using iOS 13 or later, you can download files directly via the Safari browser. The files will be saved to your Files app, from where you can export them to your Photos app.</p>
-            </div>
-            <div>
-              <strong>Where are the files saved?</strong>
-              <p className="text-sm mt-1">On Windows and Mac, files typically go to your "Downloads" folder. On Android devices, they are saved in the "Downloads" directory or Gallery. On iOS, check the "Files" app.</p>
-            </div>
-            <div>
-              <strong>Is there a limit to how many videos I can download?</strong>
-              <p className="text-sm mt-1">No, there are no strict limits. You can download as many videos from {config.name} as you like, whenever you like.</p>
-            </div>
-          </div>
-
-          <h3 className="text-2xl font-semibold mt-8 mb-4">Common Errors & Troubleshooting</h3>
-          <p>If you encounter issues, try these troubleshooting steps:</p>
-          <ul className="list-disc pl-5 space-y-2">
-            <li><strong>"Invalid URL" Error:</strong> Ensure you copied the full, direct link to the media post. Private account links cannot be processed.</li>
-            <li><strong>Slow Download Speeds:</strong> This may be caused by your local internet connection. Try switching from cellular data to Wi-Fi.</li>
-            <li><strong>No Audio:</strong> Sometimes, ultra-high-definition video streams are separated from the audio stream by the platform. Choose a slightly lower resolution (like 1080p) which usually contains the merged audio track.</li>
-            <li><strong>Browser Freezing:</strong> Clear your browser cache or try accessing the site in Incognito/Private mode.</li>
-          </ul>
-
-          <h3 className="text-2xl font-semibold mt-8 mb-4">Pro Tips</h3>
-          <p>
-            To get the most out of our {config.name} downloader, bookmark this page (Ctrl+D or Cmd+D) for quick access. If you frequently download media on your mobile device, you can use the "Add to Home Screen" feature in Chrome or Safari to create a convenient app-like icon right on your phone.
-          </p>
-
-          <h3 className="text-2xl font-semibold mt-8 mb-4">Conclusion</h3>
-          <p>
-            Downloading from {config.name} shouldn't be a hassle. With ModraDown, you have a professional, rapid, and totally free utility at your fingertips. We are dedicated to providing the best downloading experience on the web. Thank you for choosing ModraDown. Happy downloading!
-          </p>
+        {/* MID CONTENT AD */}
+        <div className="my-10 flex justify-center">
+          <AdPlacement type="horizontal" title="In-Content Ad" />
         </div>
 
-        {/* Related Downloaders */}
-        <div className="mt-16">
-          <h3 className="text-xl font-bold mb-6">Other Popular Downloaders</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-             {Object.keys(platforms).slice(0, 8).map(slug => (
-               <Link key={slug} to={`/${slug}`} className="bg-white dark:bg-[#0a0f25] p-4 rounded-xl border border-gray-200 dark:border-white/5 text-center hover:border-brand-primary transition group">
-                 <span className="text-sm font-semibold group-hover:text-brand-primary">{platforms[slug].name}</span>
-               </Link>
-             ))}
+        {/* 800–1,200+ WORDS IN-DEPTH UNIQUE PLATFORM GUIDE */}
+        <article className="mt-8 bg-white dark:bg-[#0a0f25] rounded-3xl p-6 sm:p-10 md:p-12 shadow-sm border border-gray-200 dark:border-white/10 space-y-10 text-gray-700 dark:text-gray-300 leading-relaxed">
+          
+          {/* ABOUT THIS PLATFORM */}
+          <section>
+            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">
+              About Downloading Videos from {guide.name}
+            </h2>
+            <div className="text-sm sm:text-base leading-relaxed space-y-4">
+              <p>{guide.aboutContent}</p>
+            </div>
+          </section>
+
+          {/* HOW IT WORKS */}
+          <section>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+              How the {guide.name} Downloader Works (Step-by-Step)
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {guide.howItWorks.map((hw, idx) => (
+                <div key={idx} className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                  <span className="text-xs font-black text-brand-primary uppercase tracking-wider block mb-1">
+                    Step {idx + 1}: {hw.step}
+                  </span>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                    {hw.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* SUPPORTED FORMATS & QUALITIES */}
+          <section>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+              Supported Formats & Quality Tiers
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                <h4 className="font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-1.5">
+                  <FileVideo className="w-4 h-4 text-brand-primary" /> Supported Formats
+                </h4>
+                <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                  {guide.supportedFormats.map((f, i) => (
+                    <li key={i} className="flex items-center gap-1.5">&bull; {f}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                <h4 className="font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-1.5">
+                  <Zap className="w-4 h-4 text-amber-500" /> Resolution Options
+                </h4>
+                <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                  {guide.supportedQualities.map((q, i) => (
+                    <li key={i} className="flex items-center gap-1.5">&bull; {q}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* LEGITIMATE USE CASES */}
+          <section>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+              Legitimate Use Cases for {guide.name} Media
+            </h3>
+            <div className="space-y-3">
+              {guide.legitimateUseCases.map((uc, i) => (
+                <div key={i} className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                  <h4 className="font-bold text-sm text-gray-900 dark:text-white mb-1">
+                    {uc.title}
+                  </h4>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {uc.detail}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* STRICT COPYRIGHT & PERMISSIONS NOTICE */}
+          <section className="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+            <h3 className="text-lg font-bold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5" /> Copyright & Legal Permission Policy
+            </h3>
+            <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
+              {guide.copyrightNotice}
+            </p>
+            <p className="text-xs text-amber-800 dark:text-amber-300 font-semibold">
+              ModraDown does not host media or bypass DRM restrictions. We urge all users to respect creator ownership and only download content with explicit authorization or valid fair use justification.
+            </p>
+          </section>
+
+          {/* TROUBLESHOOTING */}
+          <section>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+              Troubleshooting {guide.name} Download Issues
+            </h3>
+            <div className="space-y-3">
+              {guide.troubleshooting.map((tb, i) => (
+                <div key={i} className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                  <h4 className="font-bold text-sm text-gray-900 dark:text-white mb-1">
+                    {tb.issue}
+                  </h4>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {tb.solution}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* PLATFORM FAQ */}
+          <section>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+              Frequently Asked Questions About {guide.name} Downloads
+            </h3>
+            <div className="space-y-3">
+              {guide.faqs.map((f, i) => (
+                <div key={i} className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                  <h4 className="font-bold text-sm text-gray-900 dark:text-white mb-1.5 flex items-center gap-2">
+                    <HelpCircle className="w-4 h-4 text-brand-primary shrink-0" />
+                    <span>{f.question}</span>
+                  </h4>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed pl-6">
+                    {f.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* INTERNAL LINKS TO RELEVANT GUIDES */}
+          <section className="pt-6 border-t border-gray-200 dark:border-white/10">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+              Related Knowledge & Technical Guides
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {guide.relatedGuides.map((rg, i) => (
+                <Link
+                  key={i}
+                  to={`/blog/${rg.slug}`}
+                  className="p-3.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-brand-primary/10 border border-gray-200 dark:border-white/10 hover:border-brand-primary/30 transition text-xs font-semibold text-gray-800 dark:text-gray-200 flex items-center justify-between group"
+                >
+                  <span className="group-hover:text-brand-primary transition">{rg.title}</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-brand-primary shrink-0" />
+                </Link>
+              ))}
+            </div>
+          </section>
+        </article>
+
+        {/* OTHER POPULAR DOWNLOADERS */}
+        <div className="mt-14">
+          <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white text-center sm:text-left">
+            Other Clean Downloader Tools
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {Object.keys(PLATFORM_GUIDES)
+              .filter(slug => slug !== guide.slug)
+              .map(slug => (
+                <Link
+                  key={slug}
+                  to={`/${slug}`}
+                  className="bg-white dark:bg-[#0a0f25] p-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-center hover:border-brand-primary/50 transition group"
+                >
+                  <span className="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-brand-primary">
+                    {PLATFORM_GUIDES[slug].name} Downloader
+                  </span>
+                </Link>
+              ))}
           </div>
         </div>
 

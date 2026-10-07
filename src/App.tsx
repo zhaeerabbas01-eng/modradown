@@ -75,13 +75,14 @@ function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLa
             </button>
             <div className="absolute top-full left-1/2 -translate-x-1/2 w-48 mt-2 bg-gray-50 dark:bg-[#050816] border border-gray-200 dark:border-white/10 rounded-xl p-3 shadow-2xl space-y-2.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition duration-300 z-50">
               <div className="text-[9px]  tracking-widest text-gray-500 dark:text-gray-400 font-black mb-1 border-b border-gray-200 dark:border-white/10 pb-1">Supported Apps</div>
-              <a href="/#media-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary  font-bold tracking-wider transition">★ Facebook</a>
-              <a href="/#media-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary  font-bold tracking-wider transition">★ Instagram</a>
-              <a href="/#media-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary  font-bold tracking-wider transition">★ YouTube</a>
-              <a href="/#media-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary  font-bold tracking-wider transition">★ TikTok</a>
-              <a href="/#media-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary  font-bold tracking-wider transition">★ Reddit</a>
-              <a href="/#media-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary  font-bold tracking-wider transition">★ Vimeo</a>
-              <a href="/#media-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary  font-bold tracking-wider transition">★ DailyMotion</a>
+              <Link to="/youtube-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary font-bold tracking-wider transition">★ YouTube Downloader</Link>
+              <Link to="/tiktok-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary font-bold tracking-wider transition">★ TikTok Downloader</Link>
+              <Link to="/instagram-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary font-bold tracking-wider transition">★ Instagram Downloader</Link>
+              <Link to="/facebook-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary font-bold tracking-wider transition">★ Facebook Downloader</Link>
+              <Link to="/twitter-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary font-bold tracking-wider transition">★ Twitter (X) Downloader</Link>
+              <Link to="/pinterest-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary font-bold tracking-wider transition">★ Pinterest Downloader</Link>
+              <Link to="/reddit-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary font-bold tracking-wider transition">★ Reddit Downloader</Link>
+              <Link to="/vimeo-downloader" className="block text-[10px] text-gray-600 dark:text-gray-300 hover:text-brand-primary font-bold tracking-wider transition">★ Vimeo Downloader</Link>
             </div>
           </div>
 
@@ -307,14 +308,16 @@ function Footer() {
           </div>
 
           <div className="space-y-6">
-            <h5 className="text-sm tracking-wider font-bold text-gray-900 dark:text-white uppercase">Supported</h5>
+            <h5 className="text-sm tracking-wider font-bold text-gray-900 dark:text-white uppercase">Downloaders</h5>
             <ul className="space-y-3.5 text-sm text-gray-500 dark:text-gray-400 font-medium">
-              <li><Link to="/" className="hover:text-brand-primary transition-colors">Facebook Downloader</Link></li>
-              <li><Link to="/" className="hover:text-brand-primary transition-colors">Instagram Downloader</Link></li>
-              <li><Link to="/" className="hover:text-brand-primary transition-colors">YouTube Downloader</Link></li>
-              <li><Link to="/" className="hover:text-brand-primary transition-colors">TikTok Downloader</Link></li>
-              <li><Link to="/" className="hover:text-brand-primary transition-colors">Vimeo Downloader</Link></li>
-              <li><Link to="/" className="hover:text-brand-primary transition-colors">DailyMotion</Link></li>
+              <li><Link to="/youtube-downloader" className="hover:text-brand-primary transition-colors">YouTube Downloader</Link></li>
+              <li><Link to="/tiktok-downloader" className="hover:text-brand-primary transition-colors">TikTok Downloader</Link></li>
+              <li><Link to="/instagram-downloader" className="hover:text-brand-primary transition-colors">Instagram Downloader</Link></li>
+              <li><Link to="/facebook-downloader" className="hover:text-brand-primary transition-colors">Facebook Downloader</Link></li>
+              <li><Link to="/twitter-downloader" className="hover:text-brand-primary transition-colors">Twitter (X) Downloader</Link></li>
+              <li><Link to="/pinterest-downloader" className="hover:text-brand-primary transition-colors">Pinterest Downloader</Link></li>
+              <li><Link to="/reddit-downloader" className="hover:text-brand-primary transition-colors">Reddit Downloader</Link></li>
+              <li><Link to="/vimeo-downloader" className="hover:text-brand-primary transition-colors">Vimeo Downloader</Link></li>
             </ul>
           </div>
 
@@ -380,6 +383,17 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/downloader/:platformSlug" element={<PlatformDownloader />} />
+          <Route path="/youtube-downloader" element={<PlatformDownloader />} />
+          <Route path="/tiktok-downloader" element={<PlatformDownloader />} />
+          <Route path="/instagram-downloader" element={<PlatformDownloader />} />
+          <Route path="/facebook-downloader" element={<PlatformDownloader />} />
+          <Route path="/facebook-video-downloader" element={<PlatformDownloader />} />
+          <Route path="/twitter-downloader" element={<PlatformDownloader />} />
+          <Route path="/twitter-video-downloader" element={<PlatformDownloader />} />
+          <Route path="/pinterest-downloader" element={<PlatformDownloader />} />
+          <Route path="/reddit-downloader" element={<PlatformDownloader />} />
+          <Route path="/reddit-video-downloader" element={<PlatformDownloader />} />
+          <Route path="/vimeo-downloader" element={<PlatformDownloader />} />
           <Route path="/tools" element={<AITools />} />
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:slug" element={<BlogPostDetail />} />
