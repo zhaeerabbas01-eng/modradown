@@ -10,10 +10,16 @@
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   
   --animate-marquee: marquee 30s linear infinite;
+  --animate-border-flow: border-flow 4s ease infinite;
 
   @keyframes marquee {
     0% { transform: translateX(0%); }
     100% { transform: translateX(-50%); }
+  }
+
+  @keyframes border-flow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
 }
 

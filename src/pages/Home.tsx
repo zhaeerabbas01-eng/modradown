@@ -128,20 +128,40 @@ export default function Home() {
               Paste a video link, choose how you want to save it, and download the file directly to your device. High-speed MP4 video downloader for rapid content repurposing, offline viewing, and media backup without watermarks.
             </p>
 
-            {/* Input Form */}
-            <form id="media-downloader" onSubmit={handleDownload} className="relative flex items-center bg-white dark:bg-[#0a0f25] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 dark:border-white/10 p-2 max-w-xl mx-auto lg:mx-0 mb-3">
+            {/* Input Form with Attractive Animated Border */}
+            <form 
+              id="media-downloader" 
+              onSubmit={handleDownload} 
+              className="relative flex items-center bg-white dark:bg-[#0a0f25] rounded-2xl p-2 max-w-xl mx-auto lg:mx-0 mb-3 shadow-[0_10px_35px_rgba(102,80,255,0.18)] hover:shadow-[0_15px_45px_rgba(102,80,255,0.3)] transition-all duration-300 isolate group"
+            >
+              {/* Outer Radiant Flowing Gradient Border Animation */}
+              <div 
+                aria-hidden="true"
+                className="absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-brand-primary via-purple-500 via-pink-500 to-brand-primary bg-[length:250%_250%] animate-border-flow -z-10 blur-[1px] opacity-80 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" 
+              />
+              {/* Soft Ambient Glow Effect */}
+              <div 
+                aria-hidden="true"
+                className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-primary/40 via-purple-500/30 to-pink-500/40 bg-[length:250%_250%] animate-border-flow -z-20 blur-md opacity-50 group-hover:opacity-80 transition-opacity duration-300 pointer-events-none" 
+              />
+              {/* Inner Solid Card Background Layer */}
+              <div 
+                aria-hidden="true"
+                className="absolute inset-0 rounded-2xl bg-white dark:bg-[#0a0f25] -z-10 pointer-events-none" 
+              />
+
               <input 
                 type="url"
                 required
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="Paste your video link here..."
-                className="flex-1 bg-transparent border-none outline-none pl-4 pr-4 py-3 text-base md:text-lg text-gray-700 dark:text-gray-300 placeholder:text-gray-400 font-medium"
+                className="flex-1 bg-transparent border-none outline-none pl-4 pr-4 py-3 text-base md:text-lg text-gray-700 dark:text-gray-200 placeholder:text-gray-400 font-medium relative z-10"
               />
               <button 
                 type="submit"
                 disabled={loading || !url.trim()}
-                className="bg-brand-primary hover:bg-brand-primary/90 text-white font-bold px-6 py-3.5 rounded-xl flex items-center space-x-2 transition-all disabled:opacity-70 shrink-0 cursor-pointer"
+                className="bg-brand-primary hover:bg-brand-primary/90 text-white font-bold px-6 py-3.5 rounded-xl flex items-center space-x-2 transition-all disabled:opacity-70 shrink-0 cursor-pointer shadow-md shadow-brand-primary/25 hover:shadow-brand-primary/40 active:scale-95 relative z-10"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
                 <span className="hidden md:inline">Download</span>
