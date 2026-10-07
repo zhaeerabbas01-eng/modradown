@@ -33,7 +33,7 @@ export default function BlogList() {
       <SEO 
         title="Creator Blog & Social Media Tips - ModraDown"
         description="Learn how to grow your social media audience with expert guides on TikTok trends, Instagram Reels, YouTube shorts, and content creation."
-        canonicalUrl="https://modradown.com/blog"
+        canonicalUrl="https://videodownloder.online/blog"
       />
       {/* Decorative Flare */}
       <div className="absolute top-[15%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-primary/5 blur-[150px] pointer-events-none" />

@@ -8,7 +8,7 @@ export default function CookiePolicy() {
       <SEO 
         title="Cookie Policy - ModraDown"
         description="Learn about how ModraDown uses cookies to improve your user experience."
-        canonicalUrl="https://modradown.com/cookie-policy"
+        canonicalUrl="https://videodownloder.online/cookies"
       />
       <div className="container mx-auto px-4 max-w-4xl pt-2">
         {/* Banner Ad Area */}
@@ -26,7 +26,7 @@ export default function CookiePolicy() {
 
           <div className="space-y-6 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
             <p>
-              This is the Cookie Policy for ModraDown, accessible from <strong>modradown.com</strong>.
+              This is the Cookie Policy for ModraDown, accessible from <strong>videodownloder.online</strong>.
             </p>
 
             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mt-8 mb-4">What Are Cookies</h2>

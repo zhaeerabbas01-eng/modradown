@@ -80,7 +80,17 @@ async function startServer() {
       const content = fs.readFileSync(robotsPath, 'utf-8');
       res.type('text/plain; charset=utf-8').send(content);
     } else {
-      res.type('text/plain; charset=utf-8').send("User-agent: *\nAllow: /\nSitemap: https://modradown.com/sitemap.xml\n");
+      res.type('text/plain; charset=utf-8').send("User-agent: *\nAllow: /\nSitemap: https://videodownloder.online/sitemap.xml\n");
+    }
+  });
+
+  app.get("/ads.txt", (req, res) => {
+    const adsTxtPath = path.join(process.cwd(), 'public', 'ads.txt');
+    if (fs.existsSync(adsTxtPath)) {
+      const content = fs.readFileSync(adsTxtPath, 'utf-8');
+      res.type('text/plain; charset=utf-8').send(content);
+    } else {
+      res.type('text/plain; charset=utf-8').send("google.com, pub-7035962451879722, DIRECT, f08c47fec0942fa0\n");
     }
   });
 

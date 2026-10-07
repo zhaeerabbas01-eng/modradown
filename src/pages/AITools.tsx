@@ -328,7 +328,7 @@ export default function AITools() {
       <SEO 
         title="Free AI Tools for Content Creators | ModraDown"
         description="Boost your social media presence with our free AI tools. Generate hashtags, write captions, brainstorm video ideas, and optimize your bio easily."
-        canonicalUrl="https://modradown.com/tools"
+        canonicalUrl="https://videodownloder.online/tools"
       />
       {/* Glow Effects */}
       <div className="absolute top-[20%] left-[-15%] w-[450px] h-[450px] rounded-full bg-brand-primary/10 blur-[130px] pointer-events-none" />

@@ -67,7 +67,7 @@ export default function PlatformDownloader() {
       <SEO 
         title={`${config.name} Video Downloader - Fast & Free | ModraDown`}
         description={`Download ${config.name} videos fast and free. ${config.description}`}
-        canonicalUrl={`https://modradown.com/downloader/${platformSlug}`}
+        canonicalUrl={`https://videodownloder.online/downloader/${platformSlug}`}
         schema={[
           {
             "@context": "https://schema.org",
@@ -89,13 +89,13 @@ export default function PlatformDownloader() {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://modradown.com/"
+                "item": "https://videodownloder.online/"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": `${config.name} Downloader`,
-                "item": `https://modradown.com/downloader/${platformSlug}`
+                "item": `https://videodownloder.online/downloader/${platformSlug}`
               }
             ]
           }

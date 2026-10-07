@@ -98,7 +98,7 @@ export default function Home() {
       <SEO 
         title="Online Video Downloader - Download Any URL Free in HD MP4"
         description="Paste any video link to save and convert streaming videos in HD MP4 or MP3 audio. Free, fast, watermark-free alternative to SaveFrom and Flixier."
-        canonicalUrl="https://modradown.com/"
+        canonicalUrl="https://videodownloder.online/"
         keywords="online video downloader, download any url free, mp4 video downloader, youtube video downloader, instagram video downloader, tiktok video downloader, savefrom alternative, flixier video downloader"
         schema={[homeFaqSchema]}
       />

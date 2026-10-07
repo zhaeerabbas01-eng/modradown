@@ -8,7 +8,7 @@ export default function Terms() {
       <SEO 
         title="Terms & Conditions - ModraDown"
         description="Read the Terms and Conditions for using ModraDown's video downloading services and AI tools."
-        canonicalUrl="https://modradown.com/terms"
+        canonicalUrl="https://videodownloder.online/terms"
       />
       <div className="container mx-auto px-4 max-w-4xl pt-4 md:pt-6">
         {/* Banner Ad Area */}
@@ -26,7 +26,7 @@ export default function Terms() {
 
           <div className="space-y-6 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
             <p>
-              Welcome to ModraDown! These terms and conditions outline the rules and regulations for the use of ModraDown's Website, located at <strong>modradown.com</strong>.
+              Welcome to ModraDown! These terms and conditions outline the rules and regulations for the use of ModraDown's Website, located at <strong>videodownloder.online</strong>.
             </p>
             <p>
               By accessing this website, we assume you accept these terms and conditions. Do not continue to use ModraDown if you do not agree to take all of the terms and conditions stated on this page.

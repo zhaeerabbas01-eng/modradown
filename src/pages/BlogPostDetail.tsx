@@ -35,7 +35,7 @@ export default function BlogPostDetail() {
       <SEO 
         title={`${post.title} | ModraDown`}
         description={post.summary}
-        canonicalUrl={`https://modradown.com/blog/${post.slug}`}
+        canonicalUrl={`https://videodownloder.online/blog/${post.slug}`}
         ogType="article"
         schema={[
           {
@@ -52,10 +52,10 @@ export default function BlogPostDetail() {
               "name": "ModraDown",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://modradown.com/favicon.png"
+                "url": "https://videodownloder.online/favicon.png"
               }
             },
-            "mainEntityOfPage": `https://modradown.com/blog/${post.slug}`
+            "mainEntityOfPage": `https://videodownloder.online/blog/${post.slug}`
           },
           {
             "@context": "https://schema.org",
@@ -65,19 +65,19 @@ export default function BlogPostDetail() {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://modradown.com/"
+                "item": "https://videodownloder.online/"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Blog",
-                "item": "https://modradown.com/blog"
+                "item": "https://videodownloder.online/blog"
               },
               {
                 "@type": "ListItem",
                 "position": 3,
                 "name": post.title,
-                "item": `https://modradown.com/blog/${post.slug}`
+                "item": `https://videodownloder.online/blog/${post.slug}`
               }
             ]
           }

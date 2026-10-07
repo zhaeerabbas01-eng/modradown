@@ -21,21 +21,23 @@ interface SEOProps {
 export default function SEO({ 
   title = "ModraDown - Free HD Video Downloader for All Platforms", 
   description = "Download HD videos, reels, shorts and MP3 audio from YouTube, TikTok, Instagram, Facebook, and Twitter quickly, free, and without watermark.", 
-  canonicalUrl = "https://modradown.com/",
+  canonicalUrl = "https://videodownloder.online/",
   keywords = "video downloader, free video downloader, download tiktok without watermark, instagram reels downloader, youtube mp4 mp3, flixier video downloader, savefrom net alternative",
-  ogImage = "https://modradown.com/favicon.png",
+  ogImage = "https://videodownloder.online/favicon.png",
   ogType = "website",
   noIndex = false,
   schema,
   breadcrumbs
 }: SEOProps) {
-  // Ensure canonical URL is complete and always points to modradown.com
+  // Ensure canonical URL is complete and always points to videodownloder.online
   let formattedCanonical = canonicalUrl;
   if (!formattedCanonical.startsWith('http')) {
     const cleanPath = formattedCanonical.startsWith('/') ? formattedCanonical : `/${formattedCanonical}`;
-    formattedCanonical = `https://modradown.com${cleanPath}`;
+    formattedCanonical = `https://videodownloder.online${cleanPath}`;
   } else if (formattedCanonical.includes('social-video-downloader.ai.studio')) {
-    formattedCanonical = formattedCanonical.replace('https://social-video-downloader.ai.studio', 'https://modradown.com');
+    formattedCanonical = formattedCanonical.replace('https://social-video-downloader.ai.studio', 'https://videodownloder.online');
+  } else if (formattedCanonical.includes('modradown.com')) {
+    formattedCanonical = formattedCanonical.replace('https://modradown.com', 'https://videodownloder.online');
   }
 
   // Global Website & Organization schemas
@@ -43,10 +45,10 @@ export default function SEO({
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "ModraDown",
-    "url": "https://modradown.com/",
+    "url": "https://videodownloder.online/",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://modradown.com/downloader/youtube-downloader?q={search_term_string}",
+      "target": "https://videodownloder.online/downloader/youtube-downloader?q={search_term_string}",
       "query-input": "required name=search_term_string"
     }
   };
@@ -55,8 +57,8 @@ export default function SEO({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "ModraDown",
-    "url": "https://modradown.com/",
-    "logo": "https://modradown.com/favicon.png",
+    "url": "https://videodownloder.online/",
+    "logo": "https://videodownloder.online/favicon.png",
     "founder": {
       "@type": "Person",
       "name": "Muhammad Usman Zhaeer"
@@ -87,7 +89,7 @@ export default function SEO({
       "@type": "ListItem",
       "position": idx + 1,
       "name": b.name,
-      "item": b.item.startsWith('http') ? b.item : `https://modradown.com${b.item.startsWith('/') ? b.item : '/' + b.item}`
+      "item": b.item.startsWith('http') ? b.item : `https://videodownloder.online${b.item.startsWith('/') ? b.item : '/' + b.item}`
     }))
   } : null;
 

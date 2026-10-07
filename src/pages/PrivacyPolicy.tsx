@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
       <SEO 
         title="Privacy Policy - ModraDown"
         description="Read the official Privacy Policy for ModraDown. Learn how we handle cookies, Google AdSense advertising, analytics, and your GDPR/CCPA privacy rights."
-        canonicalUrl="https://modradown.com/privacy"
+        canonicalUrl="https://videodownloder.online/privacy"
         breadcrumbs={[
           { name: "Home", item: "/" },
           { name: "Privacy Policy", item: "/privacy" }
@@ -40,7 +40,7 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">1. Overview and Commitment</h2>
               <p>
-                Welcome to <strong>ModraDown</strong> (accessible from <Link to="/" className="text-brand-primary underline">https://modradown.com</Link>). We respect your personal privacy and are fully committed to protecting the data of every visitor. This Privacy Policy details the types of information we collect, how it is processed, and your privacy choices under applicable laws including the EU General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA).
+                Welcome to <strong>ModraDown</strong> (accessible from <Link to="/" className="text-brand-primary underline">https://videodownloder.online</Link>). We respect your personal privacy and are fully committed to protecting the data of every visitor. This Privacy Policy details the types of information we collect, how it is processed, and your privacy choices under applicable laws including the EU General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA).
               </p>
               <p className="mt-2">
                 ModraDown operates primarily as a client-side video helper tool. <strong>We do not require user account registration, credit cards, or personal profiles to use our online video downloading services.</strong>
@@ -150,7 +150,7 @@ export default function PrivacyPolicy() {
               <div className="mt-3 p-4 bg-brand-primary/5 rounded-2xl border border-brand-primary/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-white">MuTechBaar Developing Company / ModraDown Support</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Email: contact@modradown.com | Support Desk Response: within 24 hours</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Email: contact@videodownloder.online | Support Desk Response: within 24 hours</p>
                 </div>
                 <Link to="/contact" className="px-4 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold hover:brightness-110 transition">
                   Contact Support Page

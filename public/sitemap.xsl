@@ -96,7 +96,7 @@
             <span class="badge">Google Verified</span>
           </h1>
           <p class="desc">
-            This XML Sitemap contains <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/> indexed URLs for <strong>https://modradown.com/</strong>.
+            This XML Sitemap contains <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/> indexed URLs for <strong>https://videodownloder.online/</strong>.
           </p>
           <table>
             <thead>

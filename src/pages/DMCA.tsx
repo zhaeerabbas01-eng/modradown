@@ -8,7 +8,7 @@ export default function DMCA() {
       <SEO 
         title="DMCA Copyright Policy - ModraDown"
         description="Review our DMCA and Copyright Policy regarding content downloading and compliance."
-        canonicalUrl="https://modradown.com/dmca"
+        canonicalUrl="https://videodownloder.online/dmca"
       />
       <div className="container mx-auto px-4 max-w-4xl pt-4 md:pt-6">
         {/* Banner Ad Area */}

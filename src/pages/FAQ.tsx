@@ -63,7 +63,7 @@ export default function FAQ() {
       <SEO 
         title="FAQ - ModraDown Support"
         description="Find answers to common questions about using ModraDown, legal guidelines, and technical support."
-        canonicalUrl="https://modradown.com/faq"
+        canonicalUrl="https://videodownloder.online/faq"
         schema={faqSchema}
       />
       {/* Glow */}

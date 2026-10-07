@@ -28,7 +28,7 @@ export default function AboutUs() {
       <SEO 
         title="About Us - Muhammad Usman Zhaeer & MuTechBaar Developing Company"
         description="Learn about MuTechBaar Developing Company, our mission to build premium SaaS tools, and our founder Muhammad Usman Zhaeer."
-        canonicalUrl="https://modradown.com/about"
+        canonicalUrl="https://videodownloder.online/about"
       />
       
       {/* Premium Dark Theme Ambient Glows */}

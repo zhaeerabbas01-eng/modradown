@@ -8,7 +8,7 @@ export default function Disclaimer() {
       <SEO 
         title="Disclaimer - ModraDown"
         description="Legal disclaimer regarding the use of ModraDown's video downloading services."
-        canonicalUrl="https://modradown.com/disclaimer"
+        canonicalUrl="https://videodownloder.online/disclaimer"
       />
       <div className="container mx-auto px-4 max-w-4xl pt-2">
         {/* Banner Ad Area */}

@@ -23,7 +23,7 @@ export default function ContactUs() {
       <SEO 
         title="Contact Us - ModraDown"
         description="Have a question or need support? Contact the ModraDown team for assistance with our video downloading tools and services."
-        canonicalUrl="https://modradown.com/contact"
+        canonicalUrl="https://videodownloder.online/contact"
       />
       {/* Background Flare */}
       <div className="absolute top-[10%] right-[-5%] w-[400px] h-[400px] rounded-full bg-brand-primary/5 blur-[120px] pointer-events-none" />
