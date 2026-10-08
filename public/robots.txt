@@ -19,5 +19,5 @@ User-agent: Bingbot
 Allow: /
 Disallow: /api/
 
-# XML Sitemap location
-Sitemap: https://videodownloder.online/sitemap.xml
+# XML Sitemap index location
+Sitemap: https://videodownloder.online/sitemap-index.xml

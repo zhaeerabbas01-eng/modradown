@@ -111,7 +111,7 @@ export default function AdPlacement({ type, title = "Advertisement", id }: AdPla
               <a 
                 href={ARTICLE_SMART_LINKS[0]} 
                 target="_blank" 
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="bg-brand-primary hover:bg-brand-primary/90 text-white text-xs font-bold px-4 py-3 rounded-xl transition shadow-lg text-center flex items-center justify-center gap-1.5 active:scale-95"
               >
                 <span>Smart Link Ad 1</span>
@@ -119,7 +119,7 @@ export default function AdPlacement({ type, title = "Advertisement", id }: AdPla
               <a 
                 href={ARTICLE_SMART_LINKS[1]} 
                 target="_blank" 
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-bold px-4 py-3 rounded-xl transition shadow-lg text-center flex items-center justify-center gap-1.5 active:scale-95"
               >
                 <span>Smart Link Ad 2</span>
@@ -139,7 +139,7 @@ export default function AdPlacement({ type, title = "Advertisement", id }: AdPla
               <a 
                 href={REVOLTHEM_DIRECT_ADS[0]} 
                 target="_blank" 
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="bg-brand-primary hover:bg-brand-primary/90 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-md flex items-center gap-1.5"
               >
                 <span>Direct Link 1</span>
@@ -147,7 +147,7 @@ export default function AdPlacement({ type, title = "Advertisement", id }: AdPla
               <a 
                 href={REVOLTHEM_DIRECT_ADS[1]} 
                 target="_blank" 
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-md flex items-center gap-1.5"
               >
                 <span>Direct Link 2</span>

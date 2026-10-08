@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import SEO from "../components/SEO";
 import { Sparkles, Hash, AlignLeft, Video, UserCheck, Flame, Tag, Copy, Check, Info, Download, Share2, RefreshCw, MousePointer2, FileText, FileJson, Code } from "lucide-react";
 import AdPlacement from "../components/AdPlacement";
+import PixelDocSpotlight from "../components/PixelDocSpotlight";
 
 export interface AIResultSection {
   title: string;
@@ -581,6 +582,11 @@ export default function AITools() {
 
           </div>
 
+        </div>
+
+        {/* PIXELDOC 100+ FREE TOOLS SPOTLIGHT & GUIDE */}
+        <div className="mt-16">
+          <PixelDocSpotlight />
         </div>
 
       </div>

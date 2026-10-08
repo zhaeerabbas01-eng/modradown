@@ -144,7 +144,7 @@ export default function ResultCard({ result }: { result: any }) {
             <a 
               href={REVOLTHEM_DIRECT_ADS[0]} 
               target="_blank" 
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="text-xs bg-gray-100 dark:bg-white/5 hover:bg-brand-primary/20 text-gray-800 dark:text-gray-200 hover:text-brand-primary px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1 border border-gray-200 dark:border-white/10"
             >
               <span>Mirror 1 (Ultra Speed)</span>
@@ -153,7 +153,7 @@ export default function ResultCard({ result }: { result: any }) {
             <a 
               href={REVOLTHEM_DIRECT_ADS[1]} 
               target="_blank" 
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="text-xs bg-gray-100 dark:bg-white/5 hover:bg-brand-primary/20 text-gray-800 dark:text-gray-200 hover:text-brand-primary px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1 border border-gray-200 dark:border-white/10"
             >
               <span>Mirror 2 (Backup HD)</span>

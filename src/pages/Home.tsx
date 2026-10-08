@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import AdPlacement from "../components/AdPlacement";
 import ResultCard from "../components/ResultCard";
+import PixelDocSpotlight from "../components/PixelDocSpotlight";
 
 export default function Home() {
   const [url, setUrl] = useState("");
@@ -460,6 +461,11 @@ export default function Home() {
       {/* MID-PAGE AD SLOT */}
       <div className="container mx-auto px-4 max-w-7xl my-12 flex justify-center">
         <AdPlacement type="horizontal" title="In-Content Advertisement" />
+      </div>
+
+      {/* PIXELDOC 100+ FREE TOOLS SPOTLIGHT & ARTICLE SHORT HIGHLIGHT */}
+      <div className="container mx-auto px-4 max-w-7xl">
+        <PixelDocSpotlight />
       </div>
 
       {/* 2,000+ WORDS COMPREHENSIVE ORIGINAL EDUCATIONAL CONTENT */}

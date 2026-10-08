@@ -15,6 +15,8 @@ import DMCA from "./pages/DMCA";
 import CookiePolicy from "./pages/CookiePolicy";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
+import HTMLSitemap from "./pages/HTMLSitemap";
+import CookieConsent from "./components/CookieConsent";
 import { motion, AnimatePresence } from "motion/react";
 import { translations } from "./translations";
 import { Platform3DLogosSection } from "./components/Platform3DLogos";
@@ -304,6 +306,18 @@ function Footer() {
               <li><a href="/#thumbnail-extractor" className="hover:text-brand-primary transition-colors">YouTube Thumbnails</a></li>
               <li><a href="/#metadata-analyst" className="hover:text-brand-primary transition-colors">Metadata Examiner</a></li>
               <li><Link to="/tools" className="hover:text-brand-primary transition-colors">AI Creative Tools</Link></li>
+              <li>
+                <a 
+                  href="https://pixeldoc.site" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:text-brand-primary transition-colors font-bold text-brand-primary inline-flex items-center gap-1"
+                >
+                  <span>PixelDoc (100+ Tools)</span>
+                  <span className="text-[10px] bg-brand-primary/15 text-brand-primary px-1.5 py-0.5 rounded font-mono uppercase">Free</span>
+                </a>
+              </li>
+              <li><Link to="/blog/pixeldoc-free-online-tools-pdf-images-text-seo-devs" className="hover:text-brand-primary transition-colors">PixelDoc Complete Guide</Link></li>
             </ul>
           </div>
 
@@ -329,6 +343,7 @@ function Footer() {
               <li><Link to="/disclaimer" className="hover:text-brand-primary transition-colors">Disclaimer Notice</Link></li>
               <li><Link to="/dmca" className="hover:text-brand-primary transition-colors">DMCA / Copyright</Link></li>
               <li><Link to="/contact" className="hover:text-brand-primary transition-colors">Contact Us</Link></li>
+              <li><Link to="/sitemap" className="hover:text-brand-primary transition-colors text-brand-primary font-semibold">HTML Sitemap</Link></li>
             </ul>
           </div>
 
@@ -405,10 +420,13 @@ export default function App() {
           <Route path="/dmca" element={<DMCA />} />
           <Route path="/cookies" element={<CookiePolicy />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/sitemap" element={<HTMLSitemap />} />
+          <Route path="/html-sitemap" element={<HTMLSitemap />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
+      <CookieConsent />
     </div>
   );
 }
