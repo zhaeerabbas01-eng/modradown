@@ -17,6 +17,8 @@ import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import HTMLSitemap from "./pages/HTMLSitemap";
 import CookieConsent from "./components/CookieConsent";
+import RouteHelmet from "./components/RouteHelmet";
+import JsonLdSchema from "./components/JsonLdSchema";
 import { motion, AnimatePresence } from "motion/react";
 import { translations } from "./translations";
 import { Platform3DLogosSection } from "./components/Platform3DLogos";
@@ -393,6 +395,8 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050816] text-gray-900 dark:text-gray-100 font-sans selection:bg-brand-primary/30 flex flex-col scroll-smooth text-sm md:text-base">
       <AnalyticsTracker />
+      <RouteHelmet />
+      <JsonLdSchema />
       <Header language={language} setLanguage={setLanguage} />
       <main id="main-content" className="flex-1 relative z-10">
         <Routes>

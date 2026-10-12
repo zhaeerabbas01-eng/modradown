@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
 import multer from "multer";
+import { renderPageHtml } from "./serverSeo.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1001,7 +1002,7 @@ async function startServer() {
     }
   });
 
-  // Vite middleware for development
+  // Vite middleware for development or dynamic production HTML serving
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { 
@@ -1010,12 +1011,66 @@ async function startServer() {
       },
       appType: "spa",
     });
+
+    // Custom middleware to inject route-specific SEO tags into HTML page navigation requests
+    app.use(async (req: any, res: any, next: any) => {
+      if (req.method !== 'GET') return next();
+      const accept = req.headers.accept || '';
+      const p = req.path;
+      if (
+        !accept.includes('text/html') ||
+        p.startsWith('/api/') || 
+        p.startsWith('/uploads/') || 
+        p.startsWith('/@') || 
+        p.startsWith('/src/') || 
+        p.startsWith('/node_modules/') || 
+        p.includes('.')
+      ) {
+        return next();
+      }
+      try {
+        let template = fs.readFileSync(path.join(process.cwd(), 'index.html'), 'utf-8');
+        template = await vite.transformIndexHtml(req.originalUrl, template);
+        const rendered = renderPageHtml(p, template);
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        return res.status(200).send(rendered);
+      } catch (e) {
+        return next();
+      }
+    });
+
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+    const indexHtmlPath = path.join(distPath, 'index.html');
+    let cachedIndexHtml = '';
+    try {
+      if (fs.existsSync(indexHtmlPath)) {
+        cachedIndexHtml = fs.readFileSync(indexHtmlPath, 'utf-8');
+      }
+    } catch (_) {}
+
+    app.use(express.static(distPath, { index: false }));
+
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
+        return next();
+      }
+      let baseHtml = cachedIndexHtml;
+      if (!baseHtml) {
+        try {
+          const p = path.join(process.cwd(), 'index.html');
+          if (fs.existsSync(p)) {
+            baseHtml = fs.readFileSync(p, 'utf-8');
+          }
+        } catch (_) {}
+      }
+      if (baseHtml) {
+        const rendered = renderPageHtml(req.path, baseHtml);
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        return res.status(200).send(rendered);
+      }
+      res.sendFile(indexHtmlPath);
     });
   }
 

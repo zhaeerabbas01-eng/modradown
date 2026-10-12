@@ -31,6 +31,7 @@
     "ab-downloader": "^1.0.2",
     "btch-downloader": "^6.0.28",
     "cakkatrok-instagram-downloader": "^2.0.2",
+    "cloud-ytdl": "^1.0.5-next",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "ell-pin": "^1.0.1",

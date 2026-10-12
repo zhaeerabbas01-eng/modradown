@@ -163,6 +163,24 @@ const STATIC_ROUTE_META: Record<string, RouteMetaConfig> = {
       { name: 'Home', item: '/' },
       { name: 'Cookie Policy', item: '/cookies' }
     ]
+  },
+  '/sitemap': {
+    title: 'HTML Sitemap - Explore All Video Downloader Tools & Guides | ModraDown',
+    description: 'Complete directory of all video downloader utilities, platform extractors, AI tools, and academy tutorials on ModraDown.',
+    keywords: 'sitemap, video downloader pages, modradown directory',
+    breadcrumbs: [
+      { name: 'Home', item: '/' },
+      { name: 'HTML Sitemap', item: '/sitemap' }
+    ]
+  },
+  '/html-sitemap': {
+    title: 'HTML Sitemap - Explore All Video Downloader Tools & Guides | ModraDown',
+    description: 'Complete directory of all video downloader utilities, platform extractors, AI tools, and academy tutorials on ModraDown.',
+    keywords: 'sitemap, video downloader pages, modradown directory',
+    breadcrumbs: [
+      { name: 'Home', item: '/' },
+      { name: 'HTML Sitemap', item: '/html-sitemap' }
+    ]
   }
 };
 
@@ -269,9 +287,11 @@ export default function RouteHelmet({
       };
     }
 
-    // 2. Downloader Platform Match (/downloader/:platformSlug)
-    if (pathname.startsWith('/downloader/')) {
-      const slug = pathname.replace('/downloader/', '').split('/')[0];
+    // 2. Downloader Platform Match (/downloader/:platformSlug or /youtube-downloader)
+    const directSlug = pathname.startsWith('/') ? pathname.slice(1) : pathname;
+    const isDownloaderPath = pathname.startsWith('/downloader/') || Boolean(PLATFORM_META[directSlug]);
+    if (isDownloaderPath) {
+      const slug = pathname.startsWith('/downloader/') ? pathname.replace('/downloader/', '').split('/')[0] : directSlug;
       const p = PLATFORM_META[slug];
       if (p) {
         return {
@@ -281,7 +301,7 @@ export default function RouteHelmet({
           ogType: propOgType || 'website',
           breadcrumbs: propBreadcrumbs || [
             { name: 'Home', item: '/' },
-            { name: `${p.name} Downloader`, item: `/downloader/${slug}` }
+            { name: `${p.name} Downloader`, item: pathname }
           ],
           customSchema: {
             "@context": "https://schema.org",
