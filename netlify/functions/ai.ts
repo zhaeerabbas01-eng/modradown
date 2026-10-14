@@ -72,7 +72,7 @@ export const handler: Handler = async (event, context) => {
       }
 
       const modelRes = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-2.5-flash",
         contents: finalPrompt,
         config: {
           systemInstruction: systemPrompt,

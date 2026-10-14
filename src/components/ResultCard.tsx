@@ -50,19 +50,36 @@ export default function ResultCard({ result }: { result: any }) {
     }
   };
 
-  const currentSelectionIsVideo = Boolean(selectedUrl || result.url || result.tunnel);
+  const rawTargetUrl = selectedUrl || result.url || result.tunnel;
+  const currentSelectionIsVideo = Boolean(rawTargetUrl);
+  const isEmbed = rawTargetUrl?.includes("youtube.com/embed/") || rawTargetUrl?.includes("player.vimeo.com/");
+  const videoStreamSrc = rawTargetUrl?.startsWith('/api/') ? rawTargetUrl : `/api/tunnel?url=${encodeURIComponent(rawTargetUrl)}&inline=true`;
 
   return (
     <div id="download-result" className="max-w-4xl w-full mt-10 bg-white dark:bg-[#0a0f25] border border-gray-200 dark:border-white/10 rounded-[2rem] p-4 md:p-6 shadow-xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8 items-center relative animate-in fade-in zoom-in-95 duration-300">
       {/* Media Player / Preview */}
       <div className="w-full md:w-[55%] shrink-0">
         <div className="aspect-video bg-black rounded-2xl overflow-hidden relative flex items-center justify-center border border-gray-100 dark:border-white/10 shadow-inner">
-          {currentSelectionIsVideo ? (
+          {isEmbed ? (
+            <iframe
+              src={rawTargetUrl}
+              className="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title={result.title || "Public Video Stream"}
+            />
+          ) : currentSelectionIsVideo ? (
             <video 
-              src={selectedUrl || result.url} 
+              src={videoStreamSrc} 
               controls 
               poster={result.thumbnail}
               className="w-full h-full object-contain"
+              onError={(e) => {
+                const videoEl = e.currentTarget;
+                if (videoEl.src !== rawTargetUrl) {
+                  videoEl.src = rawTargetUrl;
+                }
+              }}
             >
               Your browser does not support the video tag.
             </video>

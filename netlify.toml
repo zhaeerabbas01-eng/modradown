@@ -21,6 +21,12 @@
   force = true
 
 [[redirects]]
+  from = "/api/tunnel"
+  to = "/.netlify/functions/tunnel"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/ai/generate"
   to = "/.netlify/functions/ai"
   status = 200
