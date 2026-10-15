@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { execFile } from "child_process";
+import { execFile, execSync } from "child_process";
 
 export interface MediaResult {
   title: string;
@@ -14,6 +14,46 @@ export interface MediaResult {
   picker: { url: string; quality: string }[];
 }
 
+export type ExtractorErrorCode = 
+  | "UNSUPPORTED_URL"
+  | "PRIVATE_OR_RESTRICTED"
+  | "NO_DOWNLOADABLE_FORMATS"
+  | "PROVIDER_UNAVAILABLE"
+  | "DOWNLOAD_FAILED";
+
+export class ExtractionError extends Error {
+  code: ExtractorErrorCode;
+  constructor(message: string, code: ExtractorErrorCode) {
+    super(message);
+    this.code = code;
+    this.name = "ExtractionError";
+  }
+}
+
+// Helper to sanitize picker list: remove duplicates, missing URLs, or non-media URLs
+export function sanitizePicker(picker: { url: string; quality: string }[], fallbackTitle: string): { url: string; quality: string }[] {
+  if (!Array.isArray(picker)) return [];
+  const seen = new Set<string>();
+  const sanitized: { url: string; quality: string }[] = [];
+
+  for (const item of picker) {
+    if (!item || typeof item.url !== "string") continue;
+    const cleanUrl = item.url.trim();
+    if (!cleanUrl || cleanUrl.startsWith("javascript:") || cleanUrl.startsWith("data:text/html")) continue;
+
+    // Avoid duplicate URLs
+    if (seen.has(cleanUrl)) continue;
+    seen.add(cleanUrl);
+
+    sanitized.push({
+      url: cleanUrl,
+      quality: (item.quality && item.quality.trim()) ? item.quality.trim() : "Standard Quality"
+    });
+  }
+
+  return sanitized;
+}
+
 // 0. Direct File or OpenGraph Scraper
 export async function tryDirectFileOrOgMedia(targetUrl: string): Promise<MediaResult | null> {
   try {
@@ -22,17 +62,17 @@ export async function tryDirectFileOrOgMedia(targetUrl: string): Promise<MediaRe
       const filename = clean.split('/').pop() || "media.mp4";
       const tunnel = `/api/tunnel?url=${encodeURIComponent(targetUrl)}&filename=${encodeURIComponent(filename)}`;
       return {
-        title: "Direct Media Stream",
+        title: "Direct Media File",
         url: targetUrl,
         tunnel: tunnel,
         thumbnail: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
-        description: "Direct media stream link",
-        duration: "Unknown",
+        description: "Direct downloadable media stream",
+        duration: "Direct Stream",
         viewCount: "N/A",
         likeCount: "N/A",
         picker: [
-          { url: tunnel, quality: "HD Direct Stream (Server Proxy)" },
-          { url: targetUrl, quality: "Original Source Stream" }
+          { url: tunnel, quality: "Direct Fast Download (Proxy)" },
+          { url: targetUrl, quality: "Raw CDN Direct Link" }
         ]
       };
     }
@@ -48,32 +88,83 @@ export async function tryDirectFileOrOgMedia(targetUrl: string): Promise<MediaRe
     clearTimeout(timeout);
 
     if (hRes.ok) {
+      const contentType = hRes.headers.get("content-type") || "";
+      // If the direct URL returned a media content type directly
+      if (contentType.startsWith("video/") || contentType.startsWith("audio/") || contentType.startsWith("image/")) {
+        const tunnel = `/api/tunnel?url=${encodeURIComponent(targetUrl)}&filename=media_file`;
+        return {
+          title: "Direct Media Resource",
+          url: targetUrl,
+          tunnel,
+          thumbnail: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
+          description: "Direct media content",
+          duration: "Direct Media",
+          viewCount: "N/A",
+          likeCount: "N/A",
+          picker: [{ url: tunnel, quality: "Direct Download" }]
+        };
+      }
+
       const html = await hRes.text();
-      const ogVideo = html.match(/<meta\s+(?:property|name)=["']og:video["']\s+content=["']([^"']+)["']/i) ||
-                      html.match(/<meta\s+content=["']([^"']+)["']\s+(?:property|name)=["']og:video["']/i);
+      const ogVideo = html.match(/<meta\s+(?:property|name)=["']og:video(?::secure_url)?["']\s+content=["']([^"']+)["']/i) ||
+                      html.match(/<meta\s+content=["']([^"']+)["']\s+(?:property|name)=["']og:video(?::secure_url)?["']/i);
       const ogImg = html.match(/<meta\s+(?:property|name)=["']og:image["']\s+content=["']([^"']+)["']/i);
       const ogTitle = html.match(/<meta\s+(?:property|name)=["']og:title["']\s+content=["']([^"']+)["']/i);
 
       if (ogVideo && ogVideo[1]) {
         const videoUrl = ogVideo[1].replace(/&amp;/g, '&');
-        const title = ogTitle ? ogTitle[1] : "Extracted Video";
-        const tunnel = `/api/tunnel?url=${encodeURIComponent(videoUrl)}&filename=${encodeURIComponent(title)}.mp4`;
-        return {
-          title: title,
-          url: videoUrl,
-          tunnel: tunnel,
-          thumbnail: ogImg ? ogImg[1].replace(/&amp;/g, '&') : "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
-          description: title,
-          duration: "Unknown",
-          viewCount: "N/A",
-          likeCount: "N/A",
-          picker: [
-            { url: tunnel, quality: "HD Video (Direct Tunnel)" },
-            { url: videoUrl, quality: "Raw Stream" }
-          ]
-        };
+        // Only accept if videoUrl looks like a direct video file/cdn stream, not an HTML page
+        if (videoUrl.startsWith('http') && !videoUrl.includes('.html') && !videoUrl.includes('/embed/')) {
+          const title = ogTitle ? ogTitle[1] : "Extracted Video";
+          const tunnel = `/api/tunnel?url=${encodeURIComponent(videoUrl)}&filename=${encodeURIComponent(title)}.mp4`;
+          return {
+            title: title,
+            url: videoUrl,
+            tunnel: tunnel,
+            thumbnail: ogImg ? ogImg[1].replace(/&amp;/g, '&') : "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
+            description: title,
+            duration: "Unknown",
+            viewCount: "N/A",
+            likeCount: "N/A",
+            picker: [
+              { url: tunnel, quality: "HD Video (Proxy Download)" },
+              { url: videoUrl, quality: "Raw Stream" }
+            ]
+          };
+        }
       }
     }
+  } catch (_) {}
+  return null;
+}
+
+// Helper to locate or download standalone yt-dlp binary
+export function getYtDlpPath(): string | null {
+  const candidates = [
+    path.join(process.cwd(), 'bin', 'yt-dlp'),
+    path.join(process.cwd(), 'node_modules', 'youtube-dl-exec', 'bin', 'yt-dlp'),
+    '/usr/local/bin/yt-dlp',
+    '/usr/bin/yt-dlp'
+  ];
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+export function ensureYtDlpBinary(): string | null {
+  const existing = getYtDlpPath();
+  if (existing) return existing;
+
+  try {
+    const binDir = path.join(process.cwd(), 'bin');
+    if (!fs.existsSync(binDir)) {
+      fs.mkdirSync(binDir, { recursive: true });
+    }
+    const targetPath = path.join(binDir, 'yt-dlp');
+    execSync(`curl -sL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o "${targetPath}" && chmod +x "${targetPath}"`, { timeout: 30000 });
+    if (fs.existsSync(targetPath)) return targetPath;
   } catch (_) {}
   return null;
 }
@@ -81,8 +172,8 @@ export async function tryDirectFileOrOgMedia(targetUrl: string): Promise<MediaRe
 // 1. Executable yt-dlp Engine
 export async function tryYtDlp(targetUrl: string): Promise<MediaResult | null> {
   try {
-    const ytDlpPath = path.join(process.cwd(), 'node_modules', 'youtube-dl-exec', 'bin', 'yt-dlp');
-    if (!fs.existsSync(ytDlpPath)) return null;
+    const ytDlpPath = ensureYtDlpBinary();
+    if (!ytDlpPath) return null;
 
     return new Promise((resolve) => {
       execFile(
@@ -94,76 +185,74 @@ export async function tryYtDlp(targetUrl: string): Promise<MediaResult | null> {
           '--no-check-certificates',
           '--no-call-home'
         ],
-        { maxBuffer: 15 * 1024 * 1024, timeout: 20000 },
+        { maxBuffer: 25 * 1024 * 1024, timeout: 25000, env: { ...process.env, PYTHONWARNINGS: 'ignore' } },
         (err, stdout) => {
-          if (stdout && stdout.trim().startsWith('{')) {
-            try {
-              const data = JSON.parse(stdout.trim());
-              const title = data.title || data.fulltitle || "Extracted Video";
-              const thumbnail = data.thumbnail || (Array.isArray(data.thumbnails) && data.thumbnails[data.thumbnails.length - 1]?.url) || "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600";
-              const duration = data.duration ? `${Math.round(data.duration)}s` : "Unknown";
+          if (stdout) {
+            const firstBrace = stdout.indexOf('{');
+            const lastBrace = stdout.lastIndexOf('}');
+            if (firstBrace !== -1 && lastBrace > firstBrace) {
+              try {
+                const data = JSON.parse(stdout.substring(firstBrace, lastBrace + 1));
+                const title = data.title || data.fulltitle || "Extracted Video";
+                const thumbnail = data.thumbnail || (Array.isArray(data.thumbnails) && data.thumbnails[data.thumbnails.length - 1]?.url) || "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600";
+                const duration = data.duration ? `${Math.round(data.duration)}s` : "Unknown";
 
-              let picker: { url: string; quality: string }[] = [];
-              let bestRawUrl = "";
+                let picker: { url: string; quality: string }[] = [];
+                let bestRawUrl = "";
 
-              if (Array.isArray(data.formats)) {
-                const valid = data.formats.filter((f: any) => 
-                  f.url && 
-                  f.ext !== 'mhtml' && 
-                  f.protocol !== 'mhtml' && 
-                  f.format_note !== 'storyboard'
-                );
+                if (Array.isArray(data.formats)) {
+                  const valid = data.formats.filter((f: any) => 
+                    f.url && 
+                    f.ext !== 'mhtml' && 
+                    f.protocol !== 'mhtml' && 
+                    f.format_note !== 'storyboard' &&
+                    f.url.startsWith('http')
+                  );
 
-                const videos = valid.filter((f: any) => f.vcodec !== 'none' || f.height > 0)
-                  .sort((a: any, b: any) => (b.height || 0) - (a.height || 0));
+                  const videos = valid.filter((f: any) => f.vcodec !== 'none' || f.height > 0)
+                    .sort((a: any, b: any) => (b.height || 0) - (a.height || 0));
 
-                const audios = valid.filter((f: any) => f.vcodec === 'none' && f.acodec !== 'none');
+                  const audios = valid.filter((f: any) => (f.vcodec === 'none' || !f.height) && f.acodec !== 'none');
 
-                if (videos.length > 0) bestRawUrl = videos[0].url;
-                else if (valid.length > 0) bestRawUrl = valid[0].url;
+                  if (videos.length > 0) bestRawUrl = videos[0].url;
+                  else if (valid.length > 0) bestRawUrl = valid[0].url;
 
-                videos.forEach((f: any) => {
-                  const label = f.height ? `${f.height}p ${f.ext ? f.ext.toUpperCase() : 'MP4'}` : `${f.format_note || 'HD Video'}`;
-                  const tunnel = `/api/tunnel?url=${encodeURIComponent(f.url)}&filename=${encodeURIComponent(title)}_${f.height || 'HD'}.mp4`;
-                  picker.push({ url: tunnel, quality: label });
-                });
+                  videos.forEach((f: any) => {
+                    const label = f.height ? `${f.height}p ${f.ext ? f.ext.toUpperCase() : 'MP4'}` : `${f.format_note || 'HD Video'}`;
+                    const tunnel = `/api/tunnel?url=${encodeURIComponent(f.url)}&filename=${encodeURIComponent(title)}_${f.height || 'HD'}.mp4`;
+                    picker.push({ url: tunnel, quality: label });
+                  });
 
-                audios.forEach((f: any) => {
-                  const tunnel = `/api/tunnel?url=${encodeURIComponent(f.url)}&filename=${encodeURIComponent(title)}_audio.mp3`;
-                  picker.push({ url: tunnel, quality: `Audio Track MP3 (${f.ext || 'm4a'})` });
-                });
-              }
-
-              if (!bestRawUrl && data.url) bestRawUrl = data.url;
-
-              if (bestRawUrl) {
-                const bestTunnel = `/api/tunnel?url=${encodeURIComponent(bestRawUrl)}&filename=${encodeURIComponent(title)}.mp4`;
-                if (picker.length === 0) {
-                  picker.push({ url: bestTunnel, quality: "HD Video Stream" });
+                  audios.forEach((f: any) => {
+                    const tunnel = `/api/tunnel?url=${encodeURIComponent(f.url)}&filename=${encodeURIComponent(title)}_audio.mp3`;
+                    picker.push({ url: tunnel, quality: `Audio MP3 (${f.ext || 'm4a'})` });
+                  });
                 }
 
-                // Deduplicate picker
-                const seen = new Set<string>();
-                picker = picker.filter((p) => {
-                  if (seen.has(p.url)) return false;
-                  seen.add(p.url);
-                  return true;
-                });
+                if (!bestRawUrl && data.url && data.url.startsWith('http')) bestRawUrl = data.url;
 
-                resolve({
-                  title,
-                  url: bestRawUrl,
-                  tunnel: bestTunnel,
-                  thumbnail,
-                  description: data.description ? data.description.slice(0, 150) : title,
-                  duration,
-                  viewCount: data.view_count ? Number(data.view_count).toLocaleString() : "N/A",
-                  likeCount: data.like_count ? Number(data.like_count).toLocaleString() : "N/A",
-                  picker
-                });
-                return;
-              }
-            } catch (_) {}
+                if (bestRawUrl) {
+                  const bestTunnel = `/api/tunnel?url=${encodeURIComponent(bestRawUrl)}&filename=${encodeURIComponent(title)}.mp4`;
+                  picker = sanitizePicker(picker, title);
+                  if (picker.length === 0) {
+                    picker.push({ url: bestTunnel, quality: "HD Video Stream" });
+                  }
+
+                  resolve({
+                    title,
+                    url: bestRawUrl,
+                    tunnel: bestTunnel,
+                    thumbnail,
+                    description: data.description ? data.description.slice(0, 150) : title,
+                    duration,
+                    viewCount: data.view_count ? Number(data.view_count).toLocaleString() : "N/A",
+                    likeCount: data.like_count ? Number(data.like_count).toLocaleString() : "N/A",
+                    picker
+                  });
+                  return;
+                }
+              } catch (_) {}
+            }
           }
           resolve(null);
         }
@@ -207,7 +296,8 @@ export async function tryTikTok(targetUrl: string): Promise<MediaResult | null> 
         }
         if (data.wmplay) {
           const wmUrl = resolveTikwmUrl(data.wmplay);
-          picker.push({ url: wmUrl, quality: 'Watermarked Video' });
+          const tunnel = `/api/tunnel?url=${encodeURIComponent(wmUrl)}&filename=${encodeURIComponent(title)}_wm.mp4`;
+          picker.push({ url: tunnel, quality: 'Watermarked Video' });
         }
         if (data.music) {
           const musicUrl = resolveTikwmUrl(data.music);
@@ -215,6 +305,7 @@ export async function tryTikTok(targetUrl: string): Promise<MediaResult | null> 
           picker.push({ url: tunnel, quality: 'MP3 Audio Track' });
         }
 
+        picker = sanitizePicker(picker, title);
         const bestTunnel = picker.length > 0 ? picker[0].url : `/api/tunnel?url=${encodeURIComponent(bestUrl)}&filename=${encodeURIComponent(title)}.mp4`;
         return {
           title,
@@ -231,81 +322,16 @@ export async function tryTikTok(targetUrl: string): Promise<MediaResult | null> 
     }
   } catch (_) {}
 
-  try {
-    const rahadMod: any = await import('rahad-all-downloader-v2');
-    const alldl = rahadMod.alldl || rahadMod.default?.alldl || rahadMod;
-    if (alldl && typeof alldl.tiktok === 'function') {
-      const rRes = await alldl.tiktok(targetUrl);
-      if (rRes && rRes.data && rRes.data.videoUrl) {
-        const videoUrl = rRes.data.videoUrl;
-        const title = rRes.data.title || "TikTok Video";
-        const tunnel = `/api/tunnel?url=${encodeURIComponent(videoUrl)}&filename=${encodeURIComponent(title)}.mp4`;
-        return {
-          title,
-          url: videoUrl,
-          tunnel: tunnel,
-          thumbnail: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
-          description: title,
-          duration: "Unknown",
-          viewCount: "N/A",
-          likeCount: "N/A",
-          picker: [{ url: tunnel, quality: 'HD Stream' }]
-        };
-      }
-    }
-  } catch (_) {}
-
   return tryYtDlp(targetUrl);
 }
 
 // 3. YouTube Engine
 export async function tryYouTube(targetUrl: string): Promise<MediaResult | null> {
-  // 1. Try yt-dlp binary
+  // First attempt yt-dlp binary which extracts actual direct CDN formats
   const ytRes = await tryYtDlp(targetUrl);
-  if (ytRes) return ytRes;
+  if (ytRes && ytRes.picker && ytRes.picker.length > 0) return ytRes;
 
-  // 2. Try YouTube oEmbed API for public metadata & stream embed backup
-  try {
-    let vId = "";
-    if (targetUrl.includes("v=")) {
-      vId = targetUrl.split("v=")[1].split("&")[0];
-    } else if (targetUrl.includes("youtu.be/")) {
-      vId = targetUrl.split("youtu.be/")[1].split("?")[0];
-    } else if (targetUrl.includes("shorts/")) {
-      vId = targetUrl.split("shorts/")[1].split("?")[0];
-    }
-
-    if (vId) {
-      const oEmbedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(targetUrl)}&format=json`;
-      const oeRes = await fetch(oEmbedUrl, {
-        headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0" }
-      });
-      if (oeRes.ok) {
-        const oeData = await oeRes.json();
-        const title = oeData.title || "YouTube Public Video";
-        const thumbnail = oeData.thumbnail_url || `https://i.ytimg.com/vi/${vId}/hqdefault.jpg`;
-        const embedUrl = `https://www.youtube.com/embed/${vId}?autoplay=1`;
-        const tunnel = `/api/tunnel?url=${encodeURIComponent(targetUrl)}&filename=${encodeURIComponent(title)}.mp4`;
-
-        return {
-          title,
-          url: embedUrl,
-          tunnel: tunnel,
-          thumbnail,
-          description: `By ${oeData.author_name || "YouTube Creator"}`,
-          duration: "Streamable Public Video",
-          viewCount: "Public Stream",
-          likeCount: "N/A",
-          picker: [
-            { url: tunnel, quality: "1080p HD Video Stream (Fast Direct Download)" },
-            { url: embedUrl, quality: "Embed Player Stream" },
-            { url: targetUrl, quality: "Original Public Stream" }
-          ]
-        };
-      }
-    }
-  } catch (_) {}
-
+  // Do NOT return HTML or embed iframe as downloadable format
   return null;
 }
 
@@ -325,7 +351,8 @@ export async function tryInstagram(targetUrl: string): Promise<MediaResult | nul
             quality: isVid ? `HD Video ${i + 1}` : `Photo ${i + 1}`
           };
         });
-        const best = picker[0].url;
+        const cleanPicker = sanitizePicker(picker, "Instagram Media");
+        const best = cleanPicker.length > 0 ? cleanPicker[0].url : `/api/tunnel?url=${encodeURIComponent(igRes.url_list[0])}&filename=instagram.mp4`;
         return {
           title: "Instagram Post / Reel",
           url: igRes.url_list[0],
@@ -335,7 +362,7 @@ export async function tryInstagram(targetUrl: string): Promise<MediaResult | nul
           duration: "Unknown",
           viewCount: "N/A",
           likeCount: "N/A",
-          picker
+          picker: cleanPicker
         };
       }
     }
@@ -352,18 +379,20 @@ export async function tryInstagram(targetUrl: string): Promise<MediaResult | nul
       const imgMatch = html.match(/display_url":"([^"]+)"/) || html.match(/<img[^>]*class="EmbeddedMediaImage"[^>]*src="([^"]+)"/);
       if (videoMatch) {
         const cleanVideo = (videoMatch[1] || videoMatch[0]).replace(/\\u0026/g, "&").replace(/&amp;/g, "&");
-        const tunnel = `/api/tunnel?url=${encodeURIComponent(cleanVideo)}&filename=instagram_video.mp4`;
-        return {
-          title: "Instagram Media",
-          url: cleanVideo,
-          tunnel: tunnel,
-          thumbnail: imgMatch ? (imgMatch[1] || imgMatch[0]).replace(/\\u0026/g, "&").replace(/&amp;/g, "&") : "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
-          description: "Instagram Reel / Video",
-          duration: "Unknown",
-          viewCount: "N/A",
-          likeCount: "N/A",
-          picker: [{ url: tunnel, quality: "HD Video" }]
-        };
+        if (cleanVideo.startsWith("http")) {
+          const tunnel = `/api/tunnel?url=${encodeURIComponent(cleanVideo)}&filename=instagram_video.mp4`;
+          return {
+            title: "Instagram Media",
+            url: cleanVideo,
+            tunnel: tunnel,
+            thumbnail: imgMatch ? (imgMatch[1] || imgMatch[0]).replace(/\\u0026/g, "&").replace(/&amp;/g, "&") : "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
+            description: "Instagram Reel / Video",
+            duration: "Unknown",
+            viewCount: "N/A",
+            likeCount: "N/A",
+            picker: [{ url: tunnel, quality: "HD Video" }]
+          };
+        }
       }
     }
   } catch (_) {}
@@ -388,19 +417,21 @@ export async function tryTwitter(targetUrl: string): Promise<MediaResult | null>
           if (mediaList.length > 0) {
             const bestMedia = mediaList[0];
             const videoUrl = bestMedia.url;
-            const title = tweet.text ? tweet.text.slice(0, 100) : "Twitter / X Video";
-            const tunnel = `/api/tunnel?url=${encodeURIComponent(videoUrl)}&filename=${encodeURIComponent(title)}.mp4`;
-            return {
-              title,
-              url: videoUrl,
-              tunnel: tunnel,
-              thumbnail: bestMedia.thumbnail_url || tweet.author?.avatar_url || "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
-              description: tweet.text || "",
-              duration: "Unknown",
-              viewCount: tweet.views ? Number(tweet.views).toLocaleString() : "N/A",
-              likeCount: tweet.likes ? Number(tweet.likes).toLocaleString() : "N/A",
-              picker: [{ url: tunnel, quality: "HD Video (Original)" }]
-            };
+            if (videoUrl && videoUrl.startsWith('http')) {
+              const title = tweet.text ? tweet.text.slice(0, 100) : "Twitter / X Video";
+              const tunnel = `/api/tunnel?url=${encodeURIComponent(videoUrl)}&filename=${encodeURIComponent(title)}.mp4`;
+              return {
+                title,
+                url: videoUrl,
+                tunnel: tunnel,
+                thumbnail: bestMedia.thumbnail_url || tweet.author?.avatar_url || "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
+                description: tweet.text || "",
+                duration: "Unknown",
+                viewCount: tweet.views ? Number(tweet.views).toLocaleString() : "N/A",
+                likeCount: tweet.likes ? Number(tweet.likes).toLocaleString() : "N/A",
+                picker: [{ url: tunnel, quality: "HD Video (Original)" }]
+              };
+            }
           }
         }
       }
@@ -418,7 +449,7 @@ export async function tryFacebook(targetUrl: string): Promise<MediaResult | null
     if (typeof fbDownloader === 'function') {
       const fbRes = await fbDownloader(targetUrl);
       const fbUrl = fbRes?.playable_url_quality_hd || fbRes?.playable_url || fbRes?.hd_src || fbRes?.sd_src || fbRes?.browser_native_sd_url || "";
-      if (fbUrl) {
+      if (fbUrl && fbUrl.startsWith('http')) {
         let picker: { url: string; quality: string }[] = [];
         if (fbRes.playable_url_quality_hd || fbRes.hd_src) {
           const hdUrl = fbRes.playable_url_quality_hd || fbRes.hd_src;
@@ -430,6 +461,7 @@ export async function tryFacebook(targetUrl: string): Promise<MediaResult | null
           const tunnel = `/api/tunnel?url=${encodeURIComponent(sdUrl)}&filename=facebook_sd.mp4`;
           picker.push({ url: tunnel, quality: 'SD 720p' });
         }
+        picker = sanitizePicker(picker, "Facebook Video");
         const bestTunnel = picker.length > 0 ? picker[0].url : `/api/tunnel?url=${encodeURIComponent(fbUrl)}&filename=facebook_video.mp4`;
         return {
           title: "Facebook Video",
@@ -462,34 +494,38 @@ export async function tryPinterest(targetUrl: string): Promise<MediaResult | nul
       const titleMatch = html.match(/<meta property="og:title" content="([^"]+)"/i);
       if (videoMatch) {
         const bestUrl = videoMatch[1] || videoMatch[0];
-        const title = titleMatch ? titleMatch[1] : "Pinterest Video Pin";
-        const tunnel = `/api/tunnel?url=${encodeURIComponent(bestUrl)}&filename=${encodeURIComponent(title)}.mp4`;
-        return {
-          title,
-          url: bestUrl,
-          tunnel: tunnel,
-          thumbnail: imgMatch ? imgMatch[1] : "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
-          description: "Pinterest Video",
-          duration: "Unknown",
-          viewCount: "N/A",
-          likeCount: "N/A",
-          picker: [{ url: tunnel, quality: "HD Video" }]
-        };
+        if (bestUrl && bestUrl.startsWith('http')) {
+          const title = titleMatch ? titleMatch[1] : "Pinterest Video Pin";
+          const tunnel = `/api/tunnel?url=${encodeURIComponent(bestUrl)}&filename=${encodeURIComponent(title)}.mp4`;
+          return {
+            title,
+            url: bestUrl,
+            tunnel: tunnel,
+            thumbnail: imgMatch ? imgMatch[1] : "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
+            description: "Pinterest Video",
+            duration: "Unknown",
+            viewCount: "N/A",
+            likeCount: "N/A",
+            picker: [{ url: tunnel, quality: "HD Video" }]
+          };
+        }
       } else if (imgMatch) {
         const bestUrl = imgMatch[1];
-        const title = titleMatch ? titleMatch[1] : "Pinterest Image Pin";
-        const tunnel = `/api/tunnel?url=${encodeURIComponent(bestUrl)}&filename=${encodeURIComponent(title)}.jpg`;
-        return {
-          title,
-          url: bestUrl,
-          tunnel: tunnel,
-          thumbnail: bestUrl,
-          description: "Pinterest Image",
-          duration: "Image",
-          viewCount: "N/A",
-          likeCount: "N/A",
-          picker: [{ url: tunnel, quality: "High Res Image" }]
-        };
+        if (bestUrl && bestUrl.startsWith('http')) {
+          const title = titleMatch ? titleMatch[1] : "Pinterest Image Pin";
+          const tunnel = `/api/tunnel?url=${encodeURIComponent(bestUrl)}&filename=${encodeURIComponent(title)}.jpg`;
+          return {
+            title,
+            url: bestUrl,
+            tunnel: tunnel,
+            thumbnail: bestUrl,
+            description: "Pinterest Image",
+            duration: "Image",
+            viewCount: "N/A",
+            likeCount: "N/A",
+            picker: [{ url: tunnel, quality: "High Res Image" }]
+          };
+        }
       }
     }
   } catch (_) {}
@@ -524,7 +560,7 @@ export async function tryReddit(targetUrl: string): Promise<MediaResult | null> 
           }
         }
 
-        if (videoUrl) {
+        if (videoUrl && videoUrl.startsWith('http')) {
           const cleanUrl = videoUrl.replace(/&amp;/g, "&");
           const tunnel = `/api/tunnel?url=${encodeURIComponent(cleanUrl)}&filename=${encodeURIComponent(title)}.mp4`;
           const picker: { url: string; quality: string }[] = [{ url: tunnel, quality: "HD Video (Original)" }];
@@ -543,7 +579,7 @@ export async function tryReddit(targetUrl: string): Promise<MediaResult | null> 
             duration: postData.secure_media?.reddit_video?.duration ? `${postData.secure_media.reddit_video.duration}s` : "Unknown",
             viewCount: postData.score ? Number(postData.score).toLocaleString() : "N/A",
             likeCount: postData.ups ? Number(postData.ups).toLocaleString() : "N/A",
-            picker
+            picker: sanitizePicker(picker, title)
           };
         }
       }
@@ -574,8 +610,9 @@ export async function tryVimeo(targetUrl: string): Promise<MediaResult | null> {
               quality: f.quality ? `${f.quality} (${f.width}x${f.height})` : `${f.height}p HD`
             };
           });
+          const cleanPicker = sanitizePicker(picker, title);
           const best = files[0];
-          const bestTunnel = picker[0].url;
+          const bestTunnel = cleanPicker.length > 0 ? cleanPicker[0].url : `/api/tunnel?url=${encodeURIComponent(best.url)}&filename=${encodeURIComponent(title)}.mp4`;
           return {
             title,
             url: best.url,
@@ -585,7 +622,7 @@ export async function tryVimeo(targetUrl: string): Promise<MediaResult | null> {
             duration: configData?.video?.duration ? `${configData?.video?.duration}s` : "Unknown",
             viewCount: "N/A",
             likeCount: "N/A",
-            picker
+            picker: cleanPicker
           };
         }
       }

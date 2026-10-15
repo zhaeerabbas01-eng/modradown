@@ -9,6 +9,9 @@ import {
 import AdPlacement from "../components/AdPlacement";
 import ResultCard from "../components/ResultCard";
 import { PLATFORM_GUIDES, PlatformGuide } from "../data/platformGuides";
+import Breadcrumbs from "../components/Breadcrumbs";
+import AuthorByline from "../components/AuthorByline";
+import OutboundAuthorityLinks from "../components/OutboundAuthorityLinks";
 
 export default function PlatformDownloader() {
   const { platformSlug } = useParams<{ platformSlug: string }>();
@@ -148,6 +151,19 @@ export default function PlatformDownloader() {
       
       <div className="container mx-auto px-4 max-w-4xl relative z-10">
         
+        {/* Breadcrumb Navigation & Author Byline for E-A-T */}
+        <div className="w-full mb-2">
+          <Breadcrumbs items={[
+            { name: "Downloaders", item: "/tools" },
+            { name: `${guide.name} Downloader`, item: `/${guide.slug}` }
+          ]} />
+        </div>
+
+        {/* Author Byline Card */}
+        <div className="w-full">
+          <AuthorByline publishedAt="October 15, 2026" readTime="5 min read" />
+        </div>
+
         {/* Banner Ad Area */}
         <div className="mb-6 flex justify-center">
           <AdPlacement type="horizontal" title="Header Ad Area" />
@@ -414,6 +430,9 @@ export default function PlatformDownloader() {
               ))}
             </div>
           </section>
+
+          {/* SECTION: AUTHORITATIVE TECHNICAL REFERENCES */}
+          <OutboundAuthorityLinks />
         </article>
 
         {/* OTHER POPULAR DOWNLOADERS */}

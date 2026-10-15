@@ -61,6 +61,8 @@ export default function AboutUs() {
                       <img 
                         src="https://scontent.flyp3-1.fna.fbcdn.net/v/t39.30808-6/743811697_122136729255151249_1764959167561512097_n.jpg?stp=dst-jpg_tt6&cstp=mx1254x1254&ctp=s1254x1254&_nc_cat=105&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=sxgHSiymKcsQ7kNvwG3X7Eh&_nc_oc=AdpGzvSp6jGEeDPJDoBKoIVaih_ACKx_Vql1hY21x995gKaK4c2PxAlHk3E7losYusA&_nc_zt=23&_nc_ht=scontent.flyp3-1.fna&_nc_gid=Sja9EFWtUazWpcIZVt3_PA&_nc_ss=7b2a8&oh=00_AQOv_L6lQBnK7-VjmssqB8UuJRiiGLon8rw0cn1ssOxiew&oe=6AD5A246" 
                         alt="Muhammad Usman Zhaeer - CEO & Founder" 
+                        width={200}
+                        height={200}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover object-center rounded-full"
                       />

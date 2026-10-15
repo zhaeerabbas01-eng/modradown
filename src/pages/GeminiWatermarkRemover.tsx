@@ -7,6 +7,9 @@ import {
 } from "lucide-react";
 import AdPlacement from "../components/AdPlacement";
 import PixelDocSpotlight from "../components/PixelDocSpotlight";
+import Breadcrumbs from "../components/Breadcrumbs";
+import AuthorByline from "../components/AuthorByline";
+import OutboundAuthorityLinks from "../components/OutboundAuthorityLinks";
 import { motion, AnimatePresence } from "motion/react";
 
 export default function GeminiWatermarkRemover() {
@@ -132,13 +135,23 @@ export default function GeminiWatermarkRemover() {
   };
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 max-w-6xl">
+    <div className="container mx-auto px-4 md:px-6 py-6 md:py-10 max-w-6xl">
       <SEO
         title="Gemini Video & Image Watermark Remover Without Watermark - AI HD Downloader"
         description="Auto remove watermarks, logos, TikTok/Instagram stamps from videos and images using Gemini AI. Upload files or paste links for instant 10s clean HD video & image downloads."
         keywords="gemini watermark remover, video watermark remover AI, remove logo from video online, tiktok downloader without watermark, image watermark remover, remove watermark free 10s video"
         canonicalUrl="https://videodownloder.online/gemini-watermark-remover"
       />
+
+      {/* Breadcrumb Navigation & Author Byline */}
+      <div className="w-full mb-2">
+        <Breadcrumbs items={[
+          { name: "AI Creative Tools", item: "/tools" },
+          { name: "Gemini Watermark Remover", item: "/gemini-watermark-remover" }
+        ]} />
+      </div>
+
+      <AuthorByline publishedAt="October 15, 2026" readTime="7 min read" />
 
       {/* HERO TITLE HEADER */}
       <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
@@ -530,6 +543,9 @@ export default function GeminiWatermarkRemover() {
           </div>
         </div>
       </div>
+
+      {/* AUTHORITATIVE TECHNICAL REFERENCES */}
+      <OutboundAuthorityLinks />
     </div>
   );
 }

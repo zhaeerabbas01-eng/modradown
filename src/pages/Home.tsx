@@ -10,9 +10,25 @@ import {
 import AdPlacement from "../components/AdPlacement";
 import ResultCard from "../components/ResultCard";
 import PixelDocSpotlight from "../components/PixelDocSpotlight";
+import Breadcrumbs from "../components/Breadcrumbs";
+import AuthorByline from "../components/AuthorByline";
+import OutboundAuthorityLinks from "../components/OutboundAuthorityLinks";
+
+export type ExtractionStatus = 
+  | 'IDLE'
+  | 'ANALYZING'
+  | 'READY'
+  | 'DOWNLOADING'
+  | 'COMPLETED'
+  | 'UNSUPPORTED_URL'
+  | 'PRIVATE_OR_RESTRICTED'
+  | 'NO_DOWNLOADABLE_FORMATS'
+  | 'PROVIDER_UNAVAILABLE'
+  | 'DOWNLOAD_FAILED';
 
 export default function Home() {
   const [url, setUrl] = useState("");
+  const [status, setStatus] = useState<ExtractionStatus>("IDLE");
   const [format, setFormat] = useState<"mp4" | "mp3">("mp4");
   const [quality, setQuality] = useState<string>("auto");
   const [pasted, setPasted] = useState(false);
@@ -50,7 +66,16 @@ export default function Home() {
   const handleDownload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) return;
+
+    const trimmed = url.trim();
+    if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+      setError("Please enter a valid video URL starting with http:// or https://");
+      setStatus("UNSUPPORTED_URL");
+      return;
+    }
+
     setLoading(true);
+    setStatus("ANALYZING");
     setError("");
     setResult(null);
 
@@ -58,13 +83,24 @@ export default function Home() {
       const response = await fetch('/api/download', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: url.trim(), requestedFormat: format, requestedQuality: quality }),
+        body: JSON.stringify({ url: trimmed, requestedFormat: format, requestedQuality: quality }),
       });
       const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(data.error || "Failed to process the requested URL. Please verify the link is public.");
+        const code = data.code || "NO_DOWNLOADABLE_FORMATS";
+        setStatus(code as ExtractionStatus);
+        throw new Error(data.error || "Could not retrieve media details. Ensure the content is publicly accessible.");
       }
+
+      if (!data.picker || !Array.isArray(data.picker) || data.picker.length === 0) {
+        setStatus("NO_DOWNLOADABLE_FORMATS");
+        throw new Error("No downloadable formats are available for this video.");
+      }
+
       setResult(data);
+      setStatus("READY");
+
       setTimeout(() => {
         document.getElementById('download-result')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 100);
@@ -144,8 +180,7 @@ export default function Home() {
       />
       
       {/* HERO SECTION WITH PROMINENT DOWNLOADER ABOVE THE FOLD */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl pt-6 md:pt-10 w-full flex flex-col items-center">
-        
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl pt-4 md:pt-6 w-full flex flex-col items-center">
         {/* Banner Ad Area */}
         <div className="mb-6 text-center flex justify-center w-full">
           <AdPlacement type="horizontal" title="Header Sponsor" />
@@ -809,6 +844,9 @@ export default function Home() {
               ))}
             </div>
           </section>
+
+          {/* SECTION 13: AUTHORITATIVE TECHNICAL REFERENCES & GOOGLE STANDARDS */}
+          <OutboundAuthorityLinks />
 
         </article>
       </section>

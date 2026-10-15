@@ -188,6 +188,16 @@
             enumerable: true
           });
         } catch(e) { console.error(e); }
+
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event.reason && (
+            (typeof event.reason === 'string' && event.reason.includes('WebSocket')) ||
+            (event.reason.message && event.reason.message.includes('WebSocket'))
+          )) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        });
       })();
     </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7035962451879722" crossorigin="anonymous"></script>

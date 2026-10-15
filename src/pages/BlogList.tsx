@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { Search, Calendar, Clock, ArrowRight, User, BookOpen } from "lucide-react";
 import { BLOG_POSTS, CATEGORIES, AUTHORS, GENERATE_SEO_TEMPLATES } from "../data/blogData";
 import AdPlacement from "../components/AdPlacement";
+import Breadcrumbs from "../components/Breadcrumbs";
+import AuthorByline from "../components/AuthorByline";
 
 export default function BlogList() {
   const [search, setSearch] = useState("");
@@ -39,8 +41,17 @@ export default function BlogList() {
       <div className="absolute top-[15%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-primary/5 blur-[150px] pointer-events-none" />
       <div className="absolute bottom-[15%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-secondary/5 blur-[150px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 max-w-7xl pt-4 md:pt-6 relative z-10">
+      <div className="container mx-auto px-4 max-w-7xl pt-2 md:pt-4 relative z-10">
         
+        {/* Breadcrumb Navigation */}
+        <div className="w-full mb-2">
+          <Breadcrumbs items={[
+            { name: "Academy & Guides", item: "/blog" }
+          ]} />
+        </div>
+
+        <AuthorByline publishedAt="October 15, 2026" readTime="20+ Editorial Guides" />
+
         {/* Header Banner Ad Slot */}
         <div className="mb-6">
           <AdPlacement type="horizontal" title="Header Ad Area" />

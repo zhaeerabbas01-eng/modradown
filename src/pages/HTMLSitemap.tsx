@@ -9,6 +9,7 @@ import { BLOG_POSTS } from "../data/blogData";
 
 export default function HTMLSitemap() {
   const downloaders = [
+    { name: "Gemini Video & Image Watermark Remover", path: "/gemini-watermark-remover", desc: "Auto remove watermarks, logos & stamps using Gemini AI" },
     { name: "YouTube Video Downloader", path: "/youtube-downloader", desc: "Download YouTube videos in 1080p MP4 or MP3" },
     { name: "TikTok Video Downloader", path: "/tiktok-downloader", desc: "Save TikTok clips and sounds without watermark" },
     { name: "Instagram Video Downloader", path: "/instagram-downloader", desc: "Extract public Reels, feed clips, and creator videos" },

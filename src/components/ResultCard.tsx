@@ -1,56 +1,120 @@
-import React, { useState } from 'react';
-import { Download, Copy, ExternalLink, Zap, CheckCircle2, ShieldCheck, Film } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Download, Copy, ExternalLink, Zap, ShieldCheck, Film, AlertCircle, Loader2 } from 'lucide-react';
 import { REVOLTHEM_DIRECT_ADS } from './AdPlacement';
 
 export default function ResultCard({ result }: { result: any }) {
-  const [selectedUrl, setSelectedUrl] = useState(
-    result.picker && result.picker.length > 0 ? result.picker[0].url : result.url
-  );
+  const defaultOption = result?.picker && result.picker.length > 0 ? result.picker[0].url : (result?.tunnel || result?.url || "");
+  const [selectedUrl, setSelectedUrl] = useState<string>(defaultOption);
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string>("");
+
+  useEffect(() => {
+    const initial = result?.picker && result.picker.length > 0 ? result.picker[0].url : (result?.tunnel || result?.url || "");
+    setSelectedUrl(initial);
+    setDownloadError("");
+    setDownloading(false);
+  }, [result]);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(selectedUrl || result.url);
+    if (!selectedUrl) return;
+    navigator.clipboard.writeText(selectedUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleFastDownload = () => {
-    const downloadTarget = selectedUrl || result.url || result.tunnel;
-    if (!downloadTarget) return;
+  const handleFastDownload = async () => {
+    const rawTarget = selectedUrl || result?.tunnel || result?.url;
+    if (!rawTarget) {
+      setDownloadError("No valid download URL selected.");
+      return;
+    }
 
     setDownloading(true);
-    const safeTitle = (result.title || "ModraDown_video")
-      .replace(/[^a-zA-Z0-9_-]/g, "_")
-      .slice(0, 50);
+    setDownloadError("");
 
-    const isAudio = selectedUrl?.toLowerCase().includes("audio") || selectedUrl?.toLowerCase().includes("mp3");
-    const fileExt = isAudio ? ".mp3" : ".mp4";
-    const fullFilename = `${safeTitle}${fileExt}`;
+    try {
+      const safeTitle = (result?.title || "video")
+        .replace(/[^a-zA-Z0-9_-]/g, "_")
+        .slice(0, 50);
 
-    // Use backend streaming tunnel to bypass CORS/hotlinking restrictions
-    const tunnelUrl = `/api/tunnel?url=${encodeURIComponent(downloadTarget)}&filename=${encodeURIComponent(fullFilename)}`;
+      const isAudio = selectedUrl?.toLowerCase().includes("audio") || selectedUrl?.toLowerCase().includes("mp3");
+      const isImg = selectedUrl?.toLowerCase().includes("image") || selectedUrl?.toLowerCase().includes(".jpg") || selectedUrl?.toLowerCase().includes(".png");
+      const fileExt = isAudio ? ".mp3" : isImg ? ".jpg" : ".mp4";
+      const fullFilename = `${safeTitle}${fileExt}`;
 
-    const link = document.createElement('a');
-    link.href = tunnelUrl;
-    link.setAttribute('download', fullFilename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      // Calculate final target tunnel URL if not already tunneled
+      const targetTunnelUrl = rawTarget.startsWith('/api/tunnel') 
+        ? rawTarget 
+        : `/api/tunnel?url=${encodeURIComponent(rawTarget)}&filename=${encodeURIComponent(fullFilename)}`;
 
-    setTimeout(() => {
+      // Step 1: Pre-verify stream using fetch to prevent "Failed - No file" or corrupt HTML downloads
+      const response = await fetch(targetTunnelUrl, { method: 'GET' });
+      const contentType = response.headers.get("content-type") || "";
+
+      if (!response.ok || contentType.includes("application/json") || contentType.includes("text/html")) {
+        let errMsg = "";
+        try {
+          const errJson = await response.json();
+          errMsg = errJson.error;
+        } catch (_) {}
+
+        // Fallback: If backend tunnel fails due to IP restrictions or signed CDN tokens, launch direct client browser download
+        if (rawTarget && rawTarget.startsWith('http')) {
+          const directLink = document.createElement('a');
+          directLink.href = rawTarget;
+          directLink.target = '_blank';
+          directLink.rel = 'noopener noreferrer';
+          directLink.setAttribute('download', fullFilename);
+          document.body.appendChild(directLink);
+          directLink.click();
+          document.body.removeChild(directLink);
+          return;
+        }
+
+        throw new Error(errMsg || "Source media server restricted the direct proxy stream. Use the direct link fallback below.");
+      }
+
+      // Step 2: Read response stream as Blob
+      const blob = await response.blob();
+      if (blob.size === 0) {
+        if (rawTarget && rawTarget.startsWith('http')) {
+          window.open(rawTarget, '_blank', 'noopener,noreferrer');
+          return;
+        }
+        throw new Error("Received empty file stream from media server.");
+      }
+
+      // Step 3: Trigger safe Blob URL download
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.setAttribute('download', fullFilename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up blob URL after delay
+      setTimeout(() => {
+        window.URL.revokeObjectURL(blobUrl);
+      }, 5000);
+
+    } catch (err: any) {
+      console.error("Download Error:", err);
+      setDownloadError(err.message || "Failed to download media file. Click 'Open Direct Link' to save from source CDN.");
+    } finally {
       setDownloading(false);
-    }, 2500);
+    }
   };
 
   const handleOpenSource = () => {
-    const target = selectedUrl || result.url;
+    const target = selectedUrl || result?.url;
     if (target) {
       window.open(target, '_blank', 'noopener,noreferrer');
     }
   };
 
-  const rawTargetUrl = selectedUrl || result.url || result.tunnel;
+  const rawTargetUrl = selectedUrl || result?.url || result?.tunnel;
   const currentSelectionIsVideo = Boolean(rawTargetUrl);
   const isEmbed = rawTargetUrl?.includes("youtube.com/embed/") || rawTargetUrl?.includes("player.vimeo.com/");
   const videoStreamSrc = rawTargetUrl?.startsWith('/api/') ? rawTargetUrl : `/api/tunnel?url=${encodeURIComponent(rawTargetUrl)}&inline=true`;
@@ -91,8 +155,8 @@ export default function ResultCard({ result }: { result: any }) {
 
       {/* Info & Controls */}
       <div className="flex-1 w-full flex flex-col justify-center">
-        <div className="flex items-center gap-2 text-xs font-bold text-green-600 dark:text-green-400 mb-2">
-          <ShieldCheck className="w-4 h-4" />
+        <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-2">
+          <ShieldCheck className="w-4 h-4 shrink-0" />
           <span>Stream Verified &amp; Ready for Fast Download</span>
         </div>
 
@@ -101,11 +165,11 @@ export default function ResultCard({ result }: { result: any }) {
         </h3>
 
         {/* Format Selector */}
-        {result.picker && result.picker.length > 0 && (
+        {result.picker && result.picker.length > 0 ? (
           <div className="flex flex-col gap-1.5 mb-5">
             <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1">
-              <Film className="w-3 h-3" />
-              <span>Available Qualities:</span>
+              <Film className="w-3.5 h-3.5" />
+              <span>Available Qualities ({result.picker.length}):</span>
             </label>
             <select 
               value={selectedUrl}
@@ -115,69 +179,75 @@ export default function ResultCard({ result }: { result: any }) {
             >
               {result.picker.map((p: any, idx: number) => (
                 <option key={idx} value={p.url} className="bg-white dark:bg-[#0a0f25] text-gray-900 dark:text-gray-100">
-                  {p.quality || 'Standard Video'}
+                  {p.quality || 'Standard Quality'}
                 </option>
               ))}
             </select>
+          </div>
+        ) : (
+          <div className="p-3 mb-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-medium">
+            No additional downloadable formats are available for this video.
+          </div>
+        )}
+
+        {/* Error message banner */}
+        {downloadError && (
+          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{downloadError}</span>
           </div>
         )}
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <button
+            onClick={handleFastDownload}
+            disabled={downloading}
+            className="w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {downloading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Preparing Stream Download...</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4" />
+                <span>Download Media File</span>
+              </>
+            )}
+          </button>
+
+          <div className="grid grid-cols-2 gap-3">
             <button
-              onClick={handleFastDownload}
-              disabled={downloading}
-              className="flex-1 bg-gradient-to-r from-brand-primary to-brand-secondary hover:brightness-110 text-white px-6 py-3.5 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-brand-primary/25 cursor-pointer active:scale-95 disabled:opacity-80"
-            >
-              <Download className={`w-5 h-5 ${downloading ? "animate-spin" : "animate-bounce"}`} />
-              <span>{downloading ? "Starting Download..." : "⚡ Fast Direct Download"}</span>
-            </button>
-            
-            <button 
               onClick={handleCopy}
-              className="bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 px-4 py-3.5 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 cursor-pointer"
+              className="py-2.5 px-4 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 font-semibold text-xs flex items-center justify-center gap-1.5 transition-all"
             >
-              <Copy className="w-4 h-4" />
-              <span>{copied ? "Copied!" : "Copy"}</span>
+              <Copy className="w-3.5 h-3.5" />
+              <span>{copied ? "Copied!" : "Copy Link"}</span>
             </button>
 
             <button
               onClick={handleOpenSource}
-              title="Open raw CDN stream in new tab"
-              className="bg-transparent border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 px-3.5 py-3.5 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1 cursor-pointer"
+              className="py-2.5 px-4 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 font-semibold text-xs flex items-center justify-center gap-1.5 transition-all"
             >
-              <ExternalLink className="w-4 h-4" />
-              <span className="hidden sm:inline">Stream</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>Open Direct Link</span>
             </button>
           </div>
-
-          {/* Sponsored Fast Direct Links */}
-          <div className="pt-3 border-t border-gray-100 dark:border-white/10 flex flex-wrap gap-2 items-center">
-            <span className="text-[11px] font-bold text-gray-400 flex items-center gap-1">
-              <Zap className="w-3.5 h-3.5 text-amber-400" />
-              <span>High Speed Mirrors:</span>
-            </span>
-            <a 
-              href={REVOLTHEM_DIRECT_ADS[0]} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-xs bg-gray-100 dark:bg-white/5 hover:bg-brand-primary/20 text-gray-800 dark:text-gray-200 hover:text-brand-primary px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1 border border-gray-200 dark:border-white/10"
-            >
-              <span>Mirror 1 (Ultra Speed)</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
-            <a 
-              href={REVOLTHEM_DIRECT_ADS[1]} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-xs bg-gray-100 dark:bg-white/5 hover:bg-brand-primary/20 text-gray-800 dark:text-gray-200 hover:text-brand-primary px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1 border border-gray-200 dark:border-white/10"
-            >
-              <span>Mirror 2 (Backup HD)</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
-          </div>
         </div>
+
+        {/* Optional Direct Ad Link */}
+        {REVOLTHEM_DIRECT_ADS[0] && (
+          <a
+            href={REVOLTHEM_DIRECT_ADS[0]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 text-[11px] text-center text-gray-400 hover:text-brand-primary underline transition-colors"
+          >
+            Sponsored Download High-Speed Mirror
+          </a>
+        )}
       </div>
     </div>
   );

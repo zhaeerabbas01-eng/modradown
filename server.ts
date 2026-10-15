@@ -230,12 +230,26 @@ async function startServer() {
     return apiKey ? aiClient : null;
   }
 
+  function isSafeUrl(rawUrl: string): boolean {
+    try {
+      const parsed = new URL(rawUrl);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false;
+      const hostname = parsed.hostname.toLowerCase();
+      if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '0.0.0.0') return false;
+      if (hostname.startsWith('10.') || hostname.startsWith('192.168.') || hostname.startsWith('169.254.')) return false;
+      if (/^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname)) return false;
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   // High-speed direct media streaming tunnel & download endpoint
   app.get("/api/tunnel", async (req, res) => {
     const rawUrl = req.query.url as string;
     const rawFilename = (req.query.filename as string) || "video.mp4";
-    if (!rawUrl) {
-      return res.status(400).send("Missing media URL parameter");
+    if (!rawUrl || !isSafeUrl(rawUrl)) {
+      return res.status(400).json({ error: "Invalid or restricted target media URL" });
     }
 
     try {
@@ -243,7 +257,7 @@ async function startServer() {
       const cleanFilename = (decodeURIComponent(rawFilename) || "video.mp4")
         .replace(/[^a-zA-Z0-9._-]/g, "_")
         .slice(0, 80);
-      const filenameWithExt = cleanFilename.endsWith(".mp4") || cleanFilename.endsWith(".mp3") 
+      const filenameWithExt = cleanFilename.endsWith(".mp4") || cleanFilename.endsWith(".mp3") || cleanFilename.endsWith(".jpg") || cleanFilename.endsWith(".png")
         ? cleanFilename 
         : `${cleanFilename}.mp4`;
 
@@ -260,16 +274,21 @@ async function startServer() {
         referer = "https://www.pinterest.com/";
       }
 
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+
       const fetchRes = await fetch(targetUrl, {
+        signal: controller.signal,
         headers: {
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
           "Referer": referer,
           "Accept": "*/*"
         }
       });
+      clearTimeout(timeout);
 
       if (!fetchRes.ok || !fetchRes.body) {
-        return res.redirect(targetUrl);
+        return res.status(502).json({ error: `Source server returned HTTP status ${fetchRes.status}` });
       }
 
       if (req.query.inline === "true" || req.query.stream === "true") {
@@ -280,6 +299,12 @@ async function startServer() {
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.setHeader("Accept-Ranges", "bytes");
       const contentType = fetchRes.headers.get("content-type") || "video/mp4";
+      
+      // If server returned HTML instead of media, fail cleanly as JSON rather than sending corrupt file
+      if (contentType.includes("text/html") && !req.query.inline) {
+        return res.status(422).json({ error: "Source URL returned an HTML web page rather than a video stream." });
+      }
+
       res.setHeader("Content-Type", contentType);
       const contentLength = fetchRes.headers.get("content-length");
       if (contentLength) {
@@ -297,11 +322,7 @@ async function startServer() {
       res.end();
     } catch (e: any) {
       if (!res.headersSent) {
-        try {
-          res.redirect(rawUrl);
-        } catch (_) {
-          res.status(500).send("Stream error");
-        }
+        res.status(500).json({ error: "Direct media streaming error or connection timeout.", details: e.message });
       }
     }
   });
@@ -310,8 +331,17 @@ async function startServer() {
   app.post("/api/download", async (req, res) => {
     const { url } = req.body;
 
-    if (!url) {
-      return res.status(400).json({ error: "URL is required", reason: "missing_url", status: 400 });
+    if (!url || typeof url !== 'string') {
+      return res.status(400).json({ error: "URL is required", code: "UNSUPPORTED_URL", status: 400 });
+    }
+
+    const trimmedUrl = url.trim();
+    if (!isSafeUrl(trimmedUrl)) {
+      return res.status(400).json({ 
+        error: "Invalid or unsupported URL. Please enter a valid public http or https video link.", 
+        code: "UNSUPPORTED_URL", 
+        status: 400 
+      });
     }
 
     try {
@@ -319,14 +349,14 @@ async function startServer() {
       let errors: any[] = [];
       let extractorUsed = "";
 
-      let isYoutube = url.includes("youtube.com") || url.includes("youtu.be");
-      let isX = url.includes("twitter.com") || url.includes("x.com");
-      let isFb = url.includes("facebook.com") || url.includes("fb.watch");
-      let isIg = url.includes("instagram.com");
-      let isTiktok = url.includes("tiktok.com");
-      let isPinterest = url.includes("pinterest.com") || url.includes("pin.it");
-      let isReddit = url.includes("reddit.com");
-      let isVimeo = url.includes("vimeo.com");
+      let isYoutube = trimmedUrl.includes("youtube.com") || url.includes("youtu.be");
+      let isX = trimmedUrl.includes("twitter.com") || url.includes("x.com");
+      let isFb = trimmedUrl.includes("facebook.com") || url.includes("fb.watch");
+      let isIg = trimmedUrl.includes("instagram.com");
+      let isTiktok = trimmedUrl.includes("tiktok.com");
+      let isPinterest = trimmedUrl.includes("pinterest.com") || url.includes("pin.it");
+      let isReddit = trimmedUrl.includes("reddit.com");
+      let isVimeo = trimmedUrl.includes("vimeo.com");
 
       let platform = isYoutube ? "youtube" : isX ? "x" : isFb ? "facebook" : isIg ? "instagram" : isTiktok ? "tiktok" : isPinterest ? "pinterest" : isReddit ? "reddit" : isVimeo ? "vimeo" : "unknown";
 
@@ -340,7 +370,7 @@ async function startServer() {
           return targetUrl;
       }
       
-      const resolvedUrl = await resolveRedirect(url);
+      const resolvedUrl = await resolveRedirect(trimmedUrl);
 
       // 1. Check Direct File or OpenGraph
       mediaData = await tryDirectFileOrOgMedia(resolvedUrl);
@@ -1168,23 +1198,12 @@ async function startServer() {
         }
       }
 
-      // High-speed Stream Tunnel fallback guarantee
-      if (!mediaData) {
-        const streamTunnelUrl = `/api/tunnel?url=${encodeURIComponent(resolvedUrl)}&filename=video.mp4`;
-        mediaData = {
-          title: "Public Video Stream",
-          url: resolvedUrl,
-          tunnel: streamTunnelUrl,
-          thumbnail: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600",
-          description: "Media stream extracted for high-speed download",
-          duration: "Unknown",
-          viewCount: "N/A",
-          likeCount: "N/A",
-          picker: [
-            { url: streamTunnelUrl, quality: "High Quality Stream (Direct Download)" },
-            { url: resolvedUrl, quality: "Original Source Stream" }
-          ]
-        };
+      if (!mediaData || !mediaData.picker || mediaData.picker.length === 0) {
+        return res.status(404).json({
+          error: "No downloadable formats are available for this video. Please verify the URL is public, un-restricted, and contains downloadable media.",
+          code: "NO_DOWNLOADABLE_FORMATS",
+          status: 404
+        });
       }
 
       // Final sanitization of picker URLs to make sure they are strings

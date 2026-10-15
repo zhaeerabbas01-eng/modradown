@@ -4,6 +4,9 @@ import { useParams, Link } from "react-router-dom";
 import { Calendar, Clock, ArrowLeft, Tag, Share2, CornerDownRight, ShieldCheck, Mail } from "lucide-react";
 import { AUTHORS, GENERATE_SEO_TEMPLATES } from "../data/blogData";
 import AdPlacement from "../components/AdPlacement";
+import Breadcrumbs from "../components/Breadcrumbs";
+import AuthorByline from "../components/AuthorByline";
+import OutboundAuthorityLinks from "../components/OutboundAuthorityLinks";
 
 export default function BlogPostDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -118,8 +121,17 @@ export default function BlogPostDetail() {
       <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-primary/5 blur-[150px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-secondary/5 blur-[150px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 max-w-7xl pt-4 md:pt-6 relative z-10">
+      <div className="container mx-auto px-4 max-w-7xl pt-2 md:pt-4 relative z-10">
         
+        {/* Breadcrumb Navigation */}
+        <div className="w-full mb-2">
+          <Breadcrumbs items={[
+            { name: "Academy", item: "/blog" },
+            { name: post.category, item: "/blog" },
+            { name: post.title, item: `/blog/${post.slug}` }
+          ]} />
+        </div>
+
         {/* Banner Ad Area */}
         <div className="mb-6">
           <AdPlacement type="horizontal" title="Header Ad Area" />
@@ -151,9 +163,20 @@ export default function BlogPostDetail() {
             </span>
 
             {/* Master display heading */}
-            <h1 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-tight mb-6">
+            <h1 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-tight mb-4">
               {post.title}
             </h1>
+
+            {/* Author Byline E-A-T Block */}
+            <AuthorByline 
+              publishedAt={post.publishedAt} 
+              updatedAt={post.updatedAt} 
+              readTime={post.readTime}
+              authorName={author?.name || "Muhammad Usman Zhaeer"}
+              authorRole={author?.role || "Founder & Lead Systems Engineer"}
+              authorBio={author?.bio}
+              experience={author?.experience}
+            />
 
             {/* Post meta summary details */}
             <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-gray-600 dark:text-gray-300 border-b border-gray-200 dark:border-white/10 pb-6 mb-8">
@@ -249,7 +272,7 @@ export default function BlogPostDetail() {
             </div>
 
             {/* Article Tags Footer */}
-            <div className="flex flex-wrap items-center gap-2 pt-8 border-t border-gray-200 dark:border-white/10 mt-8">
+            <div className="flex flex-wrap items-center gap-2 pt-8 border-t border-gray-200 dark:border-white/10 mt-8 mb-6">
               <Tag className="h-4 w-4 text-gray-500 dark:text-gray-400 mr-2" />
               {post.tags.map(tag => (
                 <span key={tag} className="px-2.5 py-1 text-xs rounded-md bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-mono">
@@ -257,6 +280,9 @@ export default function BlogPostDetail() {
                 </span>
               ))}
             </div>
+
+            {/* Authoritative Technical References */}
+            <OutboundAuthorityLinks />
 
           </article>
 
