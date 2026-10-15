@@ -32,6 +32,16 @@ interface ToolConfig {
 
 const tools: ToolConfig[] = [
   {
+    id: "gemini-watermark",
+    name: "Gemini Video & Image Watermark Remover",
+    description: "Remove watermarks, logos & stamps from videos (up to 10s) and images using Gemini AI.",
+    icon: Sparkles,
+    placeholder: "Paste watermarked video or image link here...",
+    optionsLabel: "Watermark Target",
+    options: ["Auto AI Detection", "Bottom-Right Corner", "Top-Right Corner", "Center Stamp"],
+    paramName: "corner"
+  },
+  {
     id: "hashtag",
     name: "Hashtag Generator",
     description: "Produce highly targeted hashtags categorized by reach parameters to boost Discoverability.",
@@ -150,6 +160,42 @@ export default function AITools() {
     const startTime = Date.now();
 
     try {
+      if (activeToolId === 'gemini-watermark') {
+        const formData = new FormData();
+        formData.append("mediaUrl", prompt.trim());
+        formData.append("corner", secondaryVal || "auto");
+
+        const res = await fetch(`/api/watermark/remove`, {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+           const sections: AIResultSection[] = [{
+             title: "Gemini Watermark Removal Result",
+             items: [
+               { title: "Clean Title", content: data.title },
+               { title: "Status", content: data.watermarkStatus || "Watermark Stripped Successfully" },
+               { title: "Clean Stream / Download Link", content: data.cleanUrl },
+               { title: "Supported Output", content: "HD Clean 10s Clip / Image Download Ready" }
+             ]
+           }];
+           setOutputObj({ sections });
+           setStats({
+                time: ((Date.now() - startTime) / 1000),
+                chars: data.title.length,
+                words: data.title.split(' ').length
+            });
+            setTimeout(() => {
+                resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        } else {
+          setError(data.error || "Failed processing watermark removal.");
+        }
+        setLoading(false);
+        return;
+      }
+
       if (activeToolId === 'youtube-meta') {
         const res = await fetch(`/api/download`, {
           method: "POST",

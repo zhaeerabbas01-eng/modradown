@@ -47,19 +47,48 @@ export default function BlogList() {
         </div>
 
         {/* Title Block */}
-        <div className="text-center mb-16 max-w-3xl mx-auto space-y-6">
-          <div className="inline-flex items-center space-x-2 bg-white/60 backdrop-blur-sm border border-brand-primary/20 rounded-full px-4 py-1.5 text-brand-primary">
+        <div className="text-center mb-10 max-w-3xl mx-auto space-y-4">
+          <div className="inline-flex items-center space-x-2 bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-brand-primary/20 rounded-full px-4 py-1.5 text-brand-primary">
             <BookOpen className="h-3.5 w-3.5" />
-            <span className="text-xs font-semibold">Knowledge Base & Marketing Guides</span>
+            <span className="text-xs font-semibold">Knowledge Base, SEO Guides & AI Media Articles</span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
-            Digital Growth <span className="text-brand-primary">Academy</span>
+          <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight">
+            Digital Growth & <span className="text-brand-primary">AI Articles</span>
           </h1>
           
           <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 leading-relaxed">
-            Expert strategies on TikTok hooks, Instagram Reels loop formulas, YouTube metadata configuration, and the latest post-production workflow tutorials.
+            Expert articles on Gemini video watermark removal, TikTok/Reels loops, AI image cleaning, and post-production workflows.
           </p>
+        </div>
+
+        {/* FEATURED GEMINI WATERMARK REMOVER ARTICLE CARD */}
+        <div className="mb-10 p-6 md:p-8 rounded-3xl bg-gradient-to-r from-purple-900/30 via-brand-primary/20 to-pink-600/20 border border-purple-500/30 shadow-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+            <div className="space-y-3 max-w-3xl">
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-500 text-white shadow-sm">
+                  NEW FEATURED ARTICLE
+                </span>
+                <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/10 text-purple-300 border border-purple-500/30">
+                  Gemini AI & Watermark Tools
+                </span>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-black text-white group-hover:text-purple-300 transition-colors">
+                Gemini Video & Image Downloader Without Watermark Guide (2026)
+              </h2>
+              <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
+                Learn how AI watermark remover technology detects logos, removes stamps from TikTok/Reels/Shorts, and exports clean HD MP4 videos up to 10 seconds and high-resolution images.
+              </p>
+            </div>
+            <Link
+              to="/blog/gemini-video-image-downloader-without-watermark-guide"
+              className="shrink-0 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-brand-primary to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-black text-sm shadow-xl hover:shadow-purple-500/25 transition-all flex items-center gap-2 group-hover:scale-105"
+            >
+              Read Full Article <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
 
         {/* Search and Category Filter Toolbar */}

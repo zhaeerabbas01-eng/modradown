@@ -59,13 +59,10 @@ export default function AboutUs() {
                     <div className="w-full h-full rounded-full bg-[#050816] flex items-center justify-center overflow-hidden border-4 border-[#0a0f25] relative">
                       {/* Founder Profile Image in Circle */}
                       <img 
-                        src="https://scontent.flyp14-1.fna.fbcdn.net/v/t39.30808-6/753551126_122139552627128597_9033775503917050569_n.jpg?stp=dst-jpg_tt6&cstp=mx1920x1920&ctp=s1920x1920&_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHM-Pn0xy0FbpGoh4lBnmBpoBWUL9OVF7-gFZQv05UXv8VxtKB8kG2tTOFEv7vvs0pG0ioE6oqiYY_cHsxuVgZV&_nc_ohc=msPQFhmno9wQ7kNvwEr4fSH&_nc_oc=AdomdSBiq3gmeTxmbpr4FOf_ANwNikRFyeQd4ieqtO-IaKYT2cwakRVu2ntU3AG5rrE&_nc_zt=23&_nc_ht=scontent.flyp14-1.fna&_nc_gid=Z6fiOZeicyyolfT2EcgcTQ&_nc_ss=7b2a8&oh=00_AQAdAe_tivzAjFIvcOPRRKaUJnlwwoy7wrJsWaGZxe-y5A&oe=6A690D6B" 
+                        src="https://scontent.flyp3-1.fna.fbcdn.net/v/t39.30808-6/743811697_122136729255151249_1764959167561512097_n.jpg?stp=dst-jpg_tt6&cstp=mx1254x1254&ctp=s1254x1254&_nc_cat=105&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=sxgHSiymKcsQ7kNvwG3X7Eh&_nc_oc=AdpGzvSp6jGEeDPJDoBKoIVaih_ACKx_Vql1hY21x995gKaK4c2PxAlHk3E7losYusA&_nc_zt=23&_nc_ht=scontent.flyp3-1.fna&_nc_gid=Sja9EFWtUazWpcIZVt3_PA&_nc_ss=7b2a8&oh=00_AQOv_L6lQBnK7-VjmssqB8UuJRiiGLon8rw0cn1ssOxiew&oe=6AD5A246" 
                         alt="Muhammad Usman Zhaeer - CEO & Founder" 
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
+                        className="w-full h-full object-cover object-center rounded-full"
                       />
                       {/* Fallback Icon */}
                       <User className="w-20 h-20 text-gray-600 hidden fallback-icon:block absolute" />

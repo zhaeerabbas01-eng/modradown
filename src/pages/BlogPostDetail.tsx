@@ -186,6 +186,12 @@ export default function BlogPostDetail() {
               {post.content.trim().split("\n\n").map((para, i, arr) => {
                 const rendered = [];
                 // Render paragraphs
+                const formatMarkdown = (text: string) => {
+                  return text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-brand-primary font-bold underline decoration-brand-primary/40 hover:decoration-brand-primary transition-all">$1</a>');
+                };
+
                 if (para.startsWith("# ")) {
                   rendered.push(
                     <h1 key={i} className="text-2xl md:text-3xl font-black font-sans text-gray-900 dark:text-gray-100 pt-6 pb-2 border-b border-gray-200 dark:border-white/10">
@@ -208,7 +214,7 @@ export default function BlogPostDetail() {
                   rendered.push(
                     <ul key={i} className="list-disc pl-6 space-y-2 text-gray-600 dark:text-gray-300">
                       {para.split("\n").map((li, liIdx) => (
-                        <li key={liIdx} dangerouslySetInnerHTML={{ __html: li.replace("*", "").trim().replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                        <li key={liIdx} dangerouslySetInnerHTML={{ __html: formatMarkdown(li.replace("*", "").trim()) }} />
                       ))}
                     </ul>
                   );
@@ -216,14 +222,12 @@ export default function BlogPostDetail() {
                   rendered.push(
                     <ol key={i} className="list-decimal pl-6 space-y-2 text-gray-600 dark:text-gray-300">
                       {para.split("\n").map((li, liIdx) => (
-                        <li key={liIdx} dangerouslySetInnerHTML={{ __html: li.substring(li.indexOf(".") + 1).trim().replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                        <li key={liIdx} dangerouslySetInnerHTML={{ __html: formatMarkdown(li.substring(li.indexOf(".") + 1).trim()) }} />
                       ))}
                     </ol>
                   );
                 } else {
-                  // Parse bold text in normal paragraphs
-                  const parsedPara = para.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                  rendered.push(<p key={i} dangerouslySetInnerHTML={{ __html: parsedPara }} />);
+                  rendered.push(<p key={i} dangerouslySetInnerHTML={{ __html: formatMarkdown(para) }} />);
                 }
 
                 // Inject ad in the middle

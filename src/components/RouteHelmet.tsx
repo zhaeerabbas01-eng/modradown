@@ -29,7 +29,7 @@ interface RouteMetaConfig {
   customSchema?: any;
 }
 
-const CANONICAL_DOMAIN = 'https://modradown.com';
+const CANONICAL_DOMAIN = 'https://videodownloder.online';
 const DEFAULT_OG_IMAGE = `${CANONICAL_DOMAIN}/favicon.png`;
 
 // High-value competitive metadata definitions matching Google AdSense high-CPC keywords

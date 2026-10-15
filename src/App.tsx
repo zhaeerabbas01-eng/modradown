@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import { Sparkles, Video, BookOpen, Heart, HelpCircle, Mail, ShieldAlert, ArrowRight, Moon, Sun, ChevronDown, Menu as MenuIcon, X as CloseIcon, User, ShieldCheck, HeartHandshake, Download } from "lucide-react";
+import { Sparkles, Video, BookOpen, Heart, HelpCircle, Mail, ShieldAlert, ArrowRight, Moon, Sun, ChevronDown, Menu as MenuIcon, X as CloseIcon, User, ShieldCheck, HeartHandshake, Download, Home as HomeIcon, Info, Globe } from "lucide-react";
 import Home from "./pages/Home";
 import PlatformDownloader from "./pages/PlatformDownloader";
 import AITools from "./pages/AITools";
@@ -16,6 +16,7 @@ import CookiePolicy from "./pages/CookiePolicy";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import HTMLSitemap from "./pages/HTMLSitemap";
+import GeminiWatermarkRemover from "./pages/GeminiWatermarkRemover";
 import CookieConsent from "./components/CookieConsent";
 import RouteHelmet from "./components/RouteHelmet";
 import JsonLdSchema from "./components/JsonLdSchema";
@@ -28,8 +29,8 @@ function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLa
   const location = useLocation();
   const path = location.pathname;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [glowEnabled, setGlowEnabled] = useState(false); // Default false = light mode
-  const t = translations[language];
+  const [glowEnabled, setGlowEnabled] = useState(false);
+  const t = translations[language as keyof typeof translations] || translations.en;
 
   useEffect(() => {
     if (glowEnabled) {
@@ -41,128 +42,177 @@ function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLa
     }
   }, [glowEnabled]);
 
+  const platformLinks = [
+    { name: "Gemini Watermark Remover", slug: "/gemini-watermark-remover", color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-500/10 dark:bg-purple-500/20" },
+    { name: "YouTube Downloader", slug: "/youtube-downloader", color: "text-red-600", bg: "bg-red-500/10 dark:bg-red-500/20" },
+    { name: "TikTok Downloader", slug: "/tiktok-downloader", color: "text-slate-900 dark:text-white", bg: "bg-slate-900/10 dark:bg-white/10" },
+    { name: "Instagram Downloader", slug: "/instagram-downloader", color: "text-pink-600", bg: "bg-pink-500/10 dark:bg-pink-500/20" },
+    { name: "Facebook Downloader", slug: "/facebook-downloader", color: "text-blue-600", bg: "bg-blue-500/10 dark:bg-blue-500/20" },
+    { name: "Twitter (X) Downloader", slug: "/twitter-downloader", color: "text-slate-900 dark:text-white", bg: "bg-slate-900/10 dark:bg-white/10" },
+    { name: "Pinterest Downloader", slug: "/pinterest-downloader", color: "text-red-500", bg: "bg-red-500/10 dark:bg-red-500/20" },
+    { name: "Reddit Downloader", slug: "/reddit-downloader", color: "text-orange-500", bg: "bg-orange-500/10 dark:bg-orange-500/20" },
+    { name: "Vimeo Downloader", slug: "/vimeo-downloader", color: "text-blue-400", bg: "bg-blue-400/10 dark:bg-blue-400/20" }
+  ];
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-white/10 bg-white/95 dark:bg-[#050816]/95 backdrop-blur-md transition-colors duration-300">
-      <div className="container mx-auto max-w-7xl px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#050816]/95 backdrop-blur-md transition-colors duration-300">
+      <div className="container mx-auto max-w-7xl px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-3 md:gap-6">
         
-        {/* LOGO: MODRADOWN */}
-        <Link to="/" className="flex items-center gap-2.5 shrink-0 group relative z-50">
-          <div className="h-9 w-9 flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" className="w-full h-full transform transition-transform group-hover:scale-105">
-               <defs>
-                 <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                   <stop offset="0%" stopColor="#6650ff" />
-                   <stop offset="100%" stopColor="#d946ef" />
-                 </linearGradient>
-               </defs>
-               <path d="M4 21V5l8 6 8-6v16" fill="none" stroke="url(#logo-gradient)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+        {/* BRAND LOGO */}
+        <Link to="/" className="flex items-center gap-2.5 shrink-0 group relative z-50 py-1">
+          <div className="h-9 w-9 md:h-10 md:w-10 rounded-xl bg-gradient-to-tr from-brand-primary via-purple-600 to-pink-500 p-0.5 shadow-md shadow-brand-primary/20 group-hover:scale-105 transition-transform duration-300">
+            <div className="w-full h-full bg-white dark:bg-[#080d22] rounded-[10px] flex items-center justify-center">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 md:w-6 md:h-6 transform transition-transform group-hover:scale-110">
+                 <defs>
+                   <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                     <stop offset="0%" stopColor="#6650ff" />
+                     <stop offset="100%" stopColor="#d946ef" />
+                   </linearGradient>
+                 </defs>
+                 <path d="M4 21V5l8 6 8-6v16" fill="none" stroke="url(#logo-gradient)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
           </div>
-          <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
-            ModraDown
-          </span>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <span className="font-black text-xl md:text-2xl tracking-tight text-slate-900 dark:text-white leading-none">
+                Modra<span className="text-brand-primary">Down</span>
+              </span>
+              <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-gradient-to-r from-brand-primary/20 to-pink-500/20 text-brand-primary border border-brand-primary/20 uppercase tracking-widest hidden sm:inline-block">PRO</span>
+            </div>
+            <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 hidden md:block tracking-wider uppercase mt-0.5">HD Media Utility</span>
+          </div>
         </Link>
 
-        {/* Navigation Items - Clean alignment */}
-        <nav className="hidden lg:flex items-center space-x-5 xl:space-x-7 text-sm font-semibold text-slate-600 dark:text-slate-300">
+        {/* CENTER NAVIGATION BAR - STREAMLINED & FITTED */}
+        <nav className="hidden lg:flex items-center space-x-1 text-xs xl:text-sm font-bold text-slate-600 dark:text-slate-300">
           <Link 
             to="/" 
-            className={`transition-colors duration-150 hover:text-brand-primary dark:hover:text-white flex items-center gap-1.5 py-1 ${path === "/" ? "text-brand-primary font-bold border-b-2 border-brand-primary" : ""}`}
+            className={`px-2.5 py-1.5 rounded-xl transition-all duration-200 flex items-center gap-1.5 ${path === "/" ? "bg-brand-primary/10 text-brand-primary dark:text-brand-secondary font-extrabold shadow-sm" : "hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white"}`}
           >
-            {t.home}
+            <HomeIcon className="h-4 w-4" />
+            <span>{t.home}</span>
           </Link>
           
-          {/* Downloader dropdown preview */}
-          <div className="relative group py-1">
-            <button className="transition-colors duration-150 hover:text-brand-primary dark:hover:text-white flex items-center gap-1 cursor-pointer font-semibold text-sm">
+          {/* DOWNLOADER MEGA DROPDOWN */}
+          <div className="relative group py-1.5">
+            <button className={`px-2.5 py-1.5 rounded-xl transition-all duration-200 flex items-center gap-1.5 cursor-pointer font-bold ${path.includes("downloader") || path.includes("watermark") ? "bg-brand-primary/10 text-brand-primary dark:text-brand-secondary" : "hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white"}`}>
+              <Video className="h-4 w-4 text-purple-500" />
               <span>{t.downloader}</span>
               <ChevronDown className="h-3.5 w-3.5 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
             </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 w-52 mt-1 bg-white dark:bg-[#0b1026] border border-slate-200/80 dark:border-white/10 rounded-2xl p-3 shadow-xl space-y-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50">
-              <div className="text-[10px] tracking-wider uppercase text-slate-400 dark:text-slate-500 font-bold px-2.5 py-1 border-b border-slate-100 dark:border-white/10">Supported Platforms</div>
-              <Link to="/youtube-downloader" className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors">★ YouTube Downloader</Link>
-              <Link to="/tiktok-downloader" className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors">★ TikTok Downloader</Link>
-              <Link to="/instagram-downloader" className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors">★ Instagram Downloader</Link>
-              <Link to="/facebook-downloader" className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors">★ Facebook Downloader</Link>
-              <Link to="/twitter-downloader" className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors">★ Twitter (X) Downloader</Link>
-              <Link to="/pinterest-downloader" className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors">★ Pinterest Downloader</Link>
-              <Link to="/reddit-downloader" className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors">★ Reddit Downloader</Link>
-              <Link to="/vimeo-downloader" className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors">★ Vimeo Downloader</Link>
+
+            {/* Mega dropdown panel */}
+            <div className="absolute top-full left-0 w-80 mt-1 bg-white dark:bg-[#0a0f25] border border-slate-200 dark:border-white/10 rounded-2xl p-3 shadow-2xl space-y-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50">
+              <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-slate-100 dark:border-white/10 mb-1">
+                <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Supported Media Tools</span>
+                <span className="text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full">8 Tools</span>
+              </div>
+              <div className="grid grid-cols-1 gap-1">
+                {platformLinks.map((p, idx) => (
+                  <Link 
+                    key={idx} 
+                    to={p.slug} 
+                    className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors group/item"
+                  >
+                    <span className={`p-1.5 rounded-lg ${p.bg} ${p.color} shrink-0`}>
+                      <Video className="w-3.5 h-3.5" />
+                    </span>
+                    <span className="truncate group-hover/item:translate-x-0.5 transition-transform">{p.name}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
 
           <Link 
             to="/tools" 
-            className={`flex items-center gap-1.5 transition-colors duration-150 hover:text-brand-primary dark:hover:text-white py-1 ${path === "/tools" ? "text-brand-primary font-bold border-b-2 border-brand-primary" : ""}`}
+            className={`px-2.5 py-1.5 rounded-xl transition-all duration-200 flex items-center gap-1.5 ${path === "/tools" ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 font-extrabold" : "hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white"}`}
           >
-            <Sparkles className="h-3.5 w-3.5 text-amber-500 animate-pulse" />
-            {t.tools}
+            <Sparkles className="h-4 w-4 text-amber-500 animate-pulse" />
+            <span>{t.tools}</span>
           </Link>
           
           <Link 
             to="/blog" 
-            className={`transition-colors duration-150 hover:text-brand-primary dark:hover:text-white py-1 ${path.startsWith("/blog") ? "text-brand-primary font-bold border-b-2 border-brand-primary" : ""}`}
+            className={`px-2.5 py-1.5 rounded-xl transition-all duration-200 flex items-center gap-1.5 ${path.startsWith("/blog") ? "bg-brand-primary/10 text-brand-primary dark:text-brand-secondary font-extrabold" : "hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white"}`}
           >
-            {t.articles}
+            <BookOpen className="h-4 w-4" />
+            <span>{t.articles}</span>
           </Link>
           
           <Link 
             to="/faq" 
-            className={`transition-colors duration-150 hover:text-brand-primary dark:hover:text-white py-1 ${path === "/faq" ? "text-brand-primary font-bold border-b-2 border-brand-primary" : ""}`}
+            className={`px-2.5 py-1.5 rounded-xl transition-all duration-200 flex items-center gap-1.5 ${path === "/faq" ? "bg-brand-primary/10 text-brand-primary dark:text-brand-secondary font-extrabold" : "hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white"}`}
           >
-            {t.howToUse}
+            <HelpCircle className="h-4 w-4" />
+            <span>{t.howToUse}</span>
           </Link>
-          
-          <Link 
-            to="/about" 
-            className={`transition-colors duration-150 hover:text-brand-primary dark:hover:text-white py-1 ${path === "/about" ? "text-brand-primary font-bold border-b-2 border-brand-primary" : ""}`}
-          >
-            {t.aboutUs}
-          </Link>
-          
-          <Link 
-            to="/contact" 
-            className={`transition-colors duration-150 hover:text-brand-primary dark:hover:text-white py-1 ${path === "/contact" ? "text-brand-primary font-bold border-b-2 border-brand-primary" : ""}`}
-          >
-            {t.contact}
-          </Link>
+
+          {/* MORE DROPDOWN FOR ABOUT & CONTACT */}
+          <div className="relative group py-1.5">
+            <button className={`px-2.5 py-1.5 rounded-xl transition-all duration-200 flex items-center gap-1 cursor-pointer font-bold ${path === "/about" || path === "/contact" ? "bg-brand-primary/10 text-brand-primary dark:text-brand-secondary" : "hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white"}`}>
+              <span>More</span>
+              <ChevronDown className="h-3.5 w-3.5 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
+            </button>
+            <div className="absolute top-full right-0 w-48 mt-1 bg-white dark:bg-[#0a0f25] border border-slate-200 dark:border-white/10 rounded-2xl p-2 shadow-2xl space-y-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50">
+              <Link 
+                to="/about" 
+                className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors"
+              >
+                <Info className="h-4 w-4 text-brand-primary" />
+                <span>{t.aboutUs}</span>
+              </Link>
+              <Link 
+                to="/contact" 
+                className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-brand-primary transition-colors"
+              >
+                <Mail className="h-4 w-4 text-purple-500" />
+                <span>{t.contact}</span>
+              </Link>
+            </div>
+          </div>
         </nav>
 
-        {/* Right side Actions */}
-        <div className="hidden lg:flex items-center space-x-2.5 shrink-0">
+        {/* RIGHT SIDE UTILITIES */}
+        <div className="hidden lg:flex items-center space-x-2 shrink-0">
           <GlobalSearch />
-          <select 
-            value={language} 
-            onChange={(e) => setLanguage(e.target.value as 'en' | 'es' | 'fr')} 
-            className="h-9 px-2.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 transition-colors cursor-pointer"
-          >
-            <option value="en">EN</option>
-            <option value="es">ES</option>
-            <option value="fr">FR</option>
-          </select>
+          
+          <div className="relative flex items-center">
+            <select 
+              value={language} 
+              onChange={(e) => setLanguage(e.target.value as 'en' | 'es' | 'fr')} 
+              className="h-8 px-2 pr-5 text-[11px] font-extrabold rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 transition-colors cursor-pointer appearance-none"
+              style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.2rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.1em 1.1em' }}
+            >
+              <option value="en">🌐 EN</option>
+              <option value="es">🌐 ES</option>
+              <option value="fr">🌐 FR</option>
+            </select>
+          </div>
 
           <button 
             onClick={() => setGlowEnabled(!glowEnabled)}
-            className="h-9 w-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/20 transition cursor-pointer"
+            className="h-8 w-8 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/20 transition cursor-pointer"
             title="Toggle theme"
           >
             {glowEnabled ? (
-              <Moon className="h-4 w-4 text-brand-primary" />
+              <Moon className="h-3.5 w-3.5 text-brand-primary" />
             ) : (
-              <Sun className="h-4 w-4 text-amber-500" />
+              <Sun className="h-3.5 w-3.5 text-amber-500" />
             )}
           </button>
 
           <a
             href="/#media-downloader"
-            className="h-9 px-4 inline-flex items-center gap-1.5 text-xs font-bold rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white shadow-sm shadow-brand-primary/30 transition-all cursor-pointer"
+            className="h-8 px-3 inline-flex items-center gap-1.5 text-xs font-extrabold rounded-xl bg-gradient-to-r from-brand-primary to-purple-600 hover:brightness-110 text-white shadow-md shadow-brand-primary/25 transition-all cursor-pointer active:scale-95"
           >
-            <Download className="h-3.5 w-3.5" />
-            <span>Free Downloader</span>
+            <Download className="h-3.5 w-3.5 animate-bounce" />
+            <span>Download</span>
           </a>
         </div>
 
-        {/* MOBILE MENU TRIGGER BUTTON & SEARCH */}
+        {/* MOBILE ACTIONS */}
         <div className="flex items-center lg:hidden space-x-2 shrink-0">
           <GlobalSearch />
           <button 
@@ -182,7 +232,7 @@ function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLa
         </div>
       </div>
 
-      {/* MOBILE RESPONSIVE SIDEBAR DRAWER - Smooth Animations */}
+      {/* MOBILE RESPONSIVE DRAWER */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -191,55 +241,89 @@ function Header({ language, setLanguage }: { language: 'en' | 'es' | 'fr', setLa
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0f25] overflow-hidden"
           >
-            <div className="px-6 py-8 space-y-5 flex flex-col text-sm font-semibold tracking-wide  font-sans">
+            <div className="px-5 py-6 space-y-3 flex flex-col text-sm font-bold">
               <Link 
                 to="/" 
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center justify-between py-2 border-b border-gray-200 dark:border-white/10 ${path === "/" ? "text-brand-primary" : "text-gray-600 dark:text-gray-300"}`}
+                className={`flex items-center justify-between py-2.5 px-3 rounded-xl ${path === "/" ? "bg-brand-primary/10 text-brand-primary" : "text-gray-700 dark:text-gray-200"}`}
               >
-                <span>Home / Downloader</span>
-                <span className="text-[10px] bg-brand-primary/10 text-brand-primary px-2 py-0.5 rounded-md font-sans font-bold">Downloader</span>
+                <div className="flex items-center gap-2">
+                  <HomeIcon className="w-4 h-4" />
+                  <span>Home</span>
+                </div>
+                <span className="text-[10px] bg-brand-primary/10 text-brand-primary px-2 py-0.5 rounded-md font-bold">Main</span>
               </Link>
+
+              {/* Supported Downloaders Quick List */}
+              <div className="py-2 px-3 rounded-xl bg-gray-50 dark:bg-white/5 space-y-2">
+                <span className="text-[10px] uppercase font-black text-gray-400 tracking-wider">Supported Downloaders:</span>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {platformLinks.map((p, i) => (
+                    <Link
+                      key={i}
+                      to={p.slug}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-xs font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-primary flex items-center gap-1.5 py-1"
+                    >
+                      <span className={`w-2 h-2 rounded-full ${p.color}`} />
+                      <span>{p.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
               <Link 
                 to="/tools" 
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center justify-between py-2 border-b border-gray-200 dark:border-white/10 ${path === "/tools" ? "text-brand-primary" : "text-gray-600 dark:text-gray-300"}`}
+                className={`flex items-center justify-between py-2.5 px-3 rounded-xl ${path === "/tools" ? "bg-amber-500/10 text-amber-500" : "text-gray-700 dark:text-gray-200"}`}
               >
-                <span>AI Creative Tools</span>
-                <Sparkles className="h-3.5 w-3.5 text-brand-accent animate-spin" />
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <span>AI Creative Tools</span>
+                </div>
+                <span className="text-[10px] bg-amber-500/20 text-amber-500 px-2 py-0.5 rounded-md font-bold">New</span>
               </Link>
+
               <Link 
                 to="/blog" 
                 onClick={() => setMobileMenuOpen(false)}
-                className={`py-2 border-b border-gray-200 dark:border-white/10 ${path.startsWith("/blog") ? "text-brand-primary" : "text-gray-600 dark:text-gray-300"}`}
+                className={`flex items-center gap-2 py-2.5 px-3 rounded-xl ${path.startsWith("/blog") ? "bg-brand-primary/10 text-brand-primary" : "text-gray-700 dark:text-gray-200"}`}
               >
-                Academy Articles
+                <BookOpen className="w-4 h-4" />
+                <span>Academy Articles</span>
               </Link>
+
               <Link 
                 to="/faq" 
                 onClick={() => setMobileMenuOpen(false)}
-                className={`py-2 border-b border-gray-200 dark:border-white/10 ${path === "/faq" ? "text-brand-primary font-bold" : "text-gray-600 dark:text-gray-300"}`}
+                className={`flex items-center gap-2 py-2.5 px-3 rounded-xl ${path === "/faq" ? "bg-brand-primary/10 text-brand-primary" : "text-gray-700 dark:text-gray-200"}`}
               >
-                How to Use / FAQ
+                <HelpCircle className="w-4 h-4" />
+                <span>How to Use / FAQ</span>
               </Link>
+
               <Link 
                 to="/about" 
                 onClick={() => setMobileMenuOpen(false)}
-                className={`py-2 border-b border-gray-200 dark:border-white/10 ${path === "/about" ? "text-brand-primary" : "text-gray-600 dark:text-gray-300"}`}
+                className={`flex items-center gap-2 py-2.5 px-3 rounded-xl ${path === "/about" ? "bg-brand-primary/10 text-brand-primary" : "text-gray-700 dark:text-gray-200"}`}
               >
-                About Us
+                <Info className="w-4 h-4" />
+                <span>About Us</span>
               </Link>
+
               <Link 
                 to="/contact" 
                 onClick={() => setMobileMenuOpen(false)}
-                className={`py-2 border-b border-gray-200 dark:border-white/10 ${path === "/contact" ? "text-brand-primary" : "text-gray-600 dark:text-gray-300"}`}
+                className={`flex items-center gap-2 py-2.5 px-3 rounded-xl ${path === "/contact" ? "bg-brand-primary/10 text-brand-primary" : "text-gray-700 dark:text-gray-200"}`}
               >
-                Contact Ticket
+                <Mail className="w-4 h-4" />
+                <span>Contact Ticket</span>
               </Link>
+
               <a
                 href="/#media-downloader"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-brand-primary to-brand-secondary text-white font-extrabold text-xs tracking-wider text-center flex items-center justify-center gap-2"
+                className="w-full py-3 mt-2 rounded-xl bg-gradient-to-r from-brand-primary to-purple-600 text-white font-extrabold text-xs tracking-wider text-center flex items-center justify-center gap-2 shadow-md"
               >
                 <Download className="h-4 w-4" />
                 <span>START FREE DOWNLOAD</span>
@@ -412,6 +496,9 @@ export default function App() {
       <main id="main-content" className="flex-1 relative z-10">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/gemini-watermark-remover" element={<GeminiWatermarkRemover />} />
+          <Route path="/gemini-video-image-downloader-without-watermark" element={<GeminiWatermarkRemover />} />
+          <Route path="/gemini-downloader" element={<GeminiWatermarkRemover />} />
           <Route path="/downloader/:platformSlug" element={<PlatformDownloader />} />
           <Route path="/youtube-downloader" element={<PlatformDownloader />} />
           <Route path="/tiktok-downloader" element={<PlatformDownloader />} />

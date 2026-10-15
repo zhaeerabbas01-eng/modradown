@@ -21,6 +21,7 @@ export default function Home() {
   const [result, setResult] = useState<any>(null);
 
   const platforms = [
+    { slug: 'gemini-watermark-remover', name: 'Gemini Watermark Remover', icon: Sparkles, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-500/10 dark:bg-purple-500/20', desc: 'Auto remove watermarks, logos & stamps from videos (up to 10s) and images in HD.' },
     { slug: 'youtube-downloader', name: 'YouTube', icon: Youtube, color: 'text-red-600', bg: 'bg-red-600/10', desc: 'Save educational & Creative Commons videos in 1080p MP4 or MP3.' },
     { slug: 'tiktok-downloader', name: 'TikTok', icon: Play, color: 'text-black dark:text-white', bg: 'bg-black/10 dark:bg-white/10', desc: 'Archive your personal TikTok clips and sounds without watermarks.' },
     { slug: 'instagram-downloader', name: 'Instagram', icon: Instagram, color: 'text-pink-600', bg: 'bg-pink-600/10', desc: 'Download public Reels, feed clips, and creator video posts.' },
@@ -245,6 +246,27 @@ export default function Home() {
                 </div>
               )}
 
+              {/* NEW GEMINI WATERMARK REMOVER FEATURED BANNER */}
+              <Link
+                to="/gemini-watermark-remover"
+                className="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-purple-600/10 via-brand-primary/10 to-pink-500/10 border border-brand-primary/20 hover:border-brand-primary/50 text-xs text-slate-800 dark:text-slate-200 font-extrabold flex items-center justify-between gap-3 group transition shadow-sm cursor-pointer"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-gradient-to-tr from-brand-primary to-pink-500 text-white shrink-0">
+                    <Sparkles className="w-4 h-4 animate-spin" />
+                  </div>
+                  <div className="text-left">
+                    <span className="font-extrabold text-sm text-brand-primary dark:text-brand-secondary block">
+                      GEMINI Video & Images Downloader Without Watermark
+                    </span>
+                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                      Upload watermarked video (10s max) or image to auto remove watermark with Gemini AI
+                    </span>
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-brand-primary group-hover:translate-x-1 transition-transform shrink-0" />
+              </Link>
+
               {/* MANDATORY RESPONSIBLE USE & PERMISSION NOTICE */}
               <div className="mt-4 p-3.5 rounded-xl bg-gray-100/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-600 dark:text-gray-400 text-left flex items-start gap-2.5">
                 <ShieldCheck className="w-4 h-4 text-brand-primary shrink-0 mt-0.5" />
@@ -418,7 +440,7 @@ export default function Home() {
 
       {/* DEDICATED PLATFORM DOWNLOADERS SECTION */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl mt-16">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">
             Supported Media Platforms & Clean Tools
           </h2>
@@ -427,7 +449,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {platforms.map((p) => {
             const Icon = p.icon;
             return (
@@ -446,7 +468,7 @@ export default function Home() {
                     </span>
                   </div>
                   <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
-                    {p.name} Downloader
+                    {p.name.includes("Remover") ? p.name : `${p.name} Downloader`}
                   </h3>
                   <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                     {p.desc}
