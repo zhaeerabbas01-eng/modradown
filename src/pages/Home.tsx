@@ -13,6 +13,7 @@ import PixelDocSpotlight from "../components/PixelDocSpotlight";
 import Breadcrumbs from "../components/Breadcrumbs";
 import AuthorByline from "../components/AuthorByline";
 import OutboundAuthorityLinks from "../components/OutboundAuthorityLinks";
+import { BLOG_POSTS } from "../data/blogData";
 
 export type ExtractionStatus = 
   | 'IDLE'
@@ -180,297 +181,144 @@ export default function Home() {
       />
       
       {/* HERO SECTION WITH PROMINENT DOWNLOADER ABOVE THE FOLD */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl pt-4 md:pt-6 w-full flex flex-col items-center">
-        {/* Banner Ad Area */}
-        <div className="mb-6 text-center flex justify-center w-full">
-          <AdPlacement type="horizontal" title="Header Sponsor" />
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl pt-4 sm:pt-8 pb-6 w-full flex flex-col items-center text-center">
+        {/* BADGE */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold mb-4 tracking-wide">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>High-Speed Clean Media Extraction Utility</span>
         </div>
 
-        {/* MAIN HERO SPLIT: FORM (LEFT) + ANIMATED PLAYER SHOWCASE (RIGHT) */}
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-center mb-8">
-          
-          {/* LEFT COLUMN: BADGE, HEADLINE, FORM & FEATURES */}
-          <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left w-full">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold mb-4 tracking-wide">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>High-Speed Clean Media Extraction Utility</span>
+        {/* HEADLINE */}
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight max-w-3xl">
+          Free Online Video Downloader – Download Videos in HD MP4
+        </h1>
+
+        {/* SUBTITLE */}
+        <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6 font-medium max-w-2xl">
+          Paste any public media link to extract progressive MP4 videos and MP3 audio for legitimate personal, educational, and authorized offline viewing.
+        </p>
+
+        {/* DOWNLOADER INTERFACE */}
+        <div className="w-full max-w-3xl">
+          <form 
+            id="media-downloader" 
+            onSubmit={handleDownload} 
+            className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white dark:bg-[#0a0f25] rounded-2xl p-2.5 shadow-[0_10px_35px_rgba(102,80,255,0.18)] hover:shadow-[0_15px_45px_rgba(102,80,255,0.28)] transition-all duration-300 isolate group gap-2"
+          >
+            {/* Outer Radiant Flowing Gradient Border Animation */}
+            <div 
+              aria-hidden="true"
+              className="absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-brand-primary via-purple-500 via-pink-500 to-brand-primary bg-[length:250%_250%] animate-border-flow -z-10 blur-[1px] opacity-80 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" 
+            />
+            {/* Soft Ambient Glow Effect */}
+            <div 
+              aria-hidden="true"
+              className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-primary/40 via-purple-500/30 to-pink-500/40 bg-[length:250%_250%] animate-border-flow -z-20 blur-md opacity-50 group-hover:opacity-80 transition-opacity duration-300 pointer-events-none" 
+            />
+            {/* Inner Solid Card Background Layer */}
+            <div 
+              aria-hidden="true"
+              className="absolute inset-0 rounded-2xl bg-white dark:bg-[#0a0f25] -z-10 pointer-events-none" 
+            />
+
+            <div className="flex-1 flex items-center min-w-0 bg-transparent px-2 w-full">
+              <input 
+                type="url"
+                required
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="Paste video link here..."
+                className="w-full bg-transparent border-none outline-none py-3 text-base md:text-lg text-gray-700 dark:text-gray-200 placeholder:text-gray-400 font-medium relative z-10"
+              />
+              {url && (
+                <button
+                  type="button"
+                  onClick={() => setUrl("")}
+                  title="Clear input"
+                  className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition rounded-full hover:bg-gray-100 dark:hover:bg-white/10 shrink-0 cursor-pointer"
+                >
+                  <span className="text-sm font-bold leading-none px-1">✕</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={handlePaste}
+                title="Paste from clipboard"
+                className="px-2.5 py-1.5 ml-1 text-brand-primary dark:text-brand-secondary bg-brand-primary/10 hover:bg-brand-primary/20 dark:bg-white/10 dark:hover:bg-white/20 transition rounded-lg shrink-0 cursor-pointer text-xs font-semibold flex items-center gap-1 active:scale-95"
+              >
+                <Clipboard className="w-3.5 h-3.5" />
+                <span>{pasted ? "Pasted!" : "Paste"}</span>
+              </button>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">
-              Free Online Video Downloader – Download Videos in HD MP4
-            </h1>
+            {/* Download Button */}
+            <button 
+              type="submit"
+              disabled={loading || !url.trim()}
+              className="w-full sm:w-auto bg-brand-primary hover:bg-brand-primary/90 text-white font-bold px-7 py-3.5 sm:py-3 rounded-xl flex items-center justify-center space-x-2 transition-all disabled:opacity-70 shrink-0 cursor-pointer shadow-md shadow-brand-primary/25 hover:shadow-brand-primary/40 active:scale-95 text-base"
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+              <span>{loading ? "Processing..." : "Download"}</span>
+            </button>
+          </form>
 
-            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6 font-medium max-w-xl">
-              Paste any public media link to extract progressive MP4 videos and MP3 audio for legitimate personal, educational, and authorized offline viewing.
-            </p>
-
-            {/* DOWNLOADER INTERFACE */}
-            <div className="w-full">
-              <form 
-                id="media-downloader" 
-                onSubmit={handleDownload} 
-                className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white dark:bg-[#0a0f25] rounded-2xl p-2.5 shadow-[0_10px_35px_rgba(102,80,255,0.18)] hover:shadow-[0_15px_45px_rgba(102,80,255,0.28)] transition-all duration-300 isolate group gap-2"
-              >
-                {/* Outer Radiant Flowing Gradient Border Animation */}
-                <div 
-                  aria-hidden="true"
-                  className="absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-brand-primary via-purple-500 via-pink-500 to-brand-primary bg-[length:250%_250%] animate-border-flow -z-10 blur-[1px] opacity-80 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" 
-                />
-                {/* Soft Ambient Glow Effect */}
-                <div 
-                  aria-hidden="true"
-                  className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-primary/40 via-purple-500/30 to-pink-500/40 bg-[length:250%_250%] animate-border-flow -z-20 blur-md opacity-50 group-hover:opacity-80 transition-opacity duration-300 pointer-events-none" 
-                />
-                {/* Inner Solid Card Background Layer */}
-                <div 
-                  aria-hidden="true"
-                  className="absolute inset-0 rounded-2xl bg-white dark:bg-[#0a0f25] -z-10 pointer-events-none" 
-                />
-
-                <div className="flex-1 flex items-center min-w-0 bg-transparent px-2 w-full">
-                  <input 
-                    type="url"
-                    required
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    placeholder="Paste video link here..."
-                    className="w-full bg-transparent border-none outline-none py-3 text-base md:text-lg text-gray-700 dark:text-gray-200 placeholder:text-gray-400 font-medium relative z-10"
-                  />
-                  {url && (
-                    <button
-                      type="button"
-                      onClick={() => setUrl("")}
-                      title="Clear input"
-                      className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition rounded-full hover:bg-gray-100 dark:hover:bg-white/10 shrink-0 cursor-pointer"
-                    >
-                      <span className="text-sm font-bold leading-none px-1">✕</span>
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={handlePaste}
-                    title="Paste from clipboard"
-                    className="px-2.5 py-1.5 ml-1 text-brand-primary dark:text-brand-secondary bg-brand-primary/10 hover:bg-brand-primary/20 dark:bg-white/10 dark:hover:bg-white/20 transition rounded-lg shrink-0 cursor-pointer text-xs font-semibold flex items-center gap-1 active:scale-95"
-                  >
-                    <Clipboard className="w-3.5 h-3.5" />
-                    <span>{pasted ? "Pasted!" : "Paste"}</span>
-                  </button>
-                </div>
-
-                {/* Download Button */}
-                <button 
-                  type="submit"
-                  disabled={loading || !url.trim()}
-                  className="w-full sm:w-auto bg-brand-primary hover:bg-brand-primary/90 text-white font-bold px-7 py-3.5 sm:py-3 rounded-xl flex items-center justify-center space-x-2 transition-all disabled:opacity-70 shrink-0 cursor-pointer shadow-md shadow-brand-primary/25 hover:shadow-brand-primary/40 active:scale-95 text-base"
-                >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
-                  <span>{loading ? "Processing..." : "Download"}</span>
-                </button>
-              </form>
-
-              {/* Error Message Display */}
-              {error && (
-                <div className="mt-4 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 text-sm flex items-start gap-3 text-left">
-                  <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-500" />
-                  <div>
-                    <p className="font-semibold">{error}</p>
-                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">
-                      Tip: Verify that the account is public and the video is not a 24-hour temporary story or restricted by private login credentials.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* NEW GEMINI WATERMARK REMOVER FEATURED BANNER */}
-              <Link
-                to="/gemini-watermark-remover"
-                className="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-purple-600/10 via-brand-primary/10 to-pink-500/10 border border-brand-primary/20 hover:border-brand-primary/50 text-xs text-slate-800 dark:text-slate-200 font-extrabold flex items-center justify-between gap-3 group transition shadow-sm cursor-pointer"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-gradient-to-tr from-brand-primary to-pink-500 text-white shrink-0">
-                    <Sparkles className="w-4 h-4 animate-spin" />
-                  </div>
-                  <div className="text-left">
-                    <span className="font-extrabold text-sm text-brand-primary dark:text-brand-secondary block">
-                      GEMINI Video & Images Downloader Without Watermark
-                    </span>
-                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                      Upload watermarked video (10s max) or image to auto remove watermark with Gemini AI
-                    </span>
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-brand-primary group-hover:translate-x-1 transition-transform shrink-0" />
-              </Link>
-
-              {/* MANDATORY RESPONSIBLE USE & PERMISSION NOTICE */}
-              <div className="mt-4 p-3.5 rounded-xl bg-gray-100/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-600 dark:text-gray-400 text-left flex items-start gap-2.5">
-                <ShieldCheck className="w-4 h-4 text-brand-primary shrink-0 mt-0.5" />
-                <p>
-                  <strong>Important Notice:</strong> ModraDown is an online tool that helps users process publicly accessible media URLs for legitimate personal, educational, and authorized use. Users are responsible for having the necessary rights or permission to download content.
+          {/* Error Message Display */}
+          {error && (
+            <div className="mt-4 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 text-sm flex items-start gap-3 text-left">
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-500" />
+              <div>
+                <p className="font-semibold">{error}</p>
+                <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                  Tip: Verify that the account is public and the video is not a 24-hour temporary story or restricted by private login credentials.
                 </p>
               </div>
             </div>
+          )}
 
-            {/* Quick Feature Pills */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 mt-6 text-xs font-semibold text-gray-500 dark:text-gray-400">
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> No Account Required</span>
-              <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-brand-primary" /> HTTPS Secure Extraction</span>
-              <span className="flex items-center gap-1.5"><FileVideo className="w-4 h-4 text-blue-500" /> Universal MP4 & MP3</span>
-              <span className="flex items-center gap-1.5"><Lock className="w-4 h-4 text-teal-500" /> Zero File Storage</span>
+          {/* NEW GEMINI WATERMARK REMOVER FEATURED BANNER */}
+          <Link
+            to="/gemini-watermark-remover"
+            className="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-purple-600/10 via-brand-primary/10 to-pink-500/10 border border-brand-primary/20 hover:border-brand-primary/50 text-xs text-slate-800 dark:text-slate-200 font-extrabold flex items-center justify-between gap-3 group transition shadow-sm cursor-pointer"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-gradient-to-tr from-brand-primary to-pink-500 text-white shrink-0">
+                <Sparkles className="w-4 h-4 animate-spin" />
+              </div>
+              <div className="text-left">
+                <span className="font-extrabold text-sm text-brand-primary dark:text-brand-secondary block">
+                  GEMINI Video & Images Downloader Without Watermark
+                </span>
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                  Upload watermarked video (10s max) or image to auto remove watermark with Gemini AI
+                </span>
+              </div>
             </div>
+            <ArrowRight className="w-4 h-4 text-brand-primary group-hover:translate-x-1 transition-transform shrink-0" />
+          </Link>
+
+          {/* MANDATORY RESPONSIBLE USE & PERMISSION NOTICE */}
+          <div className="mt-4 p-3.5 rounded-xl bg-gray-100/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-600 dark:text-gray-400 text-left flex items-start gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-brand-primary shrink-0 mt-0.5" />
+            <p>
+              <strong>Important Notice:</strong> ModraDown is an online tool that helps users process publicly accessible media URLs for legitimate personal, educational, and authorized use. Users are responsible for having the necessary rights or permission to download content.
+            </p>
           </div>
 
-          {/* RIGHT COLUMN: ANIMATED PLAY VIDEO PLAYER & 3D PLATFORMS SHOWCASE ("PLA WALA ANIMATED SIDE FIT") */}
-          <div className="lg:col-span-5 w-full flex justify-center relative mt-4 lg:mt-0">
-            {/* Ambient Background Aura Glow */}
-            <div className="absolute -inset-4 bg-gradient-to-tr from-brand-primary/25 via-pink-500/20 to-purple-500/25 blur-3xl rounded-[2.5rem] opacity-75 pointer-events-none animate-pulse-glow" />
-
-            {/* Floating Quick Badges (visible on larger screens) */}
-            <div className="hidden sm:flex absolute -top-4 -left-3 z-20 items-center gap-2 bg-white/95 dark:bg-[#111638]/95 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-gray-200/80 dark:border-white/15 shadow-xl text-xs font-bold text-gray-800 dark:text-gray-100 animate-float pointer-events-none">
-              <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-              <span>10x Ultra-Fast Engine</span>
-            </div>
-
-            <div className="hidden sm:flex absolute -bottom-3 -right-2 z-20 items-center gap-2 bg-white/95 dark:bg-[#111638]/95 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-gray-200/80 dark:border-white/15 shadow-xl text-xs font-bold text-gray-800 dark:text-gray-100 animate-float-slow pointer-events-none">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              <span>No Watermark • 100% Free</span>
-            </div>
-
-            {/* Central Glassmorphic Player Card */}
-            <div className="w-full max-w-md bg-white/90 dark:bg-[#0c102a]/90 backdrop-blur-xl border border-gray-200/90 dark:border-white/15 rounded-3xl p-4 sm:p-5 shadow-2xl relative z-10 overflow-hidden">
-              
-              {/* Window Bar Header */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 dark:border-white/10">
-                <div className="flex items-center space-x-1.5">
-                  <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                  <span className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                  <span className="w-3 h-3 rounded-full bg-[#27c93f]" />
-                </div>
-                <div className="inline-flex items-center space-x-1.5 bg-red-500/10 dark:bg-red-500/20 px-2.5 py-0.5 rounded-full text-[11px] font-black text-red-600 dark:text-red-400 tracking-wide uppercase">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                  <span>Interactive Player</span>
-                </div>
-                <div className="text-[11px] font-bold text-gray-400 bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-md">
-                  4K / 1080p
-                </div>
-              </div>
-
-              {/* Animated Cinema Video Canvas */}
-              <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-[#070a1a] via-[#0f1433] to-[#070a1a] border border-white/10 flex flex-col justify-between p-3.5 sm:p-4 shadow-inner group">
-                
-                {/* Background Video Motion Atmosphere */}
-                <div className="absolute inset-0 bg-radial from-brand-primary/20 via-transparent to-transparent opacity-60 pointer-events-none" />
-                <div className="absolute -top-12 -right-12 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl pointer-events-none" />
-                <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-brand-primary/25 rounded-full blur-2xl pointer-events-none" />
-
-                {/* Top Overlay Badges inside player */}
-                <div className="relative z-10 flex items-center justify-between text-[11px] font-bold">
-                  <span className="px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white border border-white/10 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    Ultra HD MP4
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-white/10 backdrop-blur-md text-gray-300 font-mono text-[10px]">
-                    60 FPS
-                  </span>
-                </div>
-
-                {/* Pulsing Animated Center Play Button */}
-                <div className="relative z-10 flex flex-col items-center justify-center my-auto">
-                  <div className="relative flex items-center justify-center">
-                    {/* Ripple Rings */}
-                    <div className="absolute w-20 h-20 rounded-full bg-brand-primary/30 animate-ping pointer-events-none" />
-                    <div className="absolute w-24 h-24 rounded-full bg-pink-500/20 animate-pulse pointer-events-none" />
-                    
-                    {/* The Play Button */}
-                    <div 
-                      className="w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-gradient-to-tr from-brand-primary via-purple-600 to-pink-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(102,80,255,0.7)] hover:scale-110 active:scale-95 transition-all duration-300 relative z-10 cursor-pointer group-hover:shadow-[0_0_40px_rgba(236,72,153,0.8)]"
-                      title="Play Preview"
-                    >
-                      <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-white translate-x-0.5 drop-shadow" />
-                    </div>
-                  </div>
-                  <span className="mt-2 text-[11px] font-semibold text-white/80 tracking-wide uppercase drop-shadow">
-                    Universal Media Extractor
-                  </span>
-                </div>
-
-                {/* Bottom Video Controls & Live Equalizer */}
-                <div className="relative z-10 space-y-2">
-                  <div className="flex items-center justify-between text-[10px] font-semibold text-gray-300 px-0.5">
-                    <span className="font-mono text-white/90">02:45 / 03:10</span>
-
-                    {/* Animated Live Equalizer Waves */}
-                    <div className="flex items-end gap-1 h-3.5 px-2 py-0.5 bg-black/40 rounded-full border border-white/10" title="Audio Stream">
-                      <span className="w-1 bg-brand-accent rounded-full animate-[pulse_0.6s_ease-in-out_infinite] h-3" />
-                      <span className="w-1 bg-brand-primary rounded-full animate-[pulse_0.4s_ease-in-out_infinite] h-2" />
-                      <span className="w-1 bg-pink-400 rounded-full animate-[pulse_0.8s_ease-in-out_infinite] h-3.5" />
-                      <span className="w-1 bg-brand-accent rounded-full animate-[pulse_0.5s_ease-in-out_infinite] h-2.5" />
-                      <span className="w-1 bg-brand-primary rounded-full animate-[pulse_0.7s_ease-in-out_infinite] h-1.5" />
-                    </div>
-
-                    <span className="font-bold text-brand-accent">320kbps MP3</span>
-                  </div>
-
-                  {/* Animated Timeline Progress Bar */}
-                  <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden relative">
-                    <div className="h-full bg-gradient-to-r from-brand-primary via-purple-500 to-pink-500 rounded-full w-[78%] relative">
-                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white shadow-md" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Attached Platforms Quick Strip below the player ("PLA WALA") */}
-              <div className="mt-3.5 pt-3 border-t border-gray-100 dark:border-white/10">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400">
-                    Direct Platform Tools:
-                  </span>
-                  <span className="text-[10px] font-bold text-brand-primary flex items-center gap-0.5">
-                    All Formats Ready &rarr;
-                  </span>
-                </div>
-                <div className="grid grid-cols-4 gap-2">
-                  <Link 
-                    to="/youtube-downloader" 
-                    className="flex flex-col items-center p-2 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200/50 dark:border-red-900/30 hover:scale-105 transition-transform"
-                  >
-                    <Youtube className="w-4 h-4 text-red-600 mb-1" />
-                    <span className="text-[10px] font-bold text-gray-800 dark:text-gray-200">YouTube</span>
-                  </Link>
-
-                  <Link 
-                    to="/tiktok-downloader" 
-                    className="flex flex-col items-center p-2 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:scale-105 transition-transform"
-                  >
-                    <Play className="w-4 h-4 text-black dark:text-white mb-1" />
-                    <span className="text-[10px] font-bold text-gray-800 dark:text-gray-200">TikTok</span>
-                  </Link>
-
-                  <Link 
-                    to="/instagram-downloader" 
-                    className="flex flex-col items-center p-2 rounded-xl bg-pink-50 dark:bg-pink-950/30 border border-pink-200/50 dark:border-pink-900/30 hover:scale-105 transition-transform"
-                  >
-                    <Instagram className="w-4 h-4 text-pink-600 mb-1" />
-                    <span className="text-[10px] font-bold text-gray-800 dark:text-gray-200">Instagram</span>
-                  </Link>
-
-                  <Link 
-                    to="/facebook-downloader" 
-                    className="flex flex-col items-center p-2 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200/50 dark:border-blue-900/30 hover:scale-105 transition-transform"
-                  >
-                    <Facebook className="w-4 h-4 text-blue-600 mb-1" />
-                    <span className="text-[10px] font-bold text-gray-800 dark:text-gray-200">Facebook</span>
-                  </Link>
-                </div>
-              </div>
-
-            </div>
+          {/* Quick Feature Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-6 text-xs font-semibold text-gray-500 dark:text-gray-400">
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> No Account Required</span>
+            <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-brand-primary" /> HTTPS Secure Extraction</span>
+            <span className="flex items-center gap-1.5"><FileVideo className="w-4 h-4 text-blue-500" /> Universal MP4 & MP3</span>
+            <span className="flex items-center gap-1.5"><Lock className="w-4 h-4 text-teal-500" /> Zero File Storage</span>
           </div>
         </div>
 
         {/* RESULT CARD ANCHOR */}
-        {result && <ResultCard result={result} />}
+        {result && (
+          <div className="w-full max-w-4xl mt-6">
+            <ResultCard result={result} />
+          </div>
+        )}
       </section>
 
       {/* DEDICATED PLATFORM DOWNLOADERS SECTION */}
@@ -529,6 +377,18 @@ export default function Home() {
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl mt-6">
         <article className="bg-white dark:bg-[#0a0f25] rounded-3xl border border-gray-200 dark:border-white/10 p-6 sm:p-10 md:p-14 shadow-md space-y-12 leading-relaxed text-gray-700 dark:text-gray-300">
           
+          {/* AUTHOR BYLINE WITH E-A-T CREDENTIALS */}
+          <AuthorByline 
+            authorName="Muhammad Usman Zhaeer"
+            authorRole="Founder & Lead Systems Engineer"
+            authorBio="Muhammad Usman is a full-stack engineer and the creator of ModraDown. He specializes in web streaming protocols, media container extraction, cloud optimization, and ethical technology practices."
+            authorAvatar="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200&h=200"
+            experience="7+ Years in Web Infrastructure & Media Pipelines"
+            publishedAt="October 15, 2026"
+            updatedAt="October 17, 2026"
+            readTime="14 min read"
+          />
+
           {/* SECTION 1: WHAT IS AN ONLINE VIDEO DOWNLOADER */}
           <section>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">
@@ -845,7 +705,72 @@ export default function Home() {
             </div>
           </section>
 
-          {/* SECTION 13: AUTHORITATIVE TECHNICAL REFERENCES & GOOGLE STANDARDS */}
+          {/* SECTION 13: 24 ACADEMY ARTICLES & MEDIA WORKFLOW GUIDES */}
+          <section className="pt-6 border-t border-gray-100 dark:border-white/10">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                  13. Media Academy: 24 Technical Guides & Tutorials
+                </h2>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Comprehensive peer-reviewed articles on video codecs, container architectures, AI watermark removal, and offline archival workflows.
+                </p>
+              </div>
+              <Link 
+                to="/blog" 
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-primary hover:underline shrink-0"
+              >
+                <span>View All 24 Articles</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {BLOG_POSTS.slice(0, 10).map((post) => (
+                <Link
+                  key={post.slug}
+                  to={`/blog/${post.slug}`}
+                  className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-brand-primary/50 transition-all flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-[11px] mb-2">
+                      <span className="font-bold text-brand-primary">{post.category}</span>
+                      <span className="text-gray-400">{post.readTime}</span>
+                    </div>
+                    <h3 className="font-bold text-sm text-gray-900 dark:text-white group-hover:text-brand-primary transition-colors line-clamp-2 mb-1.5">
+                      {post.title}
+                    </h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                      {post.summary}
+                    </p>
+                  </div>
+                  <div className="mt-3 flex items-center text-xs font-semibold text-brand-primary group-hover:translate-x-1 transition-transform">
+                    <span>Read Guide &rarr;</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Quick Link Pills for remaining articles */}
+            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/10">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-3">
+                More Technical Deep-Dives & Archive Tutorials:
+              </span>
+              <div className="flex flex-wrap gap-2 text-xs">
+                {BLOG_POSTS.slice(10).map((post) => (
+                  <Link
+                    key={post.slug}
+                    to={`/blog/${post.slug}`}
+                    className="px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-brand-primary/10 hover:text-brand-primary transition text-gray-700 dark:text-gray-300 font-medium"
+                  >
+                    {post.title.split(':')[0]}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* SECTION 14: AUTHORITATIVE TECHNICAL REFERENCES & GOOGLE STANDARDS */}
           <OutboundAuthorityLinks />
 
         </article>

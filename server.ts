@@ -179,6 +179,24 @@ async function startServer() {
   app.get(["/sitemap-posts.xml", "/sitemap-posts.xml/"], serveXmlFile('sitemap-posts.xml', defaultPostsXml));
   app.get(["/sitemap.xml", "/sitemap.xml/", "/Sitemap.xml", "/Sitemap.xml/", "/sitemap"], serveXmlFile('sitemap.xml', defaultIndexXml));
 
+  app.get("/llms.txt", (req, res) => {
+    const llmsPath = path.join(process.cwd(), 'public', 'llms.txt');
+    if (fs.existsSync(llmsPath)) {
+      res.type('text/plain; charset=utf-8').sendFile(llmsPath);
+    } else {
+      res.type('text/plain; charset=utf-8').send("# ModraDown\nhttps://videodownloder.online/");
+    }
+  });
+
+  app.get("/robots.txt", (req, res) => {
+    const robotsPath = path.join(process.cwd(), 'public', 'robots.txt');
+    if (fs.existsSync(robotsPath)) {
+      res.type('text/plain; charset=utf-8').sendFile(robotsPath);
+    } else {
+      res.type('text/plain; charset=utf-8').send("User-agent: *\nAllow: /\nSitemap: https://videodownloder.online/sitemap.xml\n");
+    }
+  });
+
   // Google site verification file handler
   app.get("/google:code.html", (req, res) => {
     const fileName = `google${req.params.code}.html`;

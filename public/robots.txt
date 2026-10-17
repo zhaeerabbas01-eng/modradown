@@ -1,10 +1,11 @@
-# Robots.txt for videodownloder.online
-# Allow all search engine crawlers and bots to index all pages
+# Robots.txt for videodownloder.online (ModraDown)
+# Permitted Search Engines & AI Answer Engines (AEO/GEO optimization)
 
 User-agent: *
 Allow: /
 Disallow: /api/
 
+# Primary Search Engines
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
@@ -19,5 +20,35 @@ User-agent: Bingbot
 Allow: /
 Disallow: /api/
 
-# XML Sitemap index location
+# AI Search & Answer Engines (Google AI Overviews, OpenAI, Perplexity, Anthropic, Apple)
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /api/
+
+User-agent: CCBot
+Allow: /
+Disallow: /api/
+
+# Sitemaps
+Sitemap: https://videodownloder.online/sitemap.xml
 Sitemap: https://videodownloder.online/sitemap-index.xml
